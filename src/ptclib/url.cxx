@@ -1162,9 +1162,16 @@ class PURL_URNScheme : public PURLScheme
       return true;
     }
 
-    virtual PString AsString(PURL::UrlFormat fmt, const PURL & url) const
+    virtual PString AsString(PURL::UrlFormat fmt, const PURL& url) const
     {
-      return "urn:" + url.GetContents();
+      switch (fmt) {
+        case PURL::FullURL :
+          return "urn:" + url.GetContents();
+        case PURL::LocationOnly :
+          return PString::Empty();
+        default :
+          return url.GetContents();
+      }
     }
 };
 
@@ -1208,7 +1215,9 @@ class PURL_DataScheme : public PURLScheme
       const PStringToString & params = purl.GetParamVars();
       PStringStream strm;
 
-      strm << "data:" + params("type", PMIMEInfo::TextPlain());
+      if (fmt == PURL::FullURL)
+        strm << "data:";
+      strm << params("type", PMIMEInfo::TextPlain());
 
       bool base64 = false;
       for (PStringOptions::const_iterator it = params.begin(); it != params.end(); ++it) {
