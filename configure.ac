@@ -2369,8 +2369,10 @@ dnl ########################################################################
 dnl look for ODBC code
 
 dnl MSWIN_DISPLAY    odbc,ODBC support
-dnl MSWIN_CHECK_FILE odbc,include\odbcinst.h,P_ODBC=1
-dnl MSWIN_CHECK_FILE odbc,include\um\odbcinst.h,P_ODBC=1
+dnl MSWIN_CHECK_FILE odbc,odbcinst.h,P_ODBC=1
+dnl MSWIN_CHECK_FILE odbc,um\odbcinst.h,P_ODBC=1
+dnl MSWIN_CHECK_DIR  odbc,%ProgramFiles%\Windows Kits\10.*
+dnl MSWIN_CHECK_DIR  odbc,%ProgramW6432%\Windows Kits\10.*
 dnl MSWIN_CHECK_DIR  odbc,%ProgramFiles%\Windows Kits\8.*
 dnl MSWIN_CHECK_DIR  odbc,%ProgramW6432%\Windows Kits\8.*
 
