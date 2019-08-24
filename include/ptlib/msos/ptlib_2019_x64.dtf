@@ -122,7 +122,6 @@ EXPORTS
     ??0ExtendedType@PvCard@@QEAA@XZ @120 NONAME
     ??0FactoryInitialiser@PMediaFile_FFMPEG@@QEAA@XZ @121 NONAME
     ??0Field@PODBC@@IEAA@AEAVRow@1@_K@Z @17157 NONAME
-    ;protected: __cdecl PODBC::Field::Field(class PODBC::Row &,unsigned __int64)
     ??0FieldElement@PHTML@@IEAA@PEBD0W4ElementInSet@1@W4OptionalCRLF@Element@1@W4DisableCodes@1@@Z @122 NONAME
     ??0Form@PHTML@@QEAA@PEBD0000@Z @123 NONAME
     ??0FormField@PHTML@@IEAA@PEBD0W4ElementInSet@1@W4OptionalCRLF@Element@1@W4DisableCodes@1@0@Z @124 NONAME
@@ -410,7 +409,8 @@ EXPORTS
     ??0PHTTPDateField@@QEAA@PEBDAEBVPTime@@W4TimeFormat@1@@Z @407 NONAME
     ??0PHTTPDirectory@@QEAA@AEBVPURL@@AEBVPDirectory@@@Z @408 NONAME
     ??0PHTTPDirectory@@QEAA@AEBVPURL@@AEBVPDirectory@@AEBVPHTTPAuthority@@@Z @409 NONAME
-    ??0PHTTPDirRequest@@QEAA@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@PEAVPHTTPResource@@AEAVPHTTPServer@@@Z @410 NONAME
+    ??0PHTTPDirRequest@@QEAA@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@PEAVPHTTPResource@@@Z @17818 NONAME
+    ;public: __cdecl PHTTPDirRequest::PHTTPDirRequest(class PHTTPServer &,class PHTTPConnectionInfo const &,class PHTTPResource *)
     ??0PHTTPDividerField@@QEAA@XZ @411 NONAME
     ??0PHTTPField@@QEAA@PEBD00@Z @412 NONAME
     ??0PHTTPFieldArray@@QEAA@PEAVPHTTPField@@_N_K@Z @413 NONAME
@@ -421,7 +421,8 @@ EXPORTS
     ??0PHTTPFile@@QEAA@AEBVPURL@@AEBVPFilePath@@AEBVPHTTPAuthority@@@Z @418 NONAME
     ??0PHTTPFile@@QEAA@AEBVPURL@@AEBVPFilePath@@AEBVPString@@@Z @419 NONAME
     ??0PHTTPFile@@QEAA@AEBVPURL@@AEBVPFilePath@@AEBVPString@@AEBVPHTTPAuthority@@@Z @420 NONAME
-    ??0PHTTPFileRequest@@QEAA@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@PEAVPHTTPResource@@AEAVPHTTPServer@@@Z @421 NONAME
+    ??0PHTTPFileRequest@@QEAA@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@PEAVPHTTPResource@@@Z @17819 NONAME
+    ;public: __cdecl PHTTPFileRequest::PHTTPFileRequest(class PHTTPServer &,class PHTTPConnectionInfo const &,class PHTTPResource *)
     ??0PHTTPForm@@QEAA@AEBVPURL@@@Z @422 NONAME
     ??0PHTTPForm@@QEAA@AEBVPURL@@AEBVPHTTPAuthority@@@Z @423 NONAME
     ??0PHTTPForm@@QEAA@AEBVPURL@@AEBVPString@@@Z @424 NONAME
@@ -441,10 +442,13 @@ EXPORTS
     ??0PHTTPRadioField@@QEAA@PEBDAEBVPStringArray@@_K0@Z @438 NONAME
     ??0PHTTPRadioField@@QEAA@PEBD_KPEBQEBD10@Z @439 NONAME
     ??0PHTTPRadioField@@QEAA@PEBD_KPEBQEBD210@Z @440 NONAME
-    ??0PHTTPRequest@@QEAA@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@PEAVPHTTPResource@@AEAVPHTTPServer@@@Z @441 NONAME
+    ??0PHTTPRequest@@QEAA@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@PEAVPHTTPResource@@@Z @17820 NONAME
+    ;public: __cdecl PHTTPRequest::PHTTPRequest(class PHTTPServer &,class PHTTPConnectionInfo const &,class PHTTPResource *)
     ??0PHTTPResource@@IEAA@AEBVPURL@@@Z @442 NONAME
     ??0PHTTPResource@@IEAA@AEBVPURL@@AEBVPHTTPAuthority@@@Z @443 NONAME
     ??0PHTTPResource@@IEAA@AEBVPURL@@AEBVPString@@@Z @444 NONAME
+    ??0PHTTPResource@@IEAA@AEBVPURL@@AEBVPString@@AEBVPHTTPAuthority@@1@Z @17821 NONAME
+    ;protected: __cdecl PHTTPResource::PHTTPResource(class PURL const &,class PString const &,class PHTTPAuthority const &,class PString const &)
     ??0PHTTPResource@@IEAA@AEBVPURL@@AEBVPString@@AEBVPHTTPAuthority@@@Z @445 NONAME
     ??0PHTTPSelectField@@QEAA@PEBD0AEBVPStringArray@@_K0_N@Z @446 NONAME
     ??0PHTTPSelectField@@QEAA@PEBD0_KPEBQEBD10_N@Z @447 NONAME
@@ -542,7 +546,6 @@ EXPORTS
     ??0PNotifyIconData@@QEAA@PEAUHWND__@@IPEBD@Z @539 NONAME
     ??0PNullChannel@@QEAA@XZ @540 NONAME
     ??0PODBC@@QEAA@XZ @17159 NONAME
-    ;public: __cdecl PODBC::PODBC(void)
     ??0POrdinalToString@@QEAA@_KPEBUInitialiser@0@@Z @541 NONAME
     ??0PortRange@PIPSocket@@QEAA@GG@Z @542 NONAME
     ??0PPER_Stream@@QEAA@AEBVPBYTEArray@@_N@Z @543 NONAME
@@ -915,11 +918,8 @@ EXPORTS
     ??0RadioButton@PHTML@@QEAA@PEBD0W4CheckedCodes@1@W4DisableCodes@1@0@Z @910 NONAME
     ??0RadioButton@PHTML@@QEAA@PEBD0W4DisableCodes@1@0@Z @911 NONAME
     ??0RecordSet@PODBC@@AEAA@AEBV01@@Z @17160 NONAME
-    ;private: __cdecl PODBC::RecordSet::RecordSet(class PODBC::RecordSet const &)
     ??0RecordSet@PODBC@@QEAA@AEAV1@AEBVPString@@@Z @17161 NONAME
-    ;public: __cdecl PODBC::RecordSet::RecordSet(class PODBC &,class PString const &)
     ??0RecordSet@PODBC@@QEAA@PEAV1@AEBVPString@@@Z @17162 NONAME
-    ;public: __cdecl PODBC::RecordSet::RecordSet(class PODBC *,class PString const &)
     ??0RegistryKey@@QEAA@AEBVPString@@W4OpenMode@0@@Z @912 NONAME
     ??0ResetButton@PHTML@@IEAA@PEBD000W4DisableCodes@1@0@Z @913 NONAME
     ??0ResetButton@PHTML@@QEAA@PEBD00W4DisableCodes@1@0@Z @914 NONAME
@@ -928,7 +928,6 @@ EXPORTS
     ??0RotateInfo@PFile@@QEAA@AEBU01@@Z @917 NONAME
     ??0RotateInfo@PFile@@QEAA@AEBVPDirectory@@AEBVPString@@11JJ@Z @918 NONAME
     ??0Row@PODBC@@QEAA@AEAVRecordSet@1@@Z @17163 NONAME
-    ;public: __cdecl PODBC::Row::Row(class PODBC::RecordSet &)
     ??0Select@PHTML@@QEAA@PEBD0@Z @919 NONAME
     ??0Select@PHTML@@QEAA@PEBDW4DisableCodes@1@0@Z @920 NONAME
     ??0SetTab@PHTML@@QEAA@PEBD0@Z @921 NONAME
@@ -941,7 +940,6 @@ EXPORTS
     ??0SocketInfo@PSTUNServer@@QEAA@PEAVPUDPSocket@@@Z @928 NONAME
     ??0SoundChannel@PMediaFile@@QEAA@AEBV?$PSmartPtr@VPMediaFile@@@@I@Z @929 NONAME
     ??0Statement@PODBC@@QEAA@AEAV1@@Z @17164 NONAME
-    ;public: __cdecl PODBC::Statement::Statement(class PODBC &)
     ??0Stream@XMPP@@QEAA@PEAVTransport@1@@Z @930 NONAME
     ??0StreamHandler@C2S@XMPP@@QEAA@AEBVJID@2@AEBVPString@@_N@Z @931 NONAME
     ??0String@PJSON@@QEAA@PEBD@Z @932 NONAME
@@ -1210,7 +1208,6 @@ EXPORTS
     ??1Capabilities@PVideoInputDevice@@UEAA@XZ @1195 NONAME
     ??1CheckBox@PHTML@@UEAA@XZ @1196 NONAME
     ??1ConnectData@PODBC@@QEAA@XZ @17165 NONAME
-    ;public: __cdecl PODBC::ConnectData::~ConnectData(void)
     ??1Context@PCLI@@UEAA@XZ @1197 NONAME
     ??1Context@PMessageDigestSHA@@UEAA@XZ @1198 NONAME
     ??1CSpStreamFormat@@QEAA@XZ @1199 NONAME
@@ -1223,7 +1220,6 @@ EXPORTS
     ??1ExtendedType@PvCard@@QEAA@XZ @1206 NONAME
     ??1FactoryMap@PFactoryBase@@UEAA@XZ @1207 NONAME
     ??1Field@PODBC@@UEAA@XZ @17166 NONAME
-    ;public: virtual __cdecl PODBC::Field::~Field(void)
     ??1FieldElement@PHTML@@UEAA@XZ @1208 NONAME
     ??1Form@PHTML@@UEAA@XZ @1209 NONAME
     ??1FormField@PHTML@@UEAA@XZ @1210 NONAME
@@ -1406,7 +1402,6 @@ EXPORTS
     ??1PNATUDPSocket@@UEAA@XZ @1387 NONAME
     ??1PObject@@UEAA@XZ @1388 NONAME
     ??1PODBC@@UEAA@XZ @17167 NONAME
-    ;public: virtual __cdecl PODBC::~PODBC(void)
     ??1POrdinalToString@@UEAA@XZ @1389 NONAME
     ??1PortRange@PIPSocket@@QEAA@XZ @1390 NONAME
     ??1PPER_Stream@@UEAA@XZ @1391 NONAME
@@ -1600,7 +1595,6 @@ EXPORTS
     ??1QueuedWork@QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@QEAA@XZ @1579 NONAME
     ??1RadioButton@PHTML@@UEAA@XZ @1580 NONAME
     ??1RecordSet@PODBC@@UEAA@XZ @17168 NONAME
-    ;public: virtual __cdecl PODBC::RecordSet::~RecordSet(void)
     ??1RegistryKey@@QEAA@XZ @1581 NONAME
     ??1ResetButton@PHTML@@UEAA@XZ @1582 NONAME
     ??1Result@PMessageDigest@@UEAA@XZ @1583 NONAME
@@ -1609,7 +1603,6 @@ EXPORTS
     ??1RotateInfo@PSystemLogToFile@@UEAA@XZ @1586 NONAME
     ??1RouteTableDetector@PIPSocket@@UEAA@XZ @1587 NONAME
     ??1Row@PODBC@@UEAA@XZ @17169 NONAME
-    ;public: virtual __cdecl PODBC::Row::~Row(void)
     ??1Scope@Context@v8@@QEAA@XZ @1588 NONAME
     ??1Scope@Isolate@v8@@QEAA@XZ @1589 NONAME
     ??1SecurityID@@QEAA@XZ @1590 NONAME
@@ -1622,7 +1615,6 @@ EXPORTS
     ??1SRVRecordList@PDNS@@UEAA@XZ @1597 NONAME
     ??1Stanza@XMPP@@UEAA@XZ @1598 NONAME
     ??1Statement@PODBC@@UEAA@XZ @17170 NONAME
-    ;public: virtual __cdecl PODBC::Statement::~Statement(void)
     ??1Stream@XMPP@@UEAA@XZ @1599 NONAME
     ??1StreamHandler@C2S@XMPP@@UEAA@XZ @1600 NONAME
     ??1Strong@PHTML@@UEAA@XZ @1601 NONAME
@@ -1862,7 +1854,6 @@ EXPORTS
     ??APStringArray@@QEAAAEAVPString@@_K@Z @1835 NONAME
     ??APStringArray@@QEBA?AVPString@@_K@Z @1836 NONAME
     ??ARecordSet@PODBC@@QEAAAEAVRow@1@_K@Z @17171 NONAME
-    ;public: class PODBC::Row & __cdecl PODBC::RecordSet::operator[](unsigned __int64)
     ??B?$PBaseArray@D@@QEBAPEBDXZ @1837 NONAME
     ??BAddress@PEthSocket@@QEBA?AVPString@@XZ @1838 NONAME
     ??BAddress@PIPSocket@@QEBA?AUin6_addr@@XZ @1839 NONAME
@@ -1993,7 +1984,6 @@ EXPORTS
     ??R?$PStringDictionary@VPString@@@@QEBA?AVPString@@AEBV1@PEBD@Z @1964 NONAME
     ??RPString@@QEBA?AV0@_K0@Z @1965 NONAME
     ??RRecordSet@PODBC@@QEAAAEAVField@1@I_K@Z @17172 NONAME
-    ;public: class PODBC::Field & __cdecl PODBC::RecordSet::operator()(unsigned int,unsigned __int64)
     ??X@YA_NPEBDAEBVPString@@@Z @1966 NONAME
     ??XAddress@PIPSocket@@QEBA_NAEBV01@@Z @1967 NONAME
     ??XPString@@QEBA_NAEBV0@@Z @1968 NONAME
@@ -2028,7 +2018,6 @@ EXPORTS
     ??_7?$PArray@UEMail@PvCard@@@@6B@ @1997 NONAME
     ??_7?$PArray@UTelephone@PvCard@@@@6B@ @1998 NONAME
     ??_7?$PArray@VField@PODBC@@@@6B@ @17173 NONAME
-    ;const PArray<class PODBC::Field>::`vftable'
     ??_7?$PArray@VInterfaceEntry@PIPSocket@@@@6B@ @1999 NONAME
     ??_7?$PArray@VParamValue@PvCard@@@@6B@ @2000 NONAME
     ??_7?$PArray@VPASNObject@@@@6B@ @2001 NONAME
@@ -2274,6 +2263,8 @@ EXPORTS
     ??_7?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2241 NONAME
     ??_7?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2242 NONAME
     ??_7?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2243 NONAME
+    ??_7?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @17822 NONAME
+    ;const PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme>::`vftable'
     ??_7?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2244 NONAME
     ??_7?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2245 NONAME
     ??_7?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @2246 NONAME
@@ -2362,7 +2353,6 @@ EXPORTS
     ??_7FactoryInitialiser@PMediaFile_FFMPEG@@6B@ @2329 NONAME
     ??_7FactoryMap@PFactoryBase@@6B@ @2330 NONAME
     ??_7Field@PODBC@@6B@ @17174 NONAME
-    ;const PODBC::Field::`vftable'
     ??_7FieldElement@PHTML@@6B@ @2331 NONAME
     ??_7Form@PHTML@@6B@ @2332 NONAME
     ??_7FormField@PHTML@@6B@ @2333 NONAME
@@ -2702,7 +2692,6 @@ EXPORTS
     ??_7PNullChannel@@6BPObject@@@ @2667 NONAME
     ??_7PObject@@6B@ @2668 NONAME
     ??_7PODBC@@6B@ @17175 NONAME
-    ;const PODBC::`vftable'
     ??_7POrdinalToString@@6B@ @2669 NONAME
     ??_7PPER_Stream@@6B@ @2670 NONAME
     ??_7PPipeChannel@@6B?$basic_iostream@DU?$char_traits@D@std@@@std@@@ @2671 NONAME
@@ -3085,6 +3074,8 @@ EXPORTS
     ??_7PURL_FtpLoader@@6B@ @3048 NONAME
     ??_7PURL_HttpLoader@@6B@ @3049 NONAME
     ??_7PURL_TelScheme@@6B@ @3050 NONAME
+    ??_7PURL_URNScheme@@6B@ @17823 NONAME
+    ;const PURL_URNScheme::`vftable'
     ??_7PValidatedNotifierTarget@@6B@ @3051 NONAME
     ??_7PVarType@@6B@ @3052 NONAME
     ??_7PvCard@@6B@ @3053 NONAME
@@ -3207,7 +3198,6 @@ EXPORTS
     ??_7QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@6B@ @3170 NONAME
     ??_7RadioButton@PHTML@@6B@ @3171 NONAME
     ??_7RecordSet@PODBC@@6B@ @17176 NONAME
-    ;const PODBC::RecordSet::`vftable'
     ??_7ResetButton@PHTML@@6B@ @3172 NONAME
     ??_7Result@PMessageDigest@@6B@ @3173 NONAME
     ??_7Room@MUC@XMPP@@6BPObject@@@ @3174 NONAME
@@ -3218,7 +3208,6 @@ EXPORTS
     ??_7RouteEntry@PIPSocket@@6B@ @3179 NONAME
     ??_7RouteTableDetector@PIPSocket@@6B@ @3180 NONAME
     ??_7Row@PODBC@@6B@ @17177 NONAME
-    ;const PODBC::Row::`vftable'
     ??_7runtime_error@std@@6B@ @3181 NONAME
     ??_7Select@PHTML@@6B@ @3182 NONAME
     ??_7SelectList@PSocket@@6B@ @3183 NONAME
@@ -3242,7 +3231,6 @@ EXPORTS
     ??_7SRVRecordList@PDNS@@6B@ @3201 NONAME
     ??_7Stanza@XMPP@@6B@ @3202 NONAME
     ??_7Statement@PODBC@@6B@ @17178 NONAME
-    ;const PODBC::Statement::`vftable'
     ??_7Stream@XMPP@@6B?$basic_iostream@DU?$char_traits@D@std@@@std@@@ @3203 NONAME
     ??_7Stream@XMPP@@6BPObject@@@ @3204 NONAME
     ??_7StreamHandler@C2S@XMPP@@6B@ @3205 NONAME
@@ -3582,7 +3570,6 @@ EXPORTS
     ??_R0?AV?$PArray@UEMail@PvCard@@@@@8 @4057 NONAME
     ??_R0?AV?$PArray@UTelephone@PvCard@@@@@8 @4058 NONAME
     ??_R0?AV?$PArray@VField@PODBC@@@@@8 @17697 NONAME
-    ;class PArray<class PODBC::Field> `RTTI Type Descriptor'
     ??_R0?AV?$PArray@VInterfaceEntry@PIPSocket@@@@@8 @4059 NONAME
     ??_R0?AV?$PArray@VParamValue@PvCard@@@@@8 @4060 NONAME
     ??_R0?AV?$PArray@VPASNObject@@@@@8 @4061 NONAME
@@ -3831,6 +3818,8 @@ EXPORTS
     ??_R0?AV?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4304 NONAME
     ??_R0?AV?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4305 NONAME
     ??_R0?AV?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4306 NONAME
+    ??_R0?AV?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @18343 NONAME
+    ;class PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme> `RTTI Type Descriptor'
     ??_R0?AV?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4307 NONAME
     ??_R0?AV?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4308 NONAME
     ??_R0?AV?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@@8 @4309 NONAME
@@ -3916,7 +3905,6 @@ EXPORTS
     ??_R0?AVexception@std@@@8 @4389 NONAME
     ??_R0?AVFactoryMap@PFactoryBase@@@8 @4390 NONAME
     ??_R0?AVField@PODBC@@@8 @17698 NONAME
-    ;class PODBC::Field `RTTI Type Descriptor'
     ??_R0?AVFieldElement@PHTML@@@8 @4391 NONAME
     ??_R0?AVForm@PHTML@@@8 @4392 NONAME
     ??_R0?AVFormField@PHTML@@@8 @4393 NONAME
@@ -4211,7 +4199,6 @@ EXPORTS
     ??_R0?AVPNullChannel@@@8 @4682 NONAME
     ??_R0?AVPObject@@@8 @4683 NONAME
     ??_R0?AVPODBC@@@8 @17699 NONAME
-    ;class PODBC `RTTI Type Descriptor'
     ??_R0?AVPOrdinalToString@@@8 @4684 NONAME
     ??_R0?AVPPER_Stream@@@8 @4685 NONAME
     ??_R0?AVPPipeChannel@@@8 @4686 NONAME
@@ -4449,6 +4436,8 @@ EXPORTS
     ??_R0?AVPURL_FtpLoader@@@8 @4918 NONAME
     ??_R0?AVPURL_HttpLoader@@@8 @4919 NONAME
     ??_R0?AVPURL_TelScheme@@@8 @4920 NONAME
+    ??_R0?AVPURL_URNScheme@@@8 @18344 NONAME
+    ;class PURL_URNScheme `RTTI Type Descriptor'
     ??_R0?AVPValidatedNotifierTarget@@@8 @4921 NONAME
     ??_R0?AVPVarType@@@8 @4922 NONAME
     ??_R0?AVPvCard@@@8 @4923 NONAME
@@ -4558,7 +4547,6 @@ EXPORTS
     ??_R0?AVQueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@@8 @5027 NONAME
     ??_R0?AVRadioButton@PHTML@@@8 @5028 NONAME
     ??_R0?AVRecordSet@PODBC@@@8 @17700 NONAME
-    ;class PODBC::RecordSet `RTTI Type Descriptor'
     ??_R0?AVResetButton@PHTML@@@8 @5029 NONAME
     ??_R0?AVResult@PMessageDigest@@@8 @5030 NONAME
     ??_R0?AVRoom@MUC@XMPP@@@8 @5031 NONAME
@@ -4566,7 +4554,6 @@ EXPORTS
     ??_R0?AVRouteEntry@PIPSocket@@@8 @5033 NONAME
     ??_R0?AVRouteTableDetector@PIPSocket@@@8 @5034 NONAME
     ??_R0?AVRow@PODBC@@@8 @17701 NONAME
-    ;class PODBC::Row `RTTI Type Descriptor'
     ??_R0?AVruntime_error@std@@@8 @5035 NONAME
     ??_R0?AVSelect@PHTML@@@8 @5036 NONAME
     ??_R0?AVSelectList@PSocket@@@8 @5037 NONAME
@@ -4581,7 +4568,6 @@ EXPORTS
     ??_R0?AVSRVRecordList@PDNS@@@8 @5046 NONAME
     ??_R0?AVStanza@XMPP@@@8 @5047 NONAME
     ??_R0?AVStatement@PODBC@@@8 @17702 NONAME
-    ;class PODBC::Statement `RTTI Type Descriptor'
     ??_R0?AVStream@XMPP@@@8 @5048 NONAME
     ??_R0?AVStreamHandler@C2S@XMPP@@@8 @5049 NONAME
     ??_R0?AVString@PJSON@@@8 @5050 NONAME
@@ -4662,7 +4648,6 @@ EXPORTS
     ??_R1A@?0A@EA@?$PArray@UEMail@PvCard@@@@8 @5125 NONAME
     ??_R1A@?0A@EA@?$PArray@UTelephone@PvCard@@@@8 @5126 NONAME
     ??_R1A@?0A@EA@?$PArray@VField@PODBC@@@@8 @17703 NONAME
-    ;PArray<class PODBC::Field>::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@?$PArray@VInterfaceEntry@PIPSocket@@@@8 @5127 NONAME
     ??_R1A@?0A@EA@?$PArray@VParamValue@PvCard@@@@8 @5128 NONAME
     ??_R1A@?0A@EA@?$PArray@VPASNObject@@@@8 @5129 NONAME
@@ -4915,6 +4900,8 @@ EXPORTS
     ??_R1A@?0A@EA@?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5376 NONAME
     ??_R1A@?0A@EA@?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5377 NONAME
     ??_R1A@?0A@EA@?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5378 NONAME
+    ??_R1A@?0A@EA@?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @18345 NONAME
+    ;PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme>::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5379 NONAME
     ??_R1A@?0A@EA@?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5380 NONAME
     ??_R1A@?0A@EA@?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @5381 NONAME
@@ -5006,7 +4993,6 @@ EXPORTS
     ??_R1A@?0A@EA@FactoryInitialiser@PMediaFile_FFMPEG@@8 @5467 NONAME
     ??_R1A@?0A@EA@FactoryMap@PFactoryBase@@8 @5468 NONAME
     ??_R1A@?0A@EA@Field@PODBC@@8 @17704 NONAME
-    ;PODBC::Field::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@FieldElement@PHTML@@8 @5469 NONAME
     ??_R1A@?0A@EA@Form@PHTML@@8 @5470 NONAME
     ??_R1A@?0A@EA@FormField@PHTML@@8 @5471 NONAME
@@ -5319,7 +5305,6 @@ EXPORTS
     ??_R1A@?0A@EA@PNullChannel@@8 @5778 NONAME
     ??_R1A@?0A@EA@PObject@@8 @5779 NONAME
     ??_R1A@?0A@EA@PODBC@@8 @17705 NONAME
-    ;PODBC::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@POrdinalToString@@8 @5780 NONAME
     ??_R1A@?0A@EA@PPER_Stream@@8 @5781 NONAME
     ??_R1A@?0A@EA@PPipeChannel@@8 @5782 NONAME
@@ -5608,6 +5593,8 @@ EXPORTS
     ??_R1A@?0A@EA@PURL_FtpLoader@@8 @6065 NONAME
     ??_R1A@?0A@EA@PURL_HttpLoader@@8 @6066 NONAME
     ??_R1A@?0A@EA@PURL_TelScheme@@8 @6067 NONAME
+    ??_R1A@?0A@EA@PURL_URNScheme@@8 @18346 NONAME
+    ;PURL_URNScheme::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@PValidatedNotifierTarget@@8 @6068 NONAME
     ??_R1A@?0A@EA@PVarType@@8 @6069 NONAME
     ??_R1A@?0A@EA@PvCard@@8 @6070 NONAME
@@ -5718,7 +5705,6 @@ EXPORTS
     ??_R1A@?0A@EA@QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@8 @6175 NONAME
     ??_R1A@?0A@EA@RadioButton@PHTML@@8 @6176 NONAME
     ??_R1A@?0A@EA@RecordSet@PODBC@@8 @17706 NONAME
-    ;PODBC::RecordSet::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@ResetButton@PHTML@@8 @6177 NONAME
     ??_R1A@?0A@EA@Result@PMessageDigest@@8 @6178 NONAME
     ??_R1A@?0A@EA@Room@MUC@XMPP@@8 @6179 NONAME
@@ -5728,7 +5714,6 @@ EXPORTS
     ??_R1A@?0A@EA@RouteEntry@PIPSocket@@8 @6183 NONAME
     ??_R1A@?0A@EA@RouteTableDetector@PIPSocket@@8 @6184 NONAME
     ??_R1A@?0A@EA@Row@PODBC@@8 @17707 NONAME
-    ;PODBC::Row::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@runtime_error@std@@8 @6185 NONAME
     ??_R1A@?0A@EA@Select@PHTML@@8 @6186 NONAME
     ??_R1A@?0A@EA@SelectList@PSocket@@8 @6187 NONAME
@@ -5750,7 +5735,6 @@ EXPORTS
     ??_R1A@?0A@EA@SRVRecordList@PDNS@@8 @6203 NONAME
     ??_R1A@?0A@EA@Stanza@XMPP@@8 @6204 NONAME
     ??_R1A@?0A@EA@Statement@PODBC@@8 @17708 NONAME
-    ;PODBC::Statement::`RTTI Base Class Descriptor at (0,-1,0,64)'
     ??_R1A@?0A@EA@Stream@XMPP@@8 @6205 NONAME
     ??_R1A@?0A@EA@StreamHandler@C2S@XMPP@@8 @6206 NONAME
     ??_R1A@?0A@EA@String@PJSON@@8 @6207 NONAME
@@ -5876,7 +5860,6 @@ EXPORTS
     ??_R2?$PArray@UEMail@PvCard@@@@8 @6327 NONAME
     ??_R2?$PArray@UTelephone@PvCard@@@@8 @6328 NONAME
     ??_R2?$PArray@VField@PODBC@@@@8 @17709 NONAME
-    ;PArray<class PODBC::Field>::`RTTI Base Class Array'
     ??_R2?$PArray@VInterfaceEntry@PIPSocket@@@@8 @6329 NONAME
     ??_R2?$PArray@VParamValue@PvCard@@@@8 @6330 NONAME
     ??_R2?$PArray@VPASNObject@@@@8 @6331 NONAME
@@ -6129,6 +6112,8 @@ EXPORTS
     ??_R2?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6578 NONAME
     ??_R2?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6579 NONAME
     ??_R2?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6580 NONAME
+    ??_R2?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @18347 NONAME
+    ;PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme>::`RTTI Base Class Array'
     ??_R2?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6581 NONAME
     ??_R2?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6582 NONAME
     ??_R2?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @6583 NONAME
@@ -6220,7 +6205,6 @@ EXPORTS
     ??_R2FactoryInitialiser@PMediaFile_FFMPEG@@8 @6669 NONAME
     ??_R2FactoryMap@PFactoryBase@@8 @6670 NONAME
     ??_R2Field@PODBC@@8 @17710 NONAME
-    ;PODBC::Field::`RTTI Base Class Array'
     ??_R2FieldElement@PHTML@@8 @6671 NONAME
     ??_R2Form@PHTML@@8 @6672 NONAME
     ??_R2FormField@PHTML@@8 @6673 NONAME
@@ -6533,7 +6517,6 @@ EXPORTS
     ??_R2PNullChannel@@8 @6980 NONAME
     ??_R2PObject@@8 @6981 NONAME
     ??_R2PODBC@@8 @17711 NONAME
-    ;PODBC::`RTTI Base Class Array'
     ??_R2POrdinalToString@@8 @6982 NONAME
     ??_R2PPER_Stream@@8 @6983 NONAME
     ??_R2PPipeChannel@@8 @6984 NONAME
@@ -6822,6 +6805,8 @@ EXPORTS
     ??_R2PURL_FtpLoader@@8 @7267 NONAME
     ??_R2PURL_HttpLoader@@8 @7268 NONAME
     ??_R2PURL_TelScheme@@8 @7269 NONAME
+    ??_R2PURL_URNScheme@@8 @18348 NONAME
+    ;PURL_URNScheme::`RTTI Base Class Array'
     ??_R2PValidatedNotifierTarget@@8 @7270 NONAME
     ??_R2PVarType@@8 @7271 NONAME
     ??_R2PvCard@@8 @7272 NONAME
@@ -6932,7 +6917,6 @@ EXPORTS
     ??_R2QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@8 @7377 NONAME
     ??_R2RadioButton@PHTML@@8 @7378 NONAME
     ??_R2RecordSet@PODBC@@8 @17712 NONAME
-    ;PODBC::RecordSet::`RTTI Base Class Array'
     ??_R2ResetButton@PHTML@@8 @7379 NONAME
     ??_R2Result@PMessageDigest@@8 @7380 NONAME
     ??_R2Room@MUC@XMPP@@8 @7381 NONAME
@@ -6942,7 +6926,6 @@ EXPORTS
     ??_R2RouteEntry@PIPSocket@@8 @7385 NONAME
     ??_R2RouteTableDetector@PIPSocket@@8 @7386 NONAME
     ??_R2Row@PODBC@@8 @17713 NONAME
-    ;PODBC::Row::`RTTI Base Class Array'
     ??_R2runtime_error@std@@8 @7387 NONAME
     ??_R2Select@PHTML@@8 @7388 NONAME
     ??_R2SelectList@PSocket@@8 @7389 NONAME
@@ -6964,7 +6947,6 @@ EXPORTS
     ??_R2SRVRecordList@PDNS@@8 @7405 NONAME
     ??_R2Stanza@XMPP@@8 @7406 NONAME
     ??_R2Statement@PODBC@@8 @17714 NONAME
-    ;PODBC::Statement::`RTTI Base Class Array'
     ??_R2Stream@XMPP@@8 @7407 NONAME
     ??_R2StreamHandler@C2S@XMPP@@8 @7408 NONAME
     ??_R2String@PJSON@@8 @7409 NONAME
@@ -7034,7 +7016,6 @@ EXPORTS
     ??_R3?$PArray@UEMail@PvCard@@@@8 @7473 NONAME
     ??_R3?$PArray@UTelephone@PvCard@@@@8 @7474 NONAME
     ??_R3?$PArray@VField@PODBC@@@@8 @17715 NONAME
-    ;PArray<class PODBC::Field>::`RTTI Class Hierarchy Descriptor'
     ??_R3?$PArray@VInterfaceEntry@PIPSocket@@@@8 @7475 NONAME
     ??_R3?$PArray@VParamValue@PvCard@@@@8 @7476 NONAME
     ??_R3?$PArray@VPASNObject@@@@8 @7477 NONAME
@@ -7287,6 +7268,8 @@ EXPORTS
     ??_R3?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7724 NONAME
     ??_R3?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7725 NONAME
     ??_R3?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7726 NONAME
+    ??_R3?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @18349 NONAME
+    ;PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme>::`RTTI Class Hierarchy Descriptor'
     ??_R3?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7727 NONAME
     ??_R3?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7728 NONAME
     ??_R3?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@8 @7729 NONAME
@@ -7378,7 +7361,6 @@ EXPORTS
     ??_R3FactoryInitialiser@PMediaFile_FFMPEG@@8 @7815 NONAME
     ??_R3FactoryMap@PFactoryBase@@8 @7816 NONAME
     ??_R3Field@PODBC@@8 @17716 NONAME
-    ;PODBC::Field::`RTTI Class Hierarchy Descriptor'
     ??_R3FieldElement@PHTML@@8 @7817 NONAME
     ??_R3Form@PHTML@@8 @7818 NONAME
     ??_R3FormField@PHTML@@8 @7819 NONAME
@@ -7691,7 +7673,6 @@ EXPORTS
     ??_R3PNullChannel@@8 @8126 NONAME
     ??_R3PObject@@8 @8127 NONAME
     ??_R3PODBC@@8 @17717 NONAME
-    ;PODBC::`RTTI Class Hierarchy Descriptor'
     ??_R3POrdinalToString@@8 @8128 NONAME
     ??_R3PPER_Stream@@8 @8129 NONAME
     ??_R3PPipeChannel@@8 @8130 NONAME
@@ -7980,6 +7961,8 @@ EXPORTS
     ??_R3PURL_FtpLoader@@8 @8413 NONAME
     ??_R3PURL_HttpLoader@@8 @8414 NONAME
     ??_R3PURL_TelScheme@@8 @8415 NONAME
+    ??_R3PURL_URNScheme@@8 @18350 NONAME
+    ;PURL_URNScheme::`RTTI Class Hierarchy Descriptor'
     ??_R3PValidatedNotifierTarget@@8 @8416 NONAME
     ??_R3PVarType@@8 @8417 NONAME
     ??_R3PvCard@@8 @8418 NONAME
@@ -8090,7 +8073,6 @@ EXPORTS
     ??_R3QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@8 @8523 NONAME
     ??_R3RadioButton@PHTML@@8 @8524 NONAME
     ??_R3RecordSet@PODBC@@8 @17718 NONAME
-    ;PODBC::RecordSet::`RTTI Class Hierarchy Descriptor'
     ??_R3ResetButton@PHTML@@8 @8525 NONAME
     ??_R3Result@PMessageDigest@@8 @8526 NONAME
     ??_R3Room@MUC@XMPP@@8 @8527 NONAME
@@ -8100,7 +8082,6 @@ EXPORTS
     ??_R3RouteEntry@PIPSocket@@8 @8531 NONAME
     ??_R3RouteTableDetector@PIPSocket@@8 @8532 NONAME
     ??_R3Row@PODBC@@8 @17719 NONAME
-    ;PODBC::Row::`RTTI Class Hierarchy Descriptor'
     ??_R3runtime_error@std@@8 @8533 NONAME
     ??_R3Select@PHTML@@8 @8534 NONAME
     ??_R3SelectList@PSocket@@8 @8535 NONAME
@@ -8122,7 +8103,6 @@ EXPORTS
     ??_R3SRVRecordList@PDNS@@8 @8551 NONAME
     ??_R3Stanza@XMPP@@8 @8552 NONAME
     ??_R3Statement@PODBC@@8 @17720 NONAME
-    ;PODBC::Statement::`RTTI Class Hierarchy Descriptor'
     ??_R3Stream@XMPP@@8 @8553 NONAME
     ??_R3StreamHandler@C2S@XMPP@@8 @8554 NONAME
     ??_R3String@PJSON@@8 @8555 NONAME
@@ -8185,7 +8165,6 @@ EXPORTS
     ??_R4?$PArray@UEMail@PvCard@@@@6B@ @8612 NONAME
     ??_R4?$PArray@UTelephone@PvCard@@@@6B@ @8613 NONAME
     ??_R4?$PArray@VField@PODBC@@@@6B@ @17721 NONAME
-    ;const PArray<class PODBC::Field>::`RTTI Complete Object Locator'
     ??_R4?$PArray@VInterfaceEntry@PIPSocket@@@@6B@ @8614 NONAME
     ??_R4?$PArray@VParamValue@PvCard@@@@6B@ @8615 NONAME
     ??_R4?$PArray@VPASNObject@@@@6B@ @8616 NONAME
@@ -8431,6 +8410,8 @@ EXPORTS
     ??_R4?$Worker@VPURL_FtpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8856 NONAME
     ??_R4?$Worker@VPURL_HttpLoader@@@?$PFactory@VPURLLoader@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8857 NONAME
     ??_R4?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8858 NONAME
+    ??_R4?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @18351 NONAME
+    ;const PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme>::`RTTI Complete Object Locator'
     ??_R4?$Worker@VPVXMLChannelG7231@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8859 NONAME
     ??_R4?$Worker@VPVXMLChannelG729@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8860 NONAME
     ??_R4?$Worker@VPVXMLChannelPCM@@@?$PFactory@VPVXMLChannel@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@6B@ @8861 NONAME
@@ -8519,7 +8500,6 @@ EXPORTS
     ??_R4FactoryInitialiser@PMediaFile_FFMPEG@@6B@ @8944 NONAME
     ??_R4FactoryMap@PFactoryBase@@6B@ @8945 NONAME
     ??_R4Field@PODBC@@6B@ @17722 NONAME
-    ;const PODBC::Field::`RTTI Complete Object Locator'
     ??_R4FieldElement@PHTML@@6B@ @8946 NONAME
     ??_R4Form@PHTML@@6B@ @8947 NONAME
     ??_R4FormField@PHTML@@6B@ @8948 NONAME
@@ -8859,7 +8839,6 @@ EXPORTS
     ??_R4PNullChannel@@6BPObject@@@ @9282 NONAME
     ??_R4PObject@@6B@ @9283 NONAME
     ??_R4PODBC@@6B@ @17723 NONAME
-    ;const PODBC::`RTTI Complete Object Locator'
     ??_R4POrdinalToString@@6B@ @9284 NONAME
     ??_R4PPER_Stream@@6B@ @9285 NONAME
     ??_R4PPipeChannel@@6B?$basic_iostream@DU?$char_traits@D@std@@@std@@@ @9286 NONAME
@@ -9242,6 +9221,8 @@ EXPORTS
     ??_R4PURL_FtpLoader@@6B@ @9663 NONAME
     ??_R4PURL_HttpLoader@@6B@ @9664 NONAME
     ??_R4PURL_TelScheme@@6B@ @9665 NONAME
+    ??_R4PURL_URNScheme@@6B@ @18352 NONAME
+    ;const PURL_URNScheme::`RTTI Complete Object Locator'
     ??_R4PValidatedNotifierTarget@@6B@ @9666 NONAME
     ??_R4PVarType@@6B@ @9667 NONAME
     ??_R4PvCard@@6B@ @9668 NONAME
@@ -9364,7 +9345,6 @@ EXPORTS
     ??_R4QueuedWorkerThread@?$PQueuedThreadPool@UWorker@PHTTPListener@@@@6B@ @9785 NONAME
     ??_R4RadioButton@PHTML@@6B@ @9786 NONAME
     ??_R4RecordSet@PODBC@@6B@ @17724 NONAME
-    ;const PODBC::RecordSet::`RTTI Complete Object Locator'
     ??_R4ResetButton@PHTML@@6B@ @9787 NONAME
     ??_R4Result@PMessageDigest@@6B@ @9788 NONAME
     ??_R4Room@MUC@XMPP@@6BPObject@@@ @9789 NONAME
@@ -9375,7 +9355,6 @@ EXPORTS
     ??_R4RouteEntry@PIPSocket@@6B@ @9794 NONAME
     ??_R4RouteTableDetector@PIPSocket@@6B@ @9795 NONAME
     ??_R4Row@PODBC@@6B@ @17725 NONAME
-    ;const PODBC::Row::`RTTI Complete Object Locator'
     ??_R4runtime_error@std@@6B@ @9796 NONAME
     ??_R4Select@PHTML@@6B@ @9797 NONAME
     ??_R4SelectList@PSocket@@6B@ @9798 NONAME
@@ -9399,7 +9378,6 @@ EXPORTS
     ??_R4SRVRecordList@PDNS@@6B@ @9816 NONAME
     ??_R4Stanza@XMPP@@6B@ @9817 NONAME
     ??_R4Statement@PODBC@@6B@ @17726 NONAME
-    ;const PODBC::Statement::`RTTI Complete Object Locator'
     ??_R4Stream@XMPP@@6B?$basic_iostream@DU?$char_traits@D@std@@@std@@@ @9818 NONAME
     ??_R4Stream@XMPP@@6BPObject@@@ @9819 NONAME
     ??_R4StreamHandler@C2S@XMPP@@6B@ @9820 NONAME
@@ -9605,6 +9583,12 @@ EXPORTS
     ?Allocate@?$PThreadLocalStorage@UThreadLocalInfo@PTraceInfo@@@@MEBAPEAXXZ @10025 NONAME
     ?AllocateWorker@PThreadPoolBase@@MEAAPEAVWorkerThreadBase@1@XZ @10026 NONAME
     ?AllowDeleteObjects@PCollection@@QEAAX_N@Z @10027 NONAME
+    ?AllowHeaderTag@PHTTP@@SAAEBVPCaselessString@@XZ @18358 NONAME
+    ;public: static class PCaselessString const & __cdecl PHTTP::AllowHeaderTag(void)
+    ?AllowMethodTag@PHTTP@@SAAEBVPCaselessString@@XZ @18359 NONAME
+    ;public: static class PCaselessString const & __cdecl PHTTP::AllowMethodTag(void)
+    ?AllowOriginTag@PHTTP@@SAAEBVPCaselessString@@XZ @18360 NONAME
+    ;public: static class PCaselessString const & __cdecl PHTTP::AllowOriginTag(void)
     ?AllowTag@PHTTP@@SAAEBVPCaselessString@@XZ @10028 NONAME
     ?AnyTypeEncode@PPER_Stream@@QEAAXPEBVPASN_Object@@@Z @10029 NONAME
     ?Append@Array@PJSON@@QEAAXAEBV2@@Z @10030 NONAME
@@ -9707,6 +9691,8 @@ EXPORTS
     ?AsString@PURL_CalltoScheme@@UEBA?AVPString@@W4UrlFormat@PURL@@AEBV4@@Z @10128 NONAME
     ?AsString@PURL_DataScheme@@UEBA?AVPString@@W4UrlFormat@PURL@@AEBV4@@Z @10129 NONAME
     ?AsString@PURL_TelScheme@@UEBA?AVPString@@W4UrlFormat@PURL@@AEBV4@@Z @10130 NONAME
+    ?AsString@PURL_URNScheme@@UEBA?AVPString@@W4UrlFormat@PURL@@AEBV4@@Z @18362 NONAME
+    ;public: virtual class PString __cdecl PURL_URNScheme::AsString(enum PURL::UrlFormat,class PURL const &)const 
     ?AsString@PVarType@@QEBA?AVPString@@XZ @10131 NONAME
     ?AsString@PvCard@@QEAA?AVPString@@W4Format@1@@Z @10132 NONAME
     ?AsString@PVideoFrameInfo@@SA?AVPString@@II@Z @10133 NONAME
@@ -9782,7 +9768,6 @@ EXPORTS
     ?BeginRestartSystem@PHTTPServiceProcess@@IEAAXXZ @10203 NONAME
     ?BindCaptureDevice@PVideoInputDevice_DirectShow@@IEAA_NAEBVPString@@@Z @10204 NONAME
     ?BindCol@Statement@PODBC@@QEAA_NGFPEAX_JPEA_J@Z @17733 NONAME
-    ;public: bool __cdecl PODBC::Statement::BindCol(unsigned short,short,void *,__int64,__int64 *)
     ?BioClose@PSSLChannel@@KAHPEAUbio_st@@@Z @10205 NONAME
     ?BioClose@PSSLChannel@@MEAAHXZ @10206 NONAME
     ?BioControl@PSSLChannel@@KAJPEAUbio_st@@HJPEAX@Z @10207 NONAME
@@ -9939,7 +9924,6 @@ EXPORTS
     ?Clone@?$PArray@UEMail@PvCard@@@@UEBAPEAVPObject@@XZ @10361 NONAME
     ?Clone@?$PArray@UTelephone@PvCard@@@@UEBAPEAVPObject@@XZ @10362 NONAME
     ?Clone@?$PArray@VField@PODBC@@@@UEBAPEAVPObject@@XZ @17737 NONAME
-    ;public: virtual class PObject * __cdecl PArray<class PODBC::Field>::Clone(void)const 
     ?Clone@?$PArray@VInterfaceEntry@PIPSocket@@@@UEBAPEAVPObject@@XZ @10363 NONAME
     ?Clone@?$PArray@VParamValue@PvCard@@@@UEBAPEAVPObject@@XZ @10364 NONAME
     ?Clone@?$PArray@VPASNObject@@@@UEBAPEAVPObject@@XZ @10365 NONAME
@@ -10178,17 +10162,11 @@ EXPORTS
     ?Clr@PHTML@@QEAAXW4ElementInSet@1@@Z @10598 NONAME
     ?CoInitialise@PThread@@QEAA_NXZ @10599 NONAME
     ?Column@Row@PODBC@@QEBAAEAVField@2@AEBVPString@@@Z @17738 NONAME
-    ;public: class PODBC::Field & __cdecl PODBC::Row::Column(class PString const &)const 
     ?Column@Row@PODBC@@QEBAAEAVField@2@_K@Z @17739 NONAME
-    ;public: class PODBC::Field & __cdecl PODBC::Row::Column(unsigned __int64)const 
     ?ColumnByName@Row@PODBC@@QEBA_KAEBVPCaselessString@@@Z @17740 NONAME
-    ;public: unsigned __int64 __cdecl PODBC::Row::ColumnByName(class PCaselessString const &)const 
     ?ColumnNames@Row@PODBC@@QEBA?AVPStringArray@@XZ @17741 NONAME
-    ;public: class PStringArray __cdecl PODBC::Row::ColumnNames(void)const 
     ?Commit@Row@PODBC@@QEAA_NXZ @17742 NONAME
-    ;public: bool __cdecl PODBC::Row::Commit(void)
     ?Commit@Statement@PODBC@@QEAA_NI@Z @17743 NONAME
-    ;public: bool __cdecl PODBC::Statement::Commit(unsigned int)
     ?CommonDecode@PASN_ObjectId@@QEAA_NAEAVPASN_Stream@@I@Z @10600 NONAME
     ?CommonEncode@PASN_ObjectId@@QEBAXAEAVPBYTEArray@@@Z @10601 NONAME
     ?Compare@?$PKey@_K@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10602 NONAME
@@ -10261,7 +10239,6 @@ EXPORTS
     ?CompareObjectMemoryDirect@?$PArray@UEMail@PvCard@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10669 NONAME
     ?CompareObjectMemoryDirect@?$PArray@UTelephone@PvCard@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10670 NONAME
     ?CompareObjectMemoryDirect@?$PArray@VField@PODBC@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @17744 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PArray<class PODBC::Field>::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@?$PArray@VInterfaceEntry@PIPSocket@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10671 NONAME
     ?CompareObjectMemoryDirect@?$PArray@VParamValue@PvCard@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10672 NONAME
     ?CompareObjectMemoryDirect@?$PArray@VPASNObject@@@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10673 NONAME
@@ -10361,7 +10338,6 @@ EXPORTS
     ?CompareObjectMemoryDirect@Capabilities@PVideoInputDevice@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @10767 NONAME
     ?CompareObjectMemoryDirect@ClearLogPage@PHTTPServiceProcess@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @10768 NONAME
     ?CompareObjectMemoryDirect@Field@PODBC@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @17745 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PODBC::Field::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@Frame@PEthSocket@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @10769 NONAME
     ?CompareObjectMemoryDirect@HTTP_PSSLChannel@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10770 NONAME
     ?CompareObjectMemoryDirect@Identity@Disco@XMPP@@UEBA?AW4Comparison@PObject@@AEBV5@@Z @10771 NONAME
@@ -10547,7 +10523,6 @@ EXPORTS
     ?CompareObjectMemoryDirect@PNullChannel@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10951 NONAME
     ?CompareObjectMemoryDirect@PObject@@UEBA?AW4Comparison@1@AEBV1@@Z @10952 NONAME
     ?CompareObjectMemoryDirect@PODBC@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @17746 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PODBC::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@POrdinalToString@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10953 NONAME
     ?CompareObjectMemoryDirect@PPER_Stream@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10954 NONAME
     ?CompareObjectMemoryDirect@PPipeChannel@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @10955 NONAME
@@ -10685,6 +10660,8 @@ EXPORTS
     ?CompareObjectMemoryDirect@PURL_FtpLoader@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11087 NONAME
     ?CompareObjectMemoryDirect@PURL_HttpLoader@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11088 NONAME
     ?CompareObjectMemoryDirect@PURL_TelScheme@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11089 NONAME
+    ?CompareObjectMemoryDirect@PURL_URNScheme@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @18366 NONAME
+    ;public: virtual enum PObject::Comparison __cdecl PURL_URNScheme::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@PVarType@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11090 NONAME
     ?CompareObjectMemoryDirect@PvCard@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11091 NONAME
     ?CompareObjectMemoryDirect@PVideoChannel@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11092 NONAME
@@ -10754,12 +10731,10 @@ EXPORTS
     ?CompareObjectMemoryDirect@PXML_HTTP@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11156 NONAME
     ?CompareObjectMemoryDirect@PYUVFile@@UEBA?AW4Comparison@PObject@@AEBV3@@Z @11157 NONAME
     ?CompareObjectMemoryDirect@RecordSet@PODBC@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @17747 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PODBC::RecordSet::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@Room@MUC@XMPP@@UEBA?AW4Comparison@PObject@@AEBV5@@Z @11158 NONAME
     ?CompareObjectMemoryDirect@Roster@XMPP@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11159 NONAME
     ?CompareObjectMemoryDirect@RouteEntry@PIPSocket@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11160 NONAME
     ?CompareObjectMemoryDirect@Row@PODBC@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @17748 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PODBC::Row::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@SelectList@PSocket@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11161 NONAME
     ?CompareObjectMemoryDirect@Socket@PNatMethod_Fixed@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11162 NONAME
     ?CompareObjectMemoryDirect@SoundChannel@PMediaFile@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11163 NONAME
@@ -10767,7 +10742,6 @@ EXPORTS
     ?CompareObjectMemoryDirect@SRVRecordList@PDNS@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11165 NONAME
     ?CompareObjectMemoryDirect@Stanza@XMPP@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11166 NONAME
     ?CompareObjectMemoryDirect@Statement@PODBC@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @17749 NONAME
-    ;public: virtual enum PObject::Comparison __cdecl PODBC::Statement::CompareObjectMemoryDirect(class PObject const &)const 
     ?CompareObjectMemoryDirect@Stream@XMPP@@UEBA?AW4Comparison@PObject@@AEBV4@@Z @11167 NONAME
     ?CompareObjectMemoryDirect@StreamHandler@C2S@XMPP@@UEBA?AW4Comparison@PObject@@AEBV5@@Z @11168 NONAME
     ?CompareObjectMemoryDirect@TCPTransport@C2S@XMPP@@UEBA?AW4Comparison@PObject@@AEBV5@@Z @11169 NONAME
@@ -10804,11 +10778,8 @@ EXPORTS
     ?Connect@PIPSocket@@UEAA_NAEBVPString@@@Z @11200 NONAME
     ?Connect@PIPSocket@@UEAA_NGAEBVAddress@1@@Z @11201 NONAME
     ?Connect@PODBC@@QEAA_NAEBUConnectData@1@@Z @17750 NONAME
-    ;public: bool __cdecl PODBC::Connect(struct PODBC::ConnectData const &)
     ?Connect@PODBC@@QEAA_NAEBVPString@@00@Z @17751 NONAME
-    ;public: bool __cdecl PODBC::Connect(class PString const &,class PString const &,class PString const &)
     ?Connect@PODBC@@QEAA_NAEBVPString@@@Z @17752 NONAME
-    ;public: bool __cdecl PODBC::Connect(class PString const &)
     ?Connect@PortRange@PIPSocket@@QEAA_NAEAV2@AEBVAddress@2@1@Z @11202 NONAME
     ?Connect@PSocket@@UEAA_NAEBVPString@@@Z @11203 NONAME
     ?Connect@PSocksSocket@@EEAA_NGAEBVAddress@PIPSocket@@@Z @11204 NONAME
@@ -10824,32 +10795,20 @@ EXPORTS
     ?Connect@PUDPSocket@@UEAA_NAEBVPString@@@Z @11214 NONAME
     ?Connect@PWebSocket@@UEAA_NAEBVPURL@@AEBVPStringArray@@PEAVPString@@@Z @11215 NONAME
     ?ConnectDB_mySQL@PODBC@@QEAA_NAEBVPString@@000H@Z @17753 NONAME
-    ;public: bool __cdecl PODBC::ConnectDB_mySQL(class PString const &,class PString const &,class PString const &,class PString const &,int)
     ?ConnectionTag@PHTTP@@SAAEBVPCaselessString@@XZ @11216 NONAME
     ?ConnectSocksServer@PSocksProtocol@@IEAA_NAEAVPTCPSocket@@@Z @11217 NONAME
     ?ConnectURL@PHTTPClient@@QEAA_NAEBVPURL@@@Z @11218 NONAME
     ?Connect_DB2@PODBC@@QEAA_NAEBVPFilePath@@@Z @17754 NONAME
-    ;public: bool __cdecl PODBC::Connect_DB2(class PFilePath const &)
     ?Connect_DBASE@PODBC@@QEAA_NAEBVPDirectory@@@Z @17755 NONAME
-    ;public: bool __cdecl PODBC::Connect_DBASE(class PDirectory const &)
     ?Connect_FOX@PODBC@@QEAA_NAEBVPFilePath@@AEBVPString@@11_N@Z @17756 NONAME
-    ;public: bool __cdecl PODBC::Connect_FOX(class PFilePath const &,class PString const &,class PString const &,class PString const &,bool)
     ?Connect_MDB@PODBC@@QEAA_NAEBVPFilePath@@AEBVPString@@1_N@Z @17757 NONAME
-    ;public: bool __cdecl PODBC::Connect_MDB(class PFilePath const &,class PString const &,class PString const &,bool)
     ?Connect_MSSQL@PODBC@@QEAA_NAEBVPString@@00_NW4MSSQLProtocols@1@@Z @17758 NONAME
-    ;public: bool __cdecl PODBC::Connect_MSSQL(class PString const &,class PString const &,class PString const &,bool,enum PODBC::MSSQLProtocols)
     ?Connect_mySQL@PODBC@@QEAA_NAEBVPString@@00H@Z @17759 NONAME
-    ;public: bool __cdecl PODBC::Connect_mySQL(class PString const &,class PString const &,class PString const &,int)
     ?Connect_Oracle@PODBC@@QEAA_NAEBVPString@@00@Z @17760 NONAME
-    ;public: bool __cdecl PODBC::Connect_Oracle(class PString const &,class PString const &,class PString const &)
     ?Connect_PDOX@PODBC@@QEAA_NAEBVPDirectory@@0H@Z @17761 NONAME
-    ;public: bool __cdecl PODBC::Connect_PDOX(class PDirectory const &,class PDirectory const &,int)
     ?Connect_postgreSQL@PODBC@@QEAA_NAEBVPString@@000H@Z @17762 NONAME
-    ;public: bool __cdecl PODBC::Connect_postgreSQL(class PString const &,class PString const &,class PString const &,class PString const &,int)
     ?Connect_TXT@PODBC@@QEAA_NAEBVPFilePath@@@Z @17763 NONAME
-    ;public: bool __cdecl PODBC::Connect_TXT(class PFilePath const &)
     ?Connect_XLS@PODBC@@QEAA_NAEBVPFilePath@@AEBVPString@@@Z @17764 NONAME
-    ;public: bool __cdecl PODBC::Connect_XLS(class PFilePath const &,class PString const &)
     ?ConstantTimeCompare@Result@PMessageDigest@@QEBA_NAEBV12@@Z @11219 NONAME
     ?ConstrainedLengthDecode@PASN_ConstrainedObject@@QEAA_NAEAVPPER_Stream@@AEAI@Z @11220 NONAME
     ?ConstrainedLengthEncode@PASN_ConstrainedObject@@QEBAXAEAVPPER_Stream@@I@Z @11221 NONAME
@@ -11135,9 +11094,14 @@ EXPORTS
     ?CreateOpenedDevice@PVideoOutputDevice@@SAPEAV1@AEBVPString@@0_NPEAVPPluginManager@@@Z @11501 NONAME
     ?CreatePlugin@PPluginManager@@QEBAPEAVPObject@@AEBVPString@@0_J@Z @11502 NONAME
     ?CreateRedirectMessage@PSecureHTTPServiceProcess@@UEAA?AVPString@@AEBV2@@Z @11503 NONAME
-    ?CreateRequest@PHTTPDirectory@@UEAAPEAVPHTTPRequest@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@AEAVPHTTPServer@@@Z @11504 NONAME
-    ?CreateRequest@PHTTPFile@@UEAAPEAVPHTTPRequest@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@AEAVPHTTPServer@@@Z @11505 NONAME
-    ?CreateRequest@PHTTPResource@@UEAAPEAVPHTTPRequest@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@AEAVPHTTPServer@@@Z @11506 NONAME
+    ?CreateRequest@PHTTPDirectory@@UEAAPEAVPHTTPRequest@@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @18367 NONAME
+    ;public: virtual class PHTTPRequest * __cdecl PHTTPDirectory::CreateRequest(class PHTTPServer &,class PHTTPConnectionInfo const &)
+    ?CreateRequest@PHTTPFile@@UEAAPEAVPHTTPRequest@@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @18368 NONAME
+    ;public: virtual class PHTTPRequest * __cdecl PHTTPFile::CreateRequest(class PHTTPServer &,class PHTTPConnectionInfo const &)
+    ?CreateRequest@PHTTPResource@@MEAAPEAVPHTTPRequest@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPMultiPartList@@AEAVPHTTPServer@@@Z @18369 NONAME
+    ;protected: virtual class PHTTPRequest * __cdecl PHTTPResource::CreateRequest(class PURL const &,class PMIMEInfo const &,class PMultiPartList const &,class PHTTPServer &)
+    ?CreateRequest@PHTTPResource@@UEAAPEAVPHTTPRequest@@AEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @18370 NONAME
+    ;public: virtual class PHTTPRequest * __cdecl PHTTPResource::CreateRequest(class PHTTPServer &,class PHTTPConnectionInfo const &)
     ?CreateResampler@TrackContext@PMediaFile_FFMPEG@@QEAA_NW4AVSampleFormat@@HH0HH@Z @11507 NONAME
     ?CreateRoot@PSSLCertificate@@QEAA_NAEBVPString@@AEBVPSSLPrivateKey@@PEBDI@Z @11508 NONAME
     ?CreateRootElement@PXML@@UEAAPEAVPXMLRootElement@@AEBVPCaselessString@@@Z @11509 NONAME
@@ -11177,7 +11141,6 @@ EXPORTS
     ?CyclesToNanoseconds@PProfiling@@YA_J_K@Z @11543 NONAME
     ?CyclesToSeconds@PProfiling@@YAM_K@Z @11544 NONAME
     ?DataSource@PODBC@@QEAA_NW4DriverType@1@UConnectData@1@@Z @17765 NONAME
-    ;public: bool __cdecl PODBC::DataSource(enum PODBC::DriverType,struct PODBC::ConnectData)
     ?DateTag@PHTTP@@SAAEBVPCaselessString@@XZ @11545 NONAME
     ?DateTag@PRFC822Channel@@SAAEBVPCaselessString@@XZ @11546 NONAME
     ?DeadlockStackWalkMode@PTimedMutex@@2W4DeadlockStackWalkModes@1@A @11547 NONAME
@@ -11252,7 +11215,6 @@ EXPORTS
     ?DelayInterval@PAdaptiveDelay@@QEAA?AW4DelayResult@1@AEBVPTimeInterval@@@Z @11616 NONAME
     ?Delete@PString@@QEAAAEAV1@_K0@Z @11617 NONAME
     ?Delete@Row@PODBC@@QEAA_NI@Z @17766 NONAME
-    ;public: bool __cdecl PODBC::Row::Delete(unsigned int)
     ?DeleteDocument@PHTTPClient@@QEAA_NAEBVPURL@@@Z @11618 NONAME
     ?DeleteKey@PConfig@@UEAAXAEBVPString@@0@Z @11619 NONAME
     ?DeleteKey@PConfig@@UEAAXAEBVPString@@@Z @11620 NONAME
@@ -11265,7 +11227,6 @@ EXPORTS
     ?DeleteObjectsTimeout@PSafeCollection@@MEAAXAEAVPTimer@@_J@Z @11627 NONAME
     ?DeleteObjectsToBeRemoved@PSafeCollection@@UEAA_NXZ @11628 NONAME
     ?DeleteRow@RecordSet@PODBC@@QEAA_NI@Z @17767 NONAME
-    ;public: bool __cdecl PODBC::RecordSet::DeleteRow(unsigned int)
     ?DeleteSection@PConfig@@UEAAXAEBVPString@@@Z @11629 NONAME
     ?DeleteSection@PConfig@@UEAAXXZ @11630 NONAME
     ?DeleteSubTrees@PAbstractSortedList@@IEAAXPEAUPSortedListElement@@_N@Z @11631 NONAME
@@ -11317,7 +11278,6 @@ EXPORTS
     ?DisableSSL@PSecureHTTPServiceProcess@@QEAAXXZ @11677 NONAME
     ?DisallowDeleteObjects@PCollection@@QEAAXXZ @11678 NONAME
     ?Disconnect@PODBC@@QEAAXXZ @17768 NONAME
-    ;public: void __cdecl PODBC::Disconnect(void)
     ?Discover@StreamHandler@C2S@XMPP@@MEAA_NAEBVPString@@0AEBV?$PNotifierTemplate@_J@@0@Z @11679 NONAME
     ?DiscoverInfo@StreamHandler@C2S@XMPP@@UEAA_NAEBVPString@@AEBV?$PNotifierTemplate@_J@@0@Z @11680 NONAME
     ?DiscoverItems@StreamHandler@C2S@XMPP@@UEAA_NAEBVPString@@AEBV?$PNotifierTemplate@_J@@0@Z @11681 NONAME
@@ -11446,7 +11406,6 @@ EXPORTS
     ?Exclude@PStringSet@@QEAAXAEBVPString@@@Z @11804 NONAME
     ?Execute@PAsyncNotifierQueueMap@@QEAA_NKPEAVPAsyncNotifierTarget@@AEBVPTimeInterval@@@Z @11805 NONAME
     ?Execute@PODBC@@QEAA_NAEBVPString@@@Z @17769 NONAME
-    ;public: bool __cdecl PODBC::Execute(class PString const &)
     ?Execute@PPipeChannel@@QEAA_NXZ @11806 NONAME
     ?Execute@PRegularExpression@@QEBA_NAEBVPString@@AEAV?$PScalarArray@H@@1V?$PBitwiseEnum@W4ExecOptions_Bits@PRegularExpression@@$01I@@@Z @11807 NONAME
     ?Execute@PRegularExpression@@QEBA_NAEBVPString@@AEAV?$PScalarArray@H@@V?$PBitwiseEnum@W4ExecOptions_Bits@PRegularExpression@@$01I@@@Z @11808 NONAME
@@ -11458,7 +11417,6 @@ EXPORTS
     ?Execute@PRegularExpression@@QEBA_NPEBDAEA_K1V?$PBitwiseEnum@W4ExecOptions_Bits@PRegularExpression@@$01I@@@Z @11814 NONAME
     ?Execute@PRegularExpression@@QEBA_NPEBDAEA_KV?$PBitwiseEnum@W4ExecOptions_Bits@PRegularExpression@@$01I@@@Z @11815 NONAME
     ?Execute@Statement@PODBC@@QEAA_NAEBVPString@@@Z @17770 NONAME
-    ;public: bool __cdecl PODBC::Statement::Execute(class PString const &)
     ?ExecuteCommand@PHTTPClient@@QEAAHW4Commands@PHTTP@@AEBVPURL@@AEAVPMIMEInfo@@AEAVPHTTPContentProcessor@@2@Z @11816 NONAME
     ?ExecuteCommand@PHTTPClient@@QEAAHW4Commands@PHTTP@@AEBVPURL@@AEAVPMIMEInfo@@AEBVPBYTEArray@@2@Z @11817 NONAME
     ?ExecuteCommand@PHTTPClient@@QEAAHW4Commands@PHTTP@@AEBVPURL@@AEAVPMIMEInfo@@AEBVPString@@2@Z @11818 NONAME
@@ -11528,7 +11486,6 @@ EXPORTS
     ?Finish@PVXMLTraverseTransfer@@EEBA_NAEAVPVXMLSession@@AEAVPXMLElement@@@Z @11886 NONAME
     ?FinishRFC3489Discovery@PSTUN@@QEAAXAEAW4NatTypes@PNatMethod@@AEAVPSTUNMessage@@PEAVPSTUNUDPSocket@@AEAVAddress@PIPSocket@@_N@Z @11887 NONAME
     ?First@Row@PODBC@@QEAA_NXZ @17775 NONAME
-    ;public: bool __cdecl PODBC::Row::First(void)
     ?FlowControl@PChannel@@UEAA_NPEBX@Z @11888 NONAME
     ?FlowControl@PVideoChannel@@UEAA_NPEBX@Z @11889 NONAME
     ?FlowControl@PVideoInputDevice@@UEAA_NPEBX@Z @11890 NONAME
@@ -11676,7 +11633,6 @@ EXPORTS
     ?GetCaptureMode@PVideoInputDeviceIndirect@@UEBAHXZ @12032 NONAME
     ?GetCaptureMode@PVideoInputDevice_VideoForWindows@@UEBAHXZ @12033 NONAME
     ?GetChangedRowCount@Statement@PODBC@@QEAAKXZ @17776 NONAME
-    ;public: unsigned long __cdecl PODBC::Statement::GetChangedRowCount(void)
     ?GetChannel@PVideoDevice@@UEBAHXZ @12034 NONAME
     ?GetChannel@PVideoInputDeviceIndirect@@UEBAHXZ @12035 NONAME
     ?GetChannel@PVideoOutputDevice_Window@@UEBAHXZ @12036 NONAME
@@ -11731,7 +11687,6 @@ EXPORTS
     ?GetData@PSSLPrivateKey@@QEBA?AVPBYTEArray@@XZ @12085 NONAME
     ?GetData@PXMLElement@@QEBA?AVPString@@_N@Z @12086 NONAME
     ?GetData@Statement@PODBC@@QEAA_NGFPEAX_JPEA_J@Z @17777 NONAME
-    ;public: bool __cdecl PODBC::Statement::GetData(unsigned short,short,void *,__int64,__int64 *)
     ?GetDataBits@PSerialChannel@@QEBAEXZ @12087 NONAME
     ?GetDataLength@PASN_Array@@UEBA_KXZ @12088 NONAME
     ?GetDataLength@PASN_BitString@@UEBA_KXZ @12089 NONAME
@@ -11849,14 +11804,12 @@ EXPORTS
     ?GetDocument@PHTTPClient@@QEAA_NAEBVPURL@@AEAVPMIMEInfo@@@Z @12201 NONAME
     ?GetDocumentType@PXML@@QEBA?AVPCaselessString@@XZ @12202 NONAME
     ?GetDriverName@PODBC@@SAPEBDW4DriverType@1@@Z @17778 NONAME
-    ;public: static char const * __cdecl PODBC::GetDriverName(enum PODBC::DriverType)
     ?GetDriverName@PSoundChannelDirectSound@@SAPEBDXZ @12203 NONAME
     ?GetDriverName@PSoundChannelWin32@@SAPEBDXZ @12204 NONAME
     ?GetDriverNames@PSoundChannel@@SA?AVPStringArray@@PEAVPPluginManager@@@Z @12205 NONAME
     ?GetDriverNames@PVideoInputDevice@@SA?AVPStringArray@@PEAVPPluginManager@@@Z @12206 NONAME
     ?GetDriverNames@PVideoOutputDevice@@SA?AVPStringArray@@PEAVPPluginManager@@@Z @12207 NONAME
     ?GetDrivers@PODBC@@QEBA?AVPStringList@@_N@Z @17779 NONAME
-    ;public: class PStringList __cdecl PODBC::GetDrivers(bool)const 
     ?GetDriversDeviceNames@PSoundChannel@@SA?AVPStringArray@@AEBVPString@@W4Directions@1@PEAVPPluginManager@@@Z @12208 NONAME
     ?GetDriversDeviceNames@PVideoInputDevice@@SA?AVPStringArray@@AEBVPString@@PEAVPPluginManager@@@Z @12209 NONAME
     ?GetDriversDeviceNames@PVideoOutputDevice@@SA?AVPStringArray@@AEBVPString@@PEAVPPluginManager@@@Z @12210 NONAME
@@ -11921,7 +11874,6 @@ EXPORTS
     ?GetFactory@?$PFactory@VPWAVFileFormat@@I@@SAAEAV1@XZ @12269 NONAME
     ?GetFactory@?$PFactory@VPWAVFileFormat@@VPCaselessString@@@@SAAEAV1@XZ @12270 NONAME
     ?GetFieldType@PODBC@@SA?AVPString@@W4DriverType@1@W4BasicType@PVarType@@I@Z @17780 NONAME
-    ;public: static class PString __cdecl PODBC::GetFieldType(enum PODBC::DriverType,enum PVarType::BasicType,unsigned int)
     ?GetFile@PFTPClient@@QEAAPEAVPTCPSocket@@AEBVPString@@W4DataChannelType@PFTP@@@Z @12271 NONAME
     ?GetFile@PProcess@@QEBAAEBVPFilePath@@XZ @12272 NONAME
     ?GetFileName@PFilePath@@QEBA?AVPCaselessString@@XZ @12273 NONAME
@@ -12477,7 +12429,6 @@ EXPORTS
     ?GetSocket@PInternetProtocol@@QEBAPEAVPIPSocket@@XZ @12823 NONAME
     ?GetSocketAddress@PMonitoredSockets@@IEBA_NAEBUSocketInfo@1@AEAVAddress@PIPSocket@@AEAG_N@Z @12824 NONAME
     ?GetSources@PODBC@@QEBA?AVPStringList@@_N0@Z @17781 NONAME
-    ;public: class PStringList __cdecl PODBC::GetSources(bool,bool)const 
     ?GetSpeed@PSerialChannel@@QEBAKXZ @12825 NONAME
     ?GetSrcFrameInfo@PColourConverter@@UEAAXAEAVPVideoFrameInfo@@@Z @12826 NONAME
     ?GetSrcFrameSize@PColourConverter@@QEBA_NAEAI0@Z @12827 NONAME
@@ -12810,7 +12761,6 @@ EXPORTS
     ?InternalConnect@PSSLChannel@@MEAA_NXZ @13154 NONAME
     ?InternalConnect@PSSLChannelDTLS@@MEAA_NXZ @13155 NONAME
     ?InternalCopy@Field@PODBC@@MEAAXAEBVPVarType@@@Z @17782 NONAME
-    ;protected: virtual void __cdecl PODBC::Field::InternalCopy(class PVarType const &)
     ?InternalCopy@PVarType@@MEAAXAEBV1@@Z @13156 NONAME
     ?InternalCreateSocket@PNatMethod_Fixed@@MEAAPEAVPNATUDPSocket@@W4Component@PNatMethod@@PEAVPObject@@@Z @13157 NONAME
     ?InternalCreateSocket@PSTUNClient@@MEAAPEAVPNATUDPSocket@@W4Component@PNatMethod@@PEAVPObject@@@Z @13158 NONAME
@@ -12972,7 +12922,6 @@ EXPORTS
     ?IsCapturing@PVideoInputEmulatedDevice@@UEAA_NXZ @13314 NONAME
     ?IsCompatible@PHTTPConnectionInfo@@QEBA_NHH@Z @13315 NONAME
     ?IsConnected@PODBC@@QEBA_NXZ @17783 NONAME
-    ;public: bool __cdecl PODBC::IsConnected(void)const 
     ?IsDaylightSavings@PTime@@SA_NXZ @13316 NONAME
     ?IsDirty@PXML@@QEBA_NXZ @13317 NONAME
     ?IsElement@PXMLData@@UEBA_NXZ @13318 NONAME
@@ -13010,7 +12959,6 @@ EXPORTS
     ?IsNoIndentElement@PXML@@UEBA_NAEBVPString@@@Z @13350 NONAME
     ?IsNoIndentElement@PXMLBase@@UEBA_NAEBVPString@@@Z @13351 NONAME
     ?IsNULL@Field@PODBC@@QEBA_NXZ @17784 NONAME
-    ;public: bool __cdecl PODBC::Field::IsNULL(void)const 
     ?IsNULL@PGloballyUniqueID@@QEBA_NXZ @13352 NONAME
     ?ISO8601ToPTime@PXMLRPC@@SA_NAEBVPString@@AEAVPTime@@H@Z @13353 NONAME
     ?IsOpen@PChannel@@UEBA_NXZ @13354 NONAME
@@ -13124,7 +13072,6 @@ EXPORTS
     ?LanguageName@PLua@@SA?AVPString@@XZ @13462 NONAME
     ?LanguageTag@XMPP@@YAAEBVPCaselessString@@XZ @13463 NONAME
     ?Last@Row@PODBC@@QEAA_NXZ @17785 NONAME
-    ;public: bool __cdecl PODBC::Row::Last(void)
     ?LastModifiedTag@PHTTP@@SAAEBVPCaselessString@@XZ @13464 NONAME
     ?Leave@Room@MUC@XMPP@@UEAA_NXZ @13465 NONAME
     ?Left@PString@@QEBA?AV1@_K@Z @13466 NONAME
@@ -13277,6 +13224,8 @@ EXPORTS
     ?MatchesRegEx@PString@@QEBA_NAEBVPRegularExpression@@@Z @13613 NONAME
     ?MatchForCertificate@PSSLCertificateFingerprint@@QEBA_NAEBVPSSLCertificate@@@Z @13614 NONAME
     ?MatchWildcard@AddressAndPort@PIPSocket@@QEBA_NAEBV12@@Z @13615 NONAME
+    ?MaxAgeTAG@PHTTP@@SAAEBVPCaselessString@@XZ @18375 NONAME
+    ;public: static class PCaselessString const & __cdecl PHTTP::MaxAgeTAG(void)
     ?MaxStackWalk@PTrace@@2IA @13616 NONAME
     ?MaxTraceContentSize@PHTTPClient@@2_KA @13617 NONAME
     ?Merge@PStringToString@@QEAAXAEBV1@W4MergeAction@1@@Z @13618 NONAME
@@ -13296,9 +13245,7 @@ EXPORTS
     ?Move@PFile@@QEAA_NAEBVPFilePath@@_N1@Z @13632 NONAME
     ?Move@PFile@@SA_NAEBVPFilePath@@0_N1@Z @13633 NONAME
     ?Move@Row@PODBC@@QEAA_NH@Z @17786 NONAME
-    ;public: bool __cdecl PODBC::Row::Move(int)
     ?MoveTo@Row@PODBC@@QEAA_NI@Z @17787 NONAME
-    ;public: bool __cdecl PODBC::Row::MoveTo(unsigned int)
     ?MultiBitDecode@PPER_Stream@@QEAA_NIAEAI@Z @13634 NONAME
     ?MultiBitEncode@PPER_Stream@@QEAAXII@Z @13635 NONAME
     ?MultipartMessage@PRFC822Channel@@QEAA?AVPString@@XZ @13636 NONAME
@@ -13325,13 +13272,11 @@ EXPORTS
     ?NewField@PHTTPSubForm@@UEBAPEAVPHTTPField@@XZ @13657 NONAME
     ?NewMessage@PRFC822Channel@@QEAAXW4Direction@1@@Z @13658 NONAME
     ?NewRow@RecordSet@PODBC@@QEAAAEAVRow@2@XZ @17788 NONAME
-    ;public: class PODBC::Row & __cdecl PODBC::RecordSet::NewRow(void)
     ?NewWindow@PCLICurses@@QEAAAEAVWindow@1@IIIIW4Borders@1@@Z @13659 NONAME
     ?Next@PDirectory@@UEAA_NXZ @13660 NONAME
     ?Next@PSafePtrBase@@MEAAXXZ @13661 NONAME
     ?Next@PSafePtrMultiThreaded@@MEAAXXZ @13662 NONAME
     ?Next@Row@PODBC@@QEAA_NXZ @17789 NONAME
-    ;public: bool __cdecl PODBC::Row::Next(void)
     ?NextElement@PHashTableInfo@@QEBAPEAUPHashTableElement@@PEAU2@@Z @13663 NONAME
     ?NextNode@PVXMLSession@@MEAA_N_N@Z @13664 NONAME
     ?NextPart@PRFC822Channel@@QEAAXAEBVPString@@@Z @13665 NONAME
@@ -13385,7 +13330,6 @@ EXPORTS
     ?OnCommandSuccessful@PFTPServer@@UEAAX_K@Z @13713 NONAME
     ?OnCompletedLine@Context@PCLI@@UEAAXXZ @13714 NONAME
     ?OnConnected@PODBC@@UEAAXXZ @17790 NONAME
-    ;public: virtual void __cdecl PODBC::OnConnected(void)
     ?OnContinue@PHTTPServiceProcess@@UEAAXXZ @13715 NONAME
     ?OnContinue@PServiceProcess@@UEAAXXZ @13716 NONAME
     ?OnControl@PServiceProcess@@UEAAXXZ @13717 NONAME
@@ -13405,6 +13349,10 @@ EXPORTS
     ?OnEndRecording@PVXMLSession@@UEAAX_K_N@Z @13731 NONAME
     ?OnEndSession@PVXMLSession@@UEAAXXZ @13732 NONAME
     ?OnError@PFTPServer@@UEAAX_K0PEBD@Z @13733 NONAME
+    ?OnError@PHTTPRequest@@QEAA_NAEBVPCaselessString@@@Z @18376 NONAME
+    ;public: bool __cdecl PHTTPRequest::OnError(class PCaselessString const &)
+    ?OnError@PHTTPRequest@@QEAA_NW4StatusCode@PHTTP@@AEBVPCaselessString@@@Z @18377 NONAME
+    ;public: bool __cdecl PHTTPRequest::OnError(enum PHTTP::StatusCode,class PCaselessString const &)
     ?OnError@PHTTPServer@@UEAA_NW4StatusCode@PHTTP@@AEBVPCaselessString@@AEBVPHTTPConnectionInfo@@@Z @13734 NONAME
     ?OnError@PScriptLanguage@@MEAAXHAEBVPString@@@Z @13735 NONAME
     ?OnError@StreamHandler@C2S@XMPP@@MEAAXAEAVPXMLElement@@@Z @13736 NONAME
@@ -13415,13 +13363,15 @@ EXPORTS
     ?OnGET@PHTTPResource@@UEAA_NAEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @13741 NONAME
     ?OnGET@PHTTPServer@@MEAA_NAEBVPURL@@AEBVPMIMEInfo@@AEBVPHTTPConnectionInfo@@@Z @13742 NONAME
     ?OnGET@PHTTPServer@@UEAA_NAEBVPHTTPConnectionInfo@@@Z @13743 NONAME
-    ?OnGETData@PHTTPResource@@UEAA_NAEAVPHTTPServer@@AEBVPURL@@AEBVPHTTPConnectionInfo@@AEAVPHTTPRequest@@@Z @13744 NONAME
+    ?OnGETData@PHTTPResource@@MEAA_NAEAVPHTTPServer@@AEBVPURL@@AEBVPHTTPConnectionInfo@@AEAVPHTTPRequest@@@Z @18378 NONAME
+    ;protected: virtual bool __cdecl PHTTPResource::OnGETData(class PHTTPServer &,class PURL const &,class PHTTPConnectionInfo const &,class PHTTPRequest &)
+    ?OnGETData@PHTTPResource@@UEAA_NAEAVPHTTPRequest@@@Z @18379 NONAME
+    ;public: virtual bool __cdecl PHTTPResource::OnGETData(class PHTTPRequest &)
     ?OnGetNextRequest@PSNMPServer@@UEAA_N_KAEAV?$list@U?$pair@VPString@@VPRFC1155_ObjectSyntax@@@std@@V?$allocator@U?$pair@VPString@@VPRFC1155_ObjectSyntax@@@std@@@2@@std@@AEAW4ErrorType@PSNMP@@@Z @13745 NONAME
     ?OnGETOrHEAD@PHTTPResource@@MEAA_NAEAVPHTTPServer@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPHTTPConnectionInfo@@_N@Z @13746 NONAME
     ?OnGetRequest@PSNMPServer@@UEAA_N_KAEAV?$list@U?$pair@VPString@@VPRFC1155_ObjectSyntax@@@std@@V?$allocator@U?$pair@VPString@@VPRFC1155_ObjectSyntax@@@std@@@2@@std@@AEAW4ErrorType@PSNMP@@@Z @13747 NONAME
     ?OnGetValue@?$PRefVar@_N@@MEAAXXZ @13748 NONAME
     ?OnGetValue@Field@PODBC@@MEAAXXZ @17791 NONAME
-    ;protected: virtual void __cdecl PODBC::Field::OnGetValue(void)
     ?OnGetValue@PVarType@@MEAAXXZ @13749 NONAME
     ?OnHEAD@PHTTPResource@@MEAA_NAEAVPHTTPServer@@AEBVPURL@@AEBVPMIMEInfo@@AEBVPHTTPConnectionInfo@@@Z @13750 NONAME
     ?OnHEAD@PHTTPResource@@UEAA_NAEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @13751 NONAME
@@ -13489,6 +13439,10 @@ EXPORTS
     ?OnOpen@StreamHandler@C2S@XMPP@@MEAAXAEAVStream@3@H@Z @13813 NONAME
     ?OnOpenFile@RotateInfo@PFile@@UEAA_NAEAV2@@Z @13814 NONAME
     ?OnOpenFile@RotateInfo@PSystemLogToFile@@UEAA_NAEAVPFile@@@Z @13815 NONAME
+    ?OnOPTIONS@PHTTPResource@@UEAA_NAEAVPHTTPServer@@AEBVPHTTPConnectionInfo@@@Z @18380 NONAME
+    ;public: virtual bool __cdecl PHTTPResource::OnOPTIONS(class PHTTPServer &,class PHTTPConnectionInfo const &)
+    ?OnOPTIONS@PHTTPServer@@UEAA_NAEBVPHTTPConnectionInfo@@@Z @18381 NONAME
+    ;public: virtual bool __cdecl PHTTPServer::OnOPTIONS(class PHTTPConnectionInfo const &)
     ?OnOutOfBand@PTCPSocket@@UEAAXPEBX_K@Z @13816 NONAME
     ?OnOutOfBand@PTelnetSocket@@UEAAXPEBX_K@Z @13817 NONAME
     ?OnPASS@PFTPServer@@UEAA_NAEBVPCaselessString@@@Z @13818 NONAME
@@ -13558,9 +13512,7 @@ EXPORTS
     ?OnSOAPRequest@PSOAPServerResource@@UEAA_NAEBVPString@@AEAV2@@Z @13882 NONAME
     ?OnSOML@PSMTPServer@@MEAAXAEBVPCaselessString@@@Z @13883 NONAME
     ?OnSQLError@PODBC@@MEAAXAEBVPString@@0@Z @17792 NONAME
-    ;protected: virtual void __cdecl PODBC::OnSQLError(class PString const &,class PString const &)
     ?OnSQLError@PODBC@@UEAAXHAEBVPString@@0@Z @17793 NONAME
-    ;public: virtual void __cdecl PODBC::OnSQLError(int,class PString const &,class PString const &)
     ?OnStart@Context@PCLI@@UEAAXXZ @13884 NONAME
     ?OnStart@PHTTPServiceProcess@@UEAA_NXZ @13885 NONAME
     ?OnStart@PVXMLPlayableCommand@@UEAA_NXZ @13886 NONAME
@@ -13619,7 +13571,6 @@ EXPORTS
     ?OnUserRemoved@Room@MUC@XMPP@@UEAAXAEAVUser@23@@Z @13939 NONAME
     ?OnValueChanged@?$PRefVar@_N@@MEAAXXZ @13940 NONAME
     ?OnValueChanged@Field@PODBC@@MEAAXXZ @17794 NONAME
-    ;protected: virtual void __cdecl PODBC::Field::OnValueChanged(void)
     ?OnValueChanged@PVarType@@MEAAXXZ @13941 NONAME
     ?OnVerify@PSSLChannel@@MEAA_N_NAEBVPSSLCertificate@@@Z @13942 NONAME
     ?OnVerify@PSSLChannel@@UEAAXAEAUVerifyInfo@1@@Z @13943 NONAME
@@ -13794,6 +13745,8 @@ EXPORTS
     ?Parse@PURL_CalltoScheme@@UEBA_NPEBDAEAVPURL@@@Z @14114 NONAME
     ?Parse@PURL_DataScheme@@UEBA_NPEBDAEAVPURL@@@Z @14115 NONAME
     ?Parse@PURL_TelScheme@@UEBA_NPEBDAEAVPURL@@@Z @14116 NONAME
+    ?Parse@PURL_URNScheme@@UEBA_NPEBDAEAVPURL@@@Z @18384 NONAME
+    ;public: virtual bool __cdecl PURL_URNScheme::Parse(char const *,class PURL &)const 
     ?Parse@PvCard@@QEAA_NAEBVPString@@@Z @14117 NONAME
     ?Parse@PVideoFrameInfo@@UEAA_NAEBVPString@@@Z @14118 NONAME
     ?Parse@PVideoInputDeviceIndirect@@UEAA_NAEBVPString@@@Z @14119 NONAME
@@ -13962,7 +13915,6 @@ EXPORTS
     ?PopulateInfo@PSTUNServer@@IEAAXPEAVPUDPSocket@@AEBVAddress@PIPSocket@@G000@Z @14282 NONAME
     ?Post@ClearLogPage@PHTTPServiceProcess@@UEAA_NAEAVPHTTPRequest@@AEBVPStringToString@@AEAVPHTML@@@Z @14283 NONAME
     ?Post@Field@PODBC@@QEAA_NXZ @17797 NONAME
-    ;public: bool __cdecl PODBC::Field::Post(void)
     ?Post@PConfigPage@@UEAA_NAEAVPHTTPRequest@@AEBVPStringToString@@AEAVPHTML@@@Z @14284 NONAME
     ?Post@PConfigSectionsPage@@UEAA_NAEAVPHTTPRequest@@AEBVPStringToString@@AEAVPHTML@@@Z @14285 NONAME
     ?Post@PHTTPConfig@@UEAA_NAEAVPHTTPRequest@@AEBVPStringToString@@AEAVPHTML@@@Z @14286 NONAME
@@ -14042,7 +13994,6 @@ EXPORTS
     ?Previous@PSafePtrBase@@MEAAXXZ @14360 NONAME
     ?Previous@PSafePtrMultiThreaded@@MEAAXXZ @14361 NONAME
     ?Previous@Row@PODBC@@QEAA_NXZ @17798 NONAME
-    ;public: bool __cdecl PODBC::Row::Previous(void)
     ?PrintContents@PMIMEInfo@@UEBAAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AEAV23@@Z @14362 NONAME
     ?PrintElementOn@?$PBaseArray@D@@MEBAXAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@_K@Z @14363 NONAME
     ?PrintElementOn@?$PBaseArray@E@@MEBAXAEAV?$basic_ostream@DU?$char_traits@D@std@@@std@@_K@Z @14364 NONAME
@@ -14276,6 +14227,10 @@ EXPORTS
     ?PURL_HttpLoader_link@PFactoryLoader@@YAHPEBH@Z @14592 NONAME
     ?PURL_TelScheme_instance@PFactoryLoader@@3V?$Worker@VPURL_TelScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@A @14593 NONAME
     ?PURL_TelScheme_link@PFactoryLoader@@YAHPEBH@Z @14594 NONAME
+    ?PURL_URNScheme_instance@PFactoryLoader@@3V?$Worker@VPURL_URNScheme@@@?$PFactory@VPURLScheme@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@@A @18385 NONAME
+    ;class PFactory<class PURLScheme,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >::Worker<class PURL_URNScheme> PFactoryLoader::PURL_URNScheme_instance
+    ?PURL_URNScheme_link@PFactoryLoader@@YAHPEBH@Z @18386 NONAME
+    ;int __cdecl PFactoryLoader::PURL_URNScheme_link(int const *)
     ?Push@?$PStack@VPStringStream@@@@UEAAXPEAVPStringStream@@@Z @14595 NONAME
     ?Push@ParamVector@PScriptLanguage@@QEAAXPEAX@Z @14596 NONAME
     ?PutDocument@PHTTPClient@@QEAA_NAEBVPURL@@AEBVPBYTEArray@@AEBVPString@@AEBVPMIMEInfo@@@Z @14597 NONAME
@@ -14373,7 +14328,6 @@ EXPORTS
     ?PYUVFile_instance@PFactoryLoader@@3V?$Worker@VPYUVFile@@@?$PFactory@VPVideoFile@@VPCaselessString@@@@A @14693 NONAME
     ?PYUVFile_link@PFactoryLoader@@YAHPEBH@Z @14694 NONAME
     ?Query@RecordSet@PODBC@@QEAA_NAEBVPString@@@Z @17803 NONAME
-    ;public: bool __cdecl PODBC::RecordSet::Query(class PString const &)
     ?QueryValue@RegistryKey@@QEAAHAEBVPString@@AEAKH@Z @14696 NONAME
     ?QueryValue@RegistryKey@@QEAAHAEBVPString@@AEAV2@@Z @14697 NONAME
     ?Queue@PAsyncNotifierCallback@@SAXKPEAU1@@Z @14698 NONAME
@@ -14684,9 +14638,7 @@ EXPORTS
     ?Rotate@RotateInfo@PFile@@QEAA_NAEAV2@_NAEBVPTime@@@Z @15003 NONAME
     ?RotateYUV420P@PColourConverter@@SA_NHIIPEAE0@Z @15004 NONAME
     ?Rows@RecordSet@PODBC@@QEAAI_N@Z @17805 NONAME
-    ;public: unsigned int __cdecl PODBC::RecordSet::Rows(bool)
     ?Rows@Row@PODBC@@QEAA_KXZ @17806 NONAME
-    ;public: unsigned __int64 __cdecl PODBC::Row::Rows(void)
     ?Run@Context@PCLI@@QEAA_NXZ @15005 NONAME
     ?Run@PCLI@@QEAA_NPEAVPChannel@@0_N1@Z @15006 NONAME
     ?Run@PJavaScript@@UEAA_NPEBD@Z @15007 NONAME
@@ -14742,7 +14694,6 @@ EXPORTS
     ?Select@PSocket@@SAHAEAV1@0@Z @15057 NONAME
     ?Select@PSocket@@SAHAEAV1@0AEBVPTimeInterval@@@Z @15058 NONAME
     ?Select@RecordSet@PODBC@@QEAA_NAEBVPString@@000_N@Z @17807 NONAME
-    ;public: bool __cdecl PODBC::RecordSet::Select(class PString const &,class PString const &,class PString const &,class PString const &,bool)
     ?SelectFormat@PWAVFile@@IEAA_NPEAVPWAVFileFormat@@@Z @15059 NONAME
     ?Send@StreamHandler@C2S@XMPP@@QEAA_NPEAVStanza@3@@Z @15060 NONAME
     ?SendCommand@PTelnetSocket@@QEAA_NW4Command@1@H@Z @15061 NONAME
@@ -14760,6 +14711,10 @@ EXPORTS
     ?SendNote@PMail@@QEAA_NAEBVPString@@0PEBDAEBVPStringList@@@Z @15073 NONAME
     ?SendNote@PMail@@QEAA_NAEBVPString@@AEBVPStringList@@10PEBD1@Z @15074 NONAME
     ?SendPORT@PFTP@@QEAA_NAEBVAddress@PIPSocket@@G@Z @15075 NONAME
+    ?SendResponse@PHTTPRequest@@QEAA_NAEBVPString@@_N@Z @18392 NONAME
+    ;public: bool __cdecl PHTTPRequest::SendResponse(class PString const &,bool)
+    ?SendResponse@PHTTPRequest@@QEAA_NXZ @18393 NONAME
+    ;public: bool __cdecl PHTTPRequest::SendResponse(void)
     ?SendResponse@PHTTPServer@@QEAA_NW4StatusCode@PHTTP@@AEAVPMIMEInfo@@AEBVPString@@@Z @15076 NONAME
     ?SendResponse@PHTTPServer@@QEAA_NW4StatusCode@PHTTP@@AEBVPString@@@Z @15077 NONAME
     ?SendSocksCommand@PSocks4Socket@@MEAA_NAEAVPTCPSocket@@EPEBDVAddress@PIPSocket@@@Z @15078 NONAME
@@ -14803,6 +14758,8 @@ EXPORTS
     ?SetActualDevice@VideoSenderDevice@PVXMLSession@@UEAAXPEAVPVideoInputDevice@@_N@Z @15116 NONAME
     ?SetAddress@AddressAndPort@PIPSocket@@QEAAXAEBVAddress@2@G@Z @15117 NONAME
     ?SetAlgorithm@PSSLCipherContext@@QEAA_NAEBVPString@@@Z @15118 NONAME
+    ?SetAllowedOrigins@PHTTPResource@@QEAAXAEBVPString@@@Z @18394 NONAME
+    ;public: void __cdecl PHTTPResource::SetAllowedOrigins(class PString const &)
     ?SetAllValues@PHTTPCompositeField@@UEAAXAEBVPStringToString@@@Z @15119 NONAME
     ?SetAllValues@PHTTPField@@UEAAXAEBVPStringToString@@@Z @15120 NONAME
     ?SetAllValues@PHTTPFieldArray@@UEAAXAEBVPStringToString@@@Z @15121 NONAME
@@ -14967,7 +14924,6 @@ EXPORTS
     ?SetDefaultMIMEInfo@PHTTPServer@@QEBAXAEAVPMIMEInfo@@AEBVPHTTPConnectionInfo@@@Z @15280 NONAME
     ?SetDefaultSection@PConfig@@UEAAXAEBVPString@@@Z @15281 NONAME
     ?SetDefaultValues@Field@PODBC@@QEAAXXZ @17808 NONAME
-    ;public: void __cdecl PODBC::Field::SetDefaultValues(void)
     ?SetDeinitString@PModem@@QEAAXAEBVPString@@@Z @15282 NONAME
     ?SetDescription@PServiceProcess@@QEAAXAEBVPString@@@Z @15283 NONAME
     ?SetDirectories@PPluginManager@@QEAAXAEBVPString@@@Z @15284 NONAME
@@ -15121,13 +15077,11 @@ EXPORTS
     ?SetNearestFrameSize@PVideoInputDeviceIndirect@@UEAA_NII@Z @15432 NONAME
     ?SetNewLine@PCLI@@QEAAXAEBVPString@@@Z @15433 NONAME
     ?SetNewRow@Row@PODBC@@QEAAXXZ @17809 NONAME
-    ;public: void __cdecl PODBC::Row::SetNewRow(void)
     ?SetNoCarrierString@PModem@@QEAAXAEBVPString@@@Z @15434 NONAME
     ?SetNotBefore@PJWT@@QEAAXAEBVPTime@@@Z @15435 NONAME
     ?SetNotifier@PTimer@@QEAAXAEBV?$PNotifierTemplate@_J@@AEBVPString@@@Z @15436 NONAME
     ?SetNTP@PTime@@QEAAX_K@Z @15437 NONAME
     ?SetNULL@Field@PODBC@@QEAAXXZ @17810 NONAME
-    ;public: void __cdecl PODBC::Field::SetNULL(void)
     ?SetNULL@PSafePtrBase@@UEAAXXZ @15438 NONAME
     ?SetNULL@PSafePtrMultiThreaded@@UEAAXXZ @15439 NONAME
     ?SetNumber@Object@PJSON@@QEAA_NAEBVPString@@O@Z @15440 NONAME
@@ -15172,7 +15126,6 @@ EXPORTS
     ?SetPosition@PWAVFileConverterPCM@@UEAA_NAEAVPWAVFile@@JW4FilePositionOrigin@PFile@@@Z @15479 NONAME
     ?SetPostDialString@PModem@@QEAAXAEBVPString@@@Z @15480 NONAME
     ?SetPrecision@PODBC@@QEAAXI@Z @17811 NONAME
-    ;public: void __cdecl PODBC::SetPrecision(unsigned int)
     ?SetPreDialString@PModem@@QEAAXAEBVPString@@@Z @15481 NONAME
     ?SetPreferredColourFormat@PVideoDevice@@UEAAXAEBVPString@@@Z @15482 NONAME
     ?SetPresence@Item@Roster@XMPP@@UEAAXAEBVPresence@3@@Z @15483 NONAME
@@ -15310,7 +15263,6 @@ EXPORTS
     ?SetTransferComplete@PVXMLSession@@QEAAX_N@Z @15615 NONAME
     ?SetTransferEncoding@PRFC822Channel@@QEAAXAEBVPString@@_N@Z @15616 NONAME
     ?SetType@Field@PODBC@@UEAA_NW4BasicType@PVarType@@_K@Z @17812 NONAME
-    ;public: virtual bool __cdecl PODBC::Field::SetType(enum PVarType::BasicType,unsigned __int64)
     ?SetType@IQ@XMPP@@UEAAXAEBVPString@@@Z @15617 NONAME
     ?SetType@IQ@XMPP@@UEAAXW4IQType@12@@Z @15618 NONAME
     ?SetType@Item@Roster@XMPP@@UEAAXW4ItemType@23@_N@Z @15619 NONAME
@@ -15421,7 +15373,6 @@ EXPORTS
     ?SplitVars@PURL@@SAXAEBVPString@@AEAVPStringToString@@DDW4TranslationType@1@@Z @15725 NONAME
     ?sprintf@PString@@QEAAAEAV1@PEBDZZ @15726 NONAME
     ?SQL_OK@Statement@PODBC@@QEAA_NF@Z @17814 NONAME
-    ;public: bool __cdecl PODBC::Statement::SQL_OK(short)
     ?Start@BaseStreamHandler@XMPP@@UEAA_NPEAVTransport@2@@Z @15727 NONAME
     ?Start@Context@PCLI@@QEAA_NXZ @15728 NONAME
     ?Start@NT_ServiceManager@@QEAA_NXZ @15729 NONAME
@@ -15491,6 +15442,8 @@ EXPORTS
     ?StartRecording@PSoundChannelEmulation@@UEAA_NXZ @15793 NONAME
     ?StartRecording@PSoundChannelWin32@@UEAA_NXZ @15794 NONAME
     ?StartRegistration@StreamHandler@C2S@XMPP@@MEAAXXZ @15795 NONAME
+    ?StartResponse@PHTTPResource@@UEAA_NAEAVPHTTPRequest@@@Z @18396 NONAME
+    ;public: virtual bool __cdecl PHTTPResource::StartResponse(class PHTTPRequest &)
     ?StartResponse@PHTTPServer@@QEAA_NW4StatusCode@PHTTP@@AEAVPMIMEInfo@@J@Z @15796 NONAME
     ?Startup@PProcess@@QEAAXXZ @15797 NONAME
     ?StaticControlEntry@PServiceProcess@@CAXK@Z @15798 NONAME
@@ -15566,9 +15519,7 @@ EXPORTS
     ?s_SortByTypePred@?1???0Table@PDirectorySortPred@@QEAA@XZ@4USortByTypePred@?1???012@QEAA@XZ@A @15868 NONAME
     ?table@?1??GetPixelFormatFromColourFormat@TrackContext@PMediaFile_FFMPEG@@SA?AW4AVPixelFormat@@AEBVPCaselessString@@@Z@4QBU<unnamed-type-table>@?1??123@SA?AW44@0@Z@B @15869 NONAME
     ?TableList@PODBC@@QEAA?AVPStringArray@@AEBVPString@@@Z @17815 NONAME
-    ;public: class PStringArray __cdecl PODBC::TableList(class PString const &)
     ?TableList@Statement@PODBC@@QEAA?AVPStringArray@@AEBVPString@@@Z @17816 NONAME
-    ;public: class PStringArray __cdecl PODBC::Statement::TableList(class PString const &)
     ?Terminate@PExternalThread@@UEAAXXZ @15870 NONAME
     ?Terminate@PProcess@@UEAAXXZ @15871 NONAME
     ?Terminate@PThread@@UEAAXXZ @15872 NONAME
