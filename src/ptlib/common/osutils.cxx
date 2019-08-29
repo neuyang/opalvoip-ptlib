@@ -1239,30 +1239,46 @@ bool PDirectory::Create(const PString & p, int perm, bool recurse)
 }
 
 
-bool PDirectory::GetEntries(Entries & entries, const PCaselessString & sortBy)
+PDirectory::Entries PDirectory::GetEntries(const PString & glob, Sorting sortBy)
+{
+  Entries entries;
+  GetEntries(entries, sortBy, glob);
+  return entries;
+}
+
+
+PDirectory::Entries PDirectory::GetEntries(const PString & glob, const PCaselessString & sortBy)
+{
+  Entries entries;
+  GetEntries(entries, sortBy, glob);
+  return entries;
+}
+
+
+bool PDirectory::GetEntries(Entries & entries, const PCaselessString & sortBy, const PString & glob)
 {
   if (sortBy.NumCompare("name") == EqualTo)
-    return GetEntries(entries, SortByName);
+    return GetEntries(entries, SortByName, glob);
 
   if (sortBy.NumCompare("type") == EqualTo)
-    return GetEntries(entries, SortByType);
+    return GetEntries(entries, SortByType, glob);
 
   if (sortBy.NumCompare("size") == EqualTo)
-    return GetEntries(entries, SortBySize);
+    return GetEntries(entries, SortBySize, glob);
 
   if (sortBy.NumCompare("created") == EqualTo)
-    return GetEntries(entries, SortByCreated);
+    return GetEntries(entries, SortByCreated, glob);
 
   if (sortBy.NumCompare("modified") == EqualTo)
-    return GetEntries(entries, SortByModified);
+    return GetEntries(entries, SortByModified, glob);
 
   if (sortBy.NumCompare("accessed") == EqualTo)
-    return GetEntries(entries, SortByAccessed);
+    return GetEntries(entries, SortByAccessed, glob);
 
   if (sortBy.NumCompare("permissions") == EqualTo)
-    return GetEntries(entries, SortByPermission);
+    return GetEntries(entries, SortByPermission, glob);
 
-  return GetEntries(entries);
+  return GetEntries(entries, glob);
 }
 
 struct PDirectorySortPred
@@ -1305,16 +1321,39 @@ struct PDirectorySortPred
 PDirectorySortPred::Table PDirectorySortPred::s_PredTable;
 
 
-bool PDirectory::GetEntries(Entries & entries, Sorting sortBy)
+bool PDirectory::GetEntries(Entries & entries, Sorting sortBy, const PString & glob)
 {
   if (!Open())
     return false;
+
+  // Convert glob to regex
+  PString regexStr = glob;
+  if (glob.GetLength() > 1) {
+    regexStr = PRegularExpression::EscapeString(glob);
+    for (PINDEX i = 0; i < regexStr.GetLength()-1; ++i) {
+      if ((i == 0 || regexStr[i-1] != '\\') && regexStr[i] == '\\') {
+        switch (regexStr[i+1]) {
+          case '*' :
+            regexStr[i] = '.';
+            break;
+          case '?' :
+            regexStr.Splice(".", i, 2);
+            break;
+          case '[' :
+          case ']' :
+            regexStr.Delete(i, 1);
+        }
+      }
+    }
+  }
+  PRegularExpression regex(regexStr);
 
   do {
     Entry entry;
     if (GetInfo(entry)) {
       entry.m_name = GetEntryName();
-      entries.push_back(entry);
+      if (glob.IsEmpty() || entry.m_name.MatchesRegEx(regex))
+        entries.push_back(entry);
     }
   } while (Next());
 

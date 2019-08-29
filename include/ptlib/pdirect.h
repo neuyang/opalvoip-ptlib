@@ -463,12 +463,22 @@ class PDirectory : public PFilePathString
     /**Get all the entries in this directory.
       */
     bool GetEntries(
-      Entries & entries,          ///< Entries in directory.
-      Sorting sortBy = Unsorted   ///< Field to sort list on
+      Entries & entries,                      ///< Entries in directory.
+      Sorting sortBy = Unsorted,              ///< Field to sort list on
+      const PString & glob = PString::Empty() ///< Wildcard matching
     );
     bool GetEntries(
-      Entries & entries,             ///< Entries in directory.
-      const PCaselessString & sortBy ///< Field to sort list on
+      Entries & entries,                      ///< Entries in directory.
+      const PCaselessString & sortBy,         ///< Field to sort list on
+      const PString & glob = PString::Empty() ///< Wildcard matching
+    );
+    Entries GetEntries(
+      const PString & glob = PString::Empty(), ///< Wildcard matching
+      Sorting sortBy = Unsorted                ///< Field to sort list on
+    );
+    Entries GetEntries(
+      const PString & glob,                    ///< Wildcard matching
+      const PCaselessString & sortBy           ///< Field to sort list on
     );
   //@}
 
