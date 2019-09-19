@@ -3222,7 +3222,7 @@ PRegularExpression::PRegularExpression(const PString & pattern, CompileOptions o
   , m_compileOptions(options)
   , m_compiledRegex(NULL)
 {
-  PAssert(InternalCompile(), "Regular expression compile failed: " + GetErrorText());
+  InternalCompile(true);
 }
 
 
@@ -3231,7 +3231,7 @@ PRegularExpression::PRegularExpression(const char * pattern, CompileOptions opti
   , m_compileOptions(options)
   , m_compiledRegex(NULL)
 {
-  PAssert(InternalCompile(), "Regular expression compile failed: " + GetErrorText());
+  InternalCompile(true);
 }
 
 
@@ -3240,10 +3240,7 @@ PRegularExpression::PRegularExpression(const PRegularExpression & from)
   , m_compileOptions(from.m_compileOptions)
   , m_compiledRegex(NULL)
 {
-  if (m_pattern.IsEmpty())
-    m_lastError = NotCompiled;
-  else
-    PAssert(InternalCompile(), "Regular expression compile failed: " + GetErrorText());
+  InternalCompile(true);
 }
 
 
@@ -3252,7 +3249,7 @@ PRegularExpression & PRegularExpression::operator=(const PRegularExpression & fr
   if (&from != this) {
     m_pattern = from.m_pattern;
     m_compileOptions = from.m_compileOptions;
-    PAssert(InternalCompile(), "Regular expression compile failed: " + GetErrorText());
+    InternalCompile(true);
   }
 
   return *this;
@@ -3293,7 +3290,7 @@ bool PRegularExpression::Compile(const PString & pattern, CompileOptions options
 {
   m_pattern = pattern;
   m_compileOptions = options;
-  return InternalCompile();
+  return InternalCompile(false);
 }
 
 
@@ -3301,16 +3298,16 @@ bool PRegularExpression::Compile(const char * pattern, CompileOptions options)
 {
   m_pattern = pattern;
   m_compileOptions = options;
-  return InternalCompile();
+  return InternalCompile(false);
 }
 
 
-bool PRegularExpression::InternalCompile()
+bool PRegularExpression::InternalCompile(bool assertOnFail)
 {
   InternalClean();
 
   if (m_pattern.IsEmpty()) {
-    m_lastError = BadPattern;
+    m_lastError = assertOnFail ? NotCompiled : BadPattern;
     return false;
   }
 
@@ -3320,6 +3317,10 @@ bool PRegularExpression::InternalCompile()
     return true;
 
   InternalClean();
+
+  if (assertOnFail)
+    PAssertAlways(PSTRSTRM("Regular expression " << m_pattern.ToLiteral() << " failed to compile: " << GetErrorText()));
+
   return false;
 }
 
