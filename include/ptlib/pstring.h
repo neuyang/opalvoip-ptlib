@@ -3631,7 +3631,7 @@ class PRegularExpression : public PObject
   //@}
 
   protected:
-    bool InternalCompile();
+    bool InternalCompile(bool assertOnFail);
     void InternalClean();
 
     PString            m_pattern;
