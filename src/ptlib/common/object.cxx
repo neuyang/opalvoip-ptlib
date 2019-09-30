@@ -138,27 +138,26 @@ PFactoryBase & PFactoryBase::InternalGetFactory(const std::string & className, P
 }
 
 
-#if !P_USE_ASSERTS
-
-#define PAssertFunc(a, b, c, d) { }
-
-#else
+#if P_USE_ASSERTS
 
 static PCriticalSection & GetAssertMutex() { static PCriticalSection cs; return cs; }
 extern void PPlatformAssertFunc(const PDebugLocation & location, const char * msg, char defaultAction);
-extern void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned framesToSkip, bool noSymbols);
+extern void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned framesToSkip, bool noSymbols, bool exception);
 
 #if PTRACING
   void PTrace::WalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, bool noSymbols)
   {
     PWaitAndSignal lock(GetAssertMutex());
-    PPlatformWalkStack(strm, id, uid, 1, noSymbols); // 1 means skip reporting PTrace::WalkStack
+    PPlatformWalkStack(strm, id, uid, 1, noSymbols, false); // 1 means skip reporting PTrace::WalkStack
   }
 #endif // PTRACING
 
 
-bool PAssertWalksStack = true;
+PAssertWalkStackModes PAssertWalkStackMode = PAssertWalkStackSymbols;
 unsigned PAssertCount;
+
+static PDebugLocation const s_ExceptionLocation("try/catch");
+
 
 static void InternalAssertFunc(const PDebugLocation & location, const char * msg)
 {
@@ -183,14 +182,16 @@ static void InternalAssertFunc(const PDebugLocation & location, const char * msg
     strm << "Assertion fail: ";
     if (msg != NULL)
       strm << msg << ", ";
-    strm << "file " << location.m_file << ", line " << location.m_line;
-    if (location.m_extra != NULL)
-      strm << ", class " << location.m_extra;
+    location.PrintOn(strm, "location ");
     if (errorCode != 0)
       strm << ", error=" << errorCode;
     strm << ", when=" << PTime().AsString(PTime::LoggingFormat PTRACE_PARAM(, PTrace::GetTimeZone()));
-    if (PAssertWalksStack)
-      PPlatformWalkStack(strm, PNullThreadIdentifier, 0, 2, true); // 2 means skip reporting InternalAssertFunc & PAssertFunc
+    if (PAssertWalkStackMode == PAssertWalkStackDisabled)
+      strm << ", stack walk disabled";
+    else
+      PPlatformWalkStack(strm, PNullThreadIdentifier, 0, 2, // 2 means skip reporting InternalAssertFunc & PAssertFunc
+                         PAssertWalkStackMode == PAssertWalkStackNoSymbols,
+                         &location == &s_ExceptionLocation); 
     strm << ends;
     str = strm.str();
   }
@@ -264,7 +265,18 @@ bool PAssertFunc(const PDebugLocation & location, const char * msg)
 }
 
 
-#endif // !P_USE_ASSERTS
+bool PAssertException(const char * source, const std::exception * ex)
+{
+  std::ostringstream msg;
+  msg << "Exception ";
+  if (ex != NULL)
+    msg << '(' << typeid(*ex).name() << " \"" << ex->what() << "\") ";
+  msg << "caught in " << source;
+  InternalAssertFunc(s_ExceptionLocation, msg.str().c_str());
+  return false;
+}
+
+#endif // P_USE_ASSERTS
 
 PObject::Comparison PObject::CompareObjectMemoryDirect(const PObject & obj) const
 {

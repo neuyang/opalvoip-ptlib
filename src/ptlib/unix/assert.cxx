@@ -41,6 +41,7 @@
   #define DEBUG_CERR(arg) // std::cerr << arg << std::endl
 
   #include <execinfo.h>
+  #include <dlfcn.h>
   #if P_HAS_DEMANGLE
     #include <cxxabi.h>
   #endif
@@ -91,7 +92,9 @@
 #endif // P_MACOSX
 
 
-  static void InternalWalkStack(ostream & strm, unsigned framesToSkip, const vector<void *> addresses, bool noSymbols)
+  typedef vector<void *> StackAddresses;
+
+  static void InternalWalkStack(ostream & strm, unsigned framesToSkip, const StackAddresses addresses, bool noSymbols)
   {
     DEBUG_CERR("InternalWalkStack: count=" << addresses.size() << ", framesToSkip=" << framesToSkip);
     if (addresses.size() <= framesToSkip) {
@@ -192,7 +195,7 @@
         pthread_mutex_t   m_mainMutex;
         PThreadIdentifier m_threadId;
         PUniqueThreadIdentifier m_uniqueId;
-        vector<void *>    m_addresses;
+        StackAddresses    m_addresses;
         int               m_addressCount;
         pthread_mutex_t   m_condMutex;
         pthread_cond_t    m_condVar;
@@ -223,23 +226,23 @@
           clock_gettime(CLOCK_REALTIME, &absTime);
           absTime.tv_sec += 2;
 
-#if P_PTHREADS_XPG6
-          bool failed = pthread_mutex_timedlock(&m_mainMutex, &absTime) != 0;
-#else
-          bool failed;
-          for (;;) {
-            failed = pthread_mutex_trylock(&m_mainMutex) != 0;
-            if (!failed)
-              break;
+          #if P_PTHREADS_XPG6
+            bool failed = pthread_mutex_timedlock(&m_mainMutex, &absTime) != 0;
+          #else // P_PTHREADS_XPG6
+            bool failed;
+            for (;;) {
+              failed = pthread_mutex_trylock(&m_mainMutex) != 0;
+              if (!failed)
+                break;
 
-            struct timespec now;
-            clock_gettime(CLOCK_REALTIME, &now);
-            if (now.tv_sec > absTime.tv_sec && now.tv_nsec > absTime.tv_nsec)
-              break;
+              struct timespec now;
+              clock_gettime(CLOCK_REALTIME, &now);
+              if (now.tv_sec > absTime.tv_sec && now.tv_nsec > absTime.tv_nsec)
+                break;
 
-            usleep(10000);
-          }
-#endif
+              usleep(10000);
+            }
+          #endif // P_PTHREADS_XPG6
           if (failed) {
             strm << "\n\tStack trace system is too busy to WalkOther";
             DEBUG_CERR("WalkOther: mutex timeout");
@@ -319,14 +322,17 @@
     #endif // P_PTHREADS
 
     static PWalkStackInfo s_otherThreadStack;
+    static PThreadLocalStorage<StackAddresses> s_exceptionStack;
 
 
-    void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned framesToSkip, bool noSymbols)
+    void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned framesToSkip, bool noSymbols, bool exception)
     {
       if (!PProcess::IsInitialised())
         return;
 
-      if (id != PNullThreadIdentifier && id != PThread::GetCurrentThreadId())
+      if (exception)
+        InternalWalkStack(strm, 1, *s_exceptionStack, noSymbols);
+      else if (id != PNullThreadIdentifier && id != PThread::GetCurrentThreadId())
         s_otherThreadStack.WalkOther(strm, id, uid, noSymbols);
       else {
         DEBUG_CERR("PPlatformWalkStack: id=0x" << hex << id << dec);
@@ -334,7 +340,7 @@
         if (framesToSkip == 1)
           framesToSkip = 0;
         const size_t maxStackWalk = InternalMaxStackWalk + framesToSkip;
-        vector<void *> addresses(maxStackWalk);
+        StackAddresses addresses(maxStackWalk);
         addresses.resize(backtrace(addresses.data(), maxStackWalk));
         InternalWalkStack(strm, framesToSkip, addresses, noSymbols);
       }
@@ -346,17 +352,36 @@
         s_otherThreadStack.OthersWalk();
     }
 
-#else
+    extern "C" {
+      #ifdef P_MACOSX
+        typedef void (* const ThrowFn)(void *, std::type_info *, void (*)(void *)) __attribute__ ((noreturn));
+        void __cxa_throw(void * ex, std::type_info * tinfo, void (*dest)(void *))
+      #else
+        typedef void (* const ThrowFn)(void *, void *, void (*)(void *)) __attribute__ ((noreturn));
+        void __cxa_throw(void * ex, void * tinfo, void (*dest)(void *))
+      #endif
+      {
+        if (PAssertWalkStackMode != PAssertWalkStackDisabled) {
+          StackAddresses & addresses = *s_exceptionStack;
+          addresses.resize(InternalMaxStackWalk);
+          addresses.resize(backtrace(addresses.data(), addresses.size()));
+        }
 
-  void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned skip, bool noSymbols)
+        static ThrowFn rethrow = reinterpret_cast<ThrowFn>(dlsym(RTLD_NEXT, "__cxa_throw"));
+        rethrow(ex,tinfo,dest);
+      }
+    }
+
+#else // P_HAS_BACKTRACE && PTRACING
+
+  void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier uid, unsigned skip, bool noSymbols, bool exception)
   {
   }
 
-  #endif // P_HAS_BACKTRACE
+#endif // P_HAS_BACKTRACE && PTRACING
 
 
-
-  #if PTRACING
+#if PTRACING
   #define TRACE_MESSAGE() \
     PTrace::Begin(0, location.m_file, location.m_line, NULL, "PAssert") << msg << PTrace::End
 
@@ -477,7 +502,7 @@
 #endif
 
 
-void PPlatformAssertFunc(const PDebugLocation & PTRACE_PARAM(location), const char * msg, char defaultAction)
+void PPlatformAssertFunc(const PDebugLocation & location, const char * msg, char defaultAction)
 {
   OUTPUT_MESSAGE();
 

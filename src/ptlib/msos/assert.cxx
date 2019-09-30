@@ -368,7 +368,7 @@
   };
 
 
-  void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier, unsigned framesToSkip, bool)
+  void PPlatformWalkStack(ostream & strm, PThreadIdentifier id, PUniqueThreadIdentifier, unsigned framesToSkip, bool, bool)
   {
     PDebugDLL debughelp;
     if (debughelp.IsLoaded())

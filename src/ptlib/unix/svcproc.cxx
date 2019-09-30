@@ -538,11 +538,11 @@ int PServiceProcess::InternalMain(void *)
       started = OnStart();
     }
     catch (const std::exception & e) {
-      PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in service process start, terminating"));
+      PAssertException("service process start", &e);
       std::terminate();
     }
     catch (...) {
-      PAssertAlways(PSTRSTRM("Exception caught in service process start, terminating"));
+      PAssertException("service process start", NULL);
       std::terminate();
     }
 #else
@@ -713,4 +713,3 @@ void PServiceProcess::HandleRunTimeSignal(int signal)
 
   PProcess::HandleRunTimeSignal(signal);
 }
-

@@ -2394,11 +2394,11 @@ int PProcess::InternalMain(void *)
     Main();
   }
   catch (const std::exception & e) {
-    PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in process main, terminating"));
+    PAssertException("process main", &e);
     std::terminate();
   }
   catch (...) {
-    PAssertAlways(PSTRSTRM("Exception caught in process main, terminating"));
+    PAssertException("process main", NULL);
     std::terminate();
   }
 #else
@@ -3176,12 +3176,14 @@ void PThread::InternalThreadMain()
     process.OnThreadEnded(*this);
   }
   catch (const std::exception & e) {
-    PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in thread " << *this << ", terminating"));
-    std::terminate();
+    std::ostringstream msg;
+    msg << "in thread " << *this;
+    PAssertException(msg.str().c_str(), &e);
   }
   catch (...) {
-    PAssertAlways(PSTRSTRM("Exception caught in thread " << *this << ", terminating"));
-    std::terminate();
+    std::ostringstream msg;
+    msg << "in thread " << *this;
+    PAssertException(msg.str().c_str(), NULL);
   }
 #else
   process.OnThreadStart(*this);
