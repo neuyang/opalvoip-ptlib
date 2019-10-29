@@ -478,6 +478,7 @@ CLEAN_FILES = $(GETDATE_SOURCE)
 
 SOURCES	+= \
 	$(COMPONENT_SRC_DIR)/json.cxx \
+	$(COMPONENT_SRC_DIR)/textdata.cxx \
 	$(COMPONENT_SRC_DIR)/threadpool.cxx \
 	$(COMPONENT_SRC_DIR)/random.cxx \
 	$(COMPONENT_SRC_DIR)/notifier_ext.cxx \
