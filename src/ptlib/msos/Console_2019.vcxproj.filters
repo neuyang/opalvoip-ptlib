@@ -379,6 +379,9 @@
     <ClCompile Include="..\..\ptclib\mediafile.cxx">
       <Filter>Source Files\Components\Media</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ptclib\textdata.cxx">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Include\PtLib\Args.h">
@@ -951,6 +954,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\include\ptlib\msos\ptlib\platform.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ptclib\textdata.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

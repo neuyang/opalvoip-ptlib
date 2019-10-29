@@ -369,7 +369,7 @@ class PChannel : public PObject, public std::iostream
        @return
        true if the read of <code>len</code> bytes was sucessfull.
      */
-    PBoolean ReadBlock(
+    virtual PBoolean ReadBlock(
       void * buf,   ///< Pointer to a block of memory to receive the read bytes.
       PINDEX len    ///< Maximum number of bytes to read into the buffer.
     );
@@ -381,7 +381,7 @@ class PChannel : public PObject, public std::iostream
        @return
        String that was read.
      */
-    PString ReadString(
+    virtual PString ReadString(
       PINDEX len  ///< Length of string data to read.
     );
   //@}
@@ -466,7 +466,7 @@ class PChannel : public PObject, public std::iostream
        @return
        true if the byte was successfully written.
      */
-    PBoolean WriteChar(int c);
+    virtual PBoolean WriteChar(int c);
 
     /** Write a string to the channel. This function simply uses the Write()
        function so all comments on that function also apply.
@@ -474,7 +474,7 @@ class PChannel : public PObject, public std::iostream
        @return
        true if the character written.
      */
-    PBoolean WriteString(
+    virtual PBoolean WriteString(
       const PString & str   ///< String to write
     );
   //@}

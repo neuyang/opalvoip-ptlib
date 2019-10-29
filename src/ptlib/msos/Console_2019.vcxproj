@@ -309,6 +309,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='No Trace|Win32'">..\..\..\..\external\ffmpeg-win32-dev\include;$(FFMPEGDIR)\include</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\external\ffmpeg-win32-dev\include;$(FFMPEGDIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\..\ptclib\textdata.cxx" />
     <ClCompile Include="..\..\ptclib\tonedev.cxx" />
     <ClCompile Include="..\unix\opensl_es.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -1000,6 +1001,7 @@ if errorlevel 1 copy "%(FullPath)"+nul "%(RootDir)%(Directory)%(FileName)"</Comm
   <ItemGroup>
     <ClInclude Include="..\..\..\include\ptclib\mediafile.h" />
     <ClInclude Include="..\..\..\include\ptclib\pjson.h" />
+    <ClInclude Include="..\..\..\include\ptclib\textdata.h" />
     <ClInclude Include="..\..\..\include\ptlib\id_generator.h" />
     <ClInclude Include="..\..\..\include\ptclib\gstreamer.h" />
     <ClInclude Include="..\..\..\include\ptclib\jscript.h" />
