@@ -105,7 +105,7 @@ void PVarType::InternalDestroy()
 }
 
 
-bool PVarType::SetType(BasicType type, PINDEX option)
+bool PVarType::SetType(BasicType type, int option)
 {
   InternalDestroy();
 
@@ -113,7 +113,7 @@ bool PVarType::SetType(BasicType type, PINDEX option)
   switch (m_type) {
     case VarTime :
       m_.time.seconds = 0;
-      m_.time.format = (PTime::TimeFormat)option;
+      m_.time.format = option < 0 ? PTime::LongISO8601 : (PTime::TimeFormat)option;
       break;
 
     case VarStaticString :
@@ -123,6 +123,8 @@ bool PVarType::SetType(BasicType type, PINDEX option)
     case VarFixedString :
     case VarDynamicString :
     case VarDynamicBinary :
+      if (option < 0)
+        option = 0;
       memset(m_.dynamic.Alloc(option), 0, option);
       break;
 
@@ -296,6 +298,65 @@ PVarType & PVarType::SetValue(const PString & value)
 }
 
 
+PVarType & PVarType::FromString(const PString & value, bool autoDetect)
+{
+  if (!autoDetect)
+    return SetValue(value);
+
+  static PConstString const Digits("0123456789");
+  PString trimmed = value.Trim().ToUpper();
+  PINDEX pos;
+
+  if (trimmed.IsEmpty())
+    operator=(value);
+  else if (trimmed.FindSpan(Digits) == P_MAX_INDEX) {
+    uint64_t i = trimmed.AsUnsigned64();
+    if (i <= std::numeric_limits<uint8_t>::max())
+      operator=((uint8_t)i);
+    else if (i < std::numeric_limits<uint16_t>::max())
+      operator=((uint16_t)i);
+    else if (i < std::numeric_limits<uint32_t>::max())
+      operator=((uint32_t)i);
+    else
+      operator=((uint64_t)i);
+  }
+  else if (value.GetLength() == 1)
+    operator=(value[0]);
+  else if ((trimmed[0] == '+' || trimmed[0] == '-') && trimmed.FindSpan(Digits, 1) == P_MAX_INDEX) {
+    uint64_t i = trimmed.AsUnsigned64();
+    if (i >= std::numeric_limits<int8_t>::min() && i <= std::numeric_limits<int8_t>::max())
+      operator=((int8_t)i);
+    else if (i >= std::numeric_limits<int16_t>::min() && i < std::numeric_limits<int16_t>::max())
+      operator=((int16_t)i);
+    else if (i >= std::numeric_limits<int32_t>::min() && i < std::numeric_limits<int32_t>::max())
+      operator=((int32_t)i);
+    else
+      operator=((int64_t)i);
+  }
+  else if (trimmed[pos = trimmed.FindSpan(Digits, trimmed[0] == '+' || trimmed[0] == '-' ? 1 : 0)] == 'E' &&
+           trimmed.FindSpan(Digits, trimmed[pos+1] == '+' || trimmed[pos+1] == '-' ? (pos+3) : (pos+2)) == P_MAX_INDEX) {
+    operator=(trimmed.AsReal());
+  }
+  else {
+    PGloballyUniqueID guid(trimmed);
+    if (!guid.IsNULL())
+      operator=(guid);
+    else {
+      PTime timeDate(trimmed);
+      if (timeDate.IsValid())
+        operator=(timeDate);
+      else if (trimmed *= "true")
+        operator=(true);
+      else if (trimmed *= "false")
+        operator=(false);
+      else
+        operator=(value);
+    }
+  }
+  return *this;
+}
+
+
 PVarType & PVarType::SetString(const char * value, bool dynamic)
 {
   if ((m_type == VarDynamicString || m_type == VarFixedString) && value == m_.dynamic.data)
@@ -361,7 +422,7 @@ void PVarType::PrintOn(ostream & strm) const
       strm << "(null)";
       break;
     case VarBoolean :
-      strm << (m_.boolean ? "true" : "false");
+      strm << boolalpha << m_.boolean;
       break;
     case VarChar :
       strm << m_.character;
@@ -430,7 +491,7 @@ void PVarType::ReadFrom(istream & strm)
     case VarNULL :
       break;
     case VarBoolean :
-      strm >> m_.boolean;
+      strm >> boolalpha >> m_.boolean;
       break;
     case VarChar :
       strm >> m_.character;
@@ -975,5 +1036,30 @@ void PVarType::OnGetValue()
 void PVarType::OnValueChanged()
 {
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+static PThreadLocalStorage<PVarData::Object*> s_varDataInitialiser;
+
+PVarData::Object::Object()
+{
+  m_memberValues.DisallowDeleteObjects();
+  *s_varDataInitialiser = this;
+}
+
+
+void PVarData::ConstructMember(PString & name, PVarType * member)
+{
+  if (name[0] == '_')
+    name.Delete(0, 1);
+  else if (name.NumCompare("m_") == PObject::EqualTo)
+    name.Delete(0, 2);
+
+  PVarData::Object & obj = **s_varDataInitialiser;
+  obj.m_memberNames.AppendString(name);
+  obj.m_memberValues.SetAt(name, member);
+}
+
 
 #endif // P_VARTYPE

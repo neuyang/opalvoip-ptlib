@@ -46,11 +46,12 @@ bool PTextDataFormat::ReadHeadings(PChannel & channel)
   m_headings.RemoveAll();
 
   for (;;) {
-    PString heading;
-    int result = ReadField(channel, heading);
+    PVarType field(PVarType::VarDynamicString);
+    int result = ReadField(channel, field, false);
     if (result < 0)
       return false;
 
+    PString heading = field.AsString();
     if (heading.IsEmpty())
       return false;
 
@@ -63,7 +64,7 @@ bool PTextDataFormat::ReadHeadings(PChannel & channel)
 
 bool PTextDataFormat::WriteHeadings(PChannel & channel)
 {
-  if (!PAssert(m_headings.IsEmpty(), PInvalidParameter))
+  if (!PAssert(!m_headings.IsEmpty(), PInvalidParameter))
     return false;
 
   PINDEX last = m_headings.GetSize() - 1;
@@ -76,30 +77,43 @@ bool PTextDataFormat::WriteHeadings(PChannel & channel)
 }
 
 
-bool PTextDataFormat::ReadRecord(PChannel & channel, PStringToString & data)
+bool PTextDataFormat::ReadRecord(PChannel & channel, PVarData::Record & data)
 {
-  data.RemoveAll();
+  for (PINDEX i = 0; i < m_headings.GetSize(); ++i) {
+    PString heading = m_headings[i];
 
-  PINDEX i = 0;
+    bool autoDetect = false;
+    PVarType * field = data.GetAt(heading);
+    if (field == NULL) {
+      field = new PVarType;
+      autoDetect = true;
+    }
+
+    int result = ReadField(channel, *field, autoDetect);
+    data.SetAt(heading, field);
+
+    if (result != 0)
+      return result > 0;
+  }
+
   for (;;) {
-    PString field;
-    int result = ReadField(channel, field);
-    if (i < m_headings.GetSize())
-      data.SetAt(m_headings[i++], field);
+    PVarType dummy;
+    int result = ReadField(channel, dummy, false);
     if (result != 0)
       return result > 0;
   }
 }
 
 
-bool PTextDataFormat::WriteRecord(PChannel & channel, const PStringToString & data)
+bool PTextDataFormat::WriteRecord(PChannel & channel, const PVarData::Record & data)
 {
-  if (!PAssert(m_headings.IsEmpty(), PInvalidParameter))
+  if (!PAssert(!m_headings.IsEmpty(), PInvalidParameter))
     return false;
 
   PINDEX last = m_headings.GetSize() - 1;
   for (PINDEX i = 0; i <= last; ++i) {
-    if (!WriteField(channel, data(m_headings[i]), i == last))
+    PVarType * field = data.GetAt((m_headings[i]));
+    if (!WriteField(channel, field != NULL ? *field : PVarType(), i == last))
       return false;
   }
 
@@ -118,12 +132,14 @@ PCommaSeparatedVariableFormat::PCommaSeparatedVariableFormat(const PStringArray 
 }
 
 
-int PCommaSeparatedVariableFormat::ReadField(PChannel & channel, PString & field)
+int PCommaSeparatedVariableFormat::ReadField(PChannel & channel, PVarType & field, bool autoDetect)
 {
   bool inQuote = false;
+  bool wasQuoted = false;
   bool escaped = false;
   bool skipws = true;
 
+  PStringStream str;
   while (channel.good()) {
     int c = channel.get();
 
@@ -131,29 +147,31 @@ int PCommaSeparatedVariableFormat::ReadField(PChannel & channel, PString & field
       if (c == '"')
         inQuote = false;
       else if (escaped) {
-        field += (char)c;
+        str << (char)c;
         escaped = false;
       }
       else if (c == '\\')
         escaped = true;
       else
-        field += (char)c;
+        str << (char)c;
     }
     else {
-      if (c == '\r' || c == '\n')
-        return 1;
-
-      if (c == ',')
-        return 0;
+      if (c == '\r' || c == '\n' || c == ',') {
+        if (autoDetect && wasQuoted)
+          field.SetDynamicString(str);
+        else
+          field.FromString(str, autoDetect);
+        return c == ',' ? 0 : 1;
+      }
 
       if (skipws && isblank(c))
         continue;
       skipws = false;
 
       if (c == '"')
-        inQuote = true;
+        inQuote = wasQuoted = true;
       else
-        field += (char)c;
+        str << (char)c;
     }
   }
 
@@ -161,9 +179,20 @@ int PCommaSeparatedVariableFormat::ReadField(PChannel & channel, PString & field
 }
 
 
-bool PCommaSeparatedVariableFormat::WriteField(PChannel & channel, const PString & field, bool endOfLine)
+bool PCommaSeparatedVariableFormat::WriteField(PChannel & channel, const PVarType & field, bool endOfLine)
 {
-  channel << field.ToLiteral();
+  switch (field.GetType()) {
+    case PVarType::VarStaticString:
+    case PVarType::VarDynamicString:
+      channel << field.AsString().ToLiteral();
+      break;
+    case PVarType::VarStaticBinary :
+    case PVarType::VarDynamicBinary :
+      channel << field.AsString();
+      break;
+    default:
+      channel << field;
+  }
   if (endOfLine)
     channel << endl;
   else
@@ -183,24 +212,24 @@ PTabDelimitedFormat::PTabDelimitedFormat(const PStringArray & headings)
 }
 
 
-int PTabDelimitedFormat::ReadField(PChannel & channel, PString & field)
+int PTabDelimitedFormat::ReadField(PChannel & channel, PVarType & field, bool autoDetect)
 {
+  PStringStream str;
   while (channel.good()) {
     int c = channel.get();
-    if (c == '\r' || c == '\n')
-      return 1;
+    if (c == '\r' || c == '\n' || c == '\t') {
+      field.FromString(str, autoDetect);
+      return c == '\t' ? 0 : 1;
+    }
 
-    if (c == '\t')
-      return 0;
-
-    field += (char)c;
+    str << (char)c;
   }
 
   return -1;
 }
 
 
-bool PTabDelimitedFormat::WriteField(PChannel & channel, const PString & field, bool endOfLine)
+bool PTabDelimitedFormat::WriteField(PChannel & channel, const PVarType & field, bool endOfLine)
 {
   channel << field;
   if (endOfLine)
@@ -214,6 +243,7 @@ bool PTabDelimitedFormat::WriteField(PChannel & channel, const PString & field, 
 PTextDataFile::PTextDataFile(PTextDataFormatPtr format)
   : m_format(format)
   , m_formatting(false)
+  , m_needToWriteHeadings(true)
 {
 }
 
@@ -236,10 +266,12 @@ bool PTextDataFile::SetFormat(const PTextDataFormatPtr & format)
 }
 
 
-bool PTextDataFile::ReadRecord(PStringToString & data)
+bool PTextDataFile::ReadRecord(PVarData::Record & data)
 {
   if (CheckNotOpen())
     return false;
+
+  data.RemoveAll();
 
   m_formatting = true;
   bool ok = m_format->ReadRecord(*this, data);
@@ -248,13 +280,50 @@ bool PTextDataFile::ReadRecord(PStringToString & data)
 }
 
 
-bool PTextDataFile::WriteRecord(const PStringToString & data)
+bool PTextDataFile::WriteRecord(const PVarData::Record & data)
 {
   if (CheckNotOpen())
     return false;
 
   m_formatting = true;
+  if (m_needToWriteHeadings) {
+    if (m_format->GetHeadings().IsEmpty())
+      m_format->SetHeadings(data.GetKeys());
+    if (!m_format->WriteHeadings(*this))
+      return false;
+    m_needToWriteHeadings = false;
+  }
   bool ok = m_format->WriteRecord(*this, data);
+  m_formatting = false;
+  return ok;
+}
+
+
+bool PTextDataFile::ReadObject(PVarData::Object & obj)
+{
+  if (CheckNotOpen())
+    return false;
+
+  m_formatting = true;
+  bool ok = m_format->ReadRecord(*this, obj.GetMemberValues());
+  m_formatting = false;
+  return ok;
+}
+
+
+bool PTextDataFile::WriteObject(const PVarData::Object & obj)
+{
+  if (CheckNotOpen())
+    return false;
+
+  m_formatting = true;
+  if (m_needToWriteHeadings) {
+    m_format->SetHeadings(obj.GetMemberNames());
+    if (!m_format->WriteHeadings(*this))
+      return false;
+    m_needToWriteHeadings = false;
+  }
+  bool ok = m_format->WriteRecord(*this, obj.GetMemberValues());
   m_formatting = false;
   return ok;
 }
@@ -265,16 +334,22 @@ bool PTextDataFile::InternalOpen(OpenMode mode, OpenOptions opts, PFileInfo::Per
   if (!PAssert(mode != ReadWrite, PInvalidParameter))
     return false;
 
-  if (mode == ReadOnly && m_format.IsNULL() && GetFilePath().GetType() == ".csv")
-    m_format = new PCommaSeparatedVariableFormat();
-  else if (!PAssert(mode == ReadOnly || !m_format.IsNULL(), PInvalidParameter))
-    return false;
+  if (m_format.IsNULL()) {
+    if (GetFilePath().GetType() == ".csv")
+      m_format = new PCommaSeparatedVariableFormat();
+    else if (GetFilePath().GetType() == ".txt" || GetFilePath().GetType() == ".tsv")
+      m_format = new PTabDelimitedFormat();
+    else
+      return false;
+  }
 
   if (!PTextFile::InternalOpen(mode, opts, permissions))
     return false;
 
-  if (mode == WriteOnly)
-    return m_format->WriteHeadings(*this);
+  if (mode == WriteOnly) {
+    m_needToWriteHeadings = true;
+    return true;
+  }
 
   m_formatting = true;
 

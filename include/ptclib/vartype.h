@@ -77,7 +77,7 @@ class PVarType : public PObject
   //@{
     /**Create a NULL type object.
      */
-    PVarType() : m_type(VarNULL) { }
+    PVarType(BasicType type = VarNULL) { SetType(type); }
 
     /**Create a boolean type object.
      */
@@ -133,7 +133,7 @@ class PVarType : public PObject
 
     /**Create a time of day type object.
      */
-    PVarType(const PTime & value) : m_type(VarTime) { m_.time.seconds = value.GetTimeInSeconds(); }
+    PVarType(const PTime & value) : m_type(VarTime) { m_.time.seconds = value.GetTimeInSeconds(); m_.time.format = PTime::LongISO8601; }
 
     /**Create a string type object.
      */
@@ -251,7 +251,7 @@ class PVarType : public PObject
        the storage to allocate. If VarTime, then thius is the format to use
        for AsString().
       */
-    virtual bool SetType(BasicType type, PINDEX option = 0);
+    virtual bool SetType(BasicType type, int option = -1);
 
     bool              AsBoolean() const;
     int               AsInteger() const;
@@ -282,10 +282,15 @@ class PVarType : public PObject
     /// Set the instances value without changing it's type.
     virtual PVarType & SetValue(const PString & value);
 
+    /// Set the instances value guessing it's type.
+    PVarType & FromString(const PString & value, bool autoDetect = true);
+
+    /// Set the instance value, changing the type to static/dynamic string
     virtual PVarType & SetString(const char * value, bool dynamic);
     PVarType & SetStaticString(const char * value) { return SetString(value, false); }
     PVarType & SetDynamicString(const char * value) { return SetString(value, true); }
 
+    /// Set the instance value, changing the type to static/dynamic binary
     virtual PVarType & SetBinary(const void * data, PINDEX len, bool dynamic);
     PVarType & SetBinary(const PBYTEArray & value, bool dynamic) { return SetBinary(value, value.GetSize(), dynamic); }
     PVarType & SetStaticBinary(const void * data, PINDEX len) { return SetBinary(data, len, false); }
@@ -456,6 +461,58 @@ class PRefVar <PBYTEArray> : public PVarType
 protected:
   PBYTEArray & m_value;
 };
+
+
+class PVarData
+{
+  public:
+    typedef PDictionary<PString, PVarType> Record;
+
+    class Object
+    {
+        PStringArray m_memberNames;
+        Record       m_memberValues;
+        friend class PVarData;
+      public:
+        Object();
+
+        const PStringArray & GetMemberNames() const { return m_memberNames; }
+        const Record & GetMemberValues() const { return m_memberValues; }
+              Record & GetMemberValues()       { return m_memberValues; }
+    };
+
+    template <typename TYPE> class Member : public PVarType
+    {
+        PString m_memberName;
+      public:
+        Member(const char * name, const TYPE & value = TYPE())
+          : PVarType(value)
+          , m_memberName(name)
+        {
+          ConstructMember(m_memberName, this);
+        }
+
+        Member(const Member & other)
+          : PVarType(other)
+          , m_memberName(other.m_memberName)
+        {
+          ConstructMember(m_memberName, this);
+        }
+
+        Member & operator=(const Member & other) { PVarType::operator=(other); return *this; }
+    };
+
+  private:
+    static void ConstructMember(PString & name, PVarType * member);
+};
+
+
+#define P_VAR_DATA_MEMBER(TYPE, member) \
+    struct TYPE##_##member : PVarData::Member<TYPE> { \
+      TYPE##_##member(const TYPE & value = TYPE())  : PVarData::Member<TYPE>(#member, value) { } \
+      TYPE##_##member & operator=(const TYPE & other) { PVarType::operator=(other); return *this; } \
+    } member
+
 
 #endif // P_VARTYPE
 

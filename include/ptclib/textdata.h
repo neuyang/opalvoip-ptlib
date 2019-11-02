@@ -42,14 +42,15 @@ class PTextDataFormat : public PSmartObject
 
     virtual bool ReadHeadings(PChannel & channel);
     virtual bool WriteHeadings(PChannel & channel);
-    virtual bool ReadRecord(PChannel & channel, PStringToString & data);
-    virtual bool WriteRecord(PChannel & channel, const PStringToString & data);
+    virtual bool ReadRecord(PChannel & channel, PVarData::Record & data);
+    virtual bool WriteRecord(PChannel & channel, const PVarData::Record & data);
 
     const PStringArray & GetHeadings() const { return m_headings; }
+    void SetHeadings(const PStringArray & headings) { m_headings = headings; }
 
   protected:
-    virtual int ReadField(PChannel & channel, PString & field) = 0;
-    virtual bool WriteField(PChannel & channel, const PString & field, bool endOfLine) = 0;
+    virtual int ReadField(PChannel & channel, PVarType & field, bool autoDetect) = 0;
+    virtual bool WriteField(PChannel & channel, const PVarType & field, bool endOfLine) = 0;
 
     PStringArray m_headings;
 };
@@ -65,8 +66,8 @@ class PCommaSeparatedVariableFormat : public PTextDataFormat
     PCommaSeparatedVariableFormat(const PStringArray & headings);
 
   protected:
-    virtual int ReadField(PChannel & channel, PString & field);
-    virtual bool WriteField(PChannel & channel, const PString & field, bool endOfLine);
+    virtual int ReadField(PChannel & channel, PVarType & field, bool autoDetect);
+    virtual bool WriteField(PChannel & channel, const PVarType & field, bool endOfLine);
 };
 
 
@@ -78,8 +79,8 @@ class PTabDelimitedFormat : public PTextDataFormat
     PTabDelimitedFormat(const PStringArray & headings);
 
   protected:
-    virtual int ReadField(PChannel & channel, PString & field);
-    virtual bool WriteField(PChannel & channel, const PString & field, bool endOfLine);
+    virtual int ReadField(PChannel & channel, PVarType & field, bool autoDetect);
+    virtual bool WriteField(PChannel & channel, const PVarType & field, bool endOfLine);
 };
 
 
@@ -138,16 +139,23 @@ class PTextDataFile : public PTextFile
     PTextDataFormatPtr GetFormat() const { return m_format; }
 
     /// Read the text data format record
-    bool ReadRecord(PStringToString & data);
+    bool ReadRecord(PVarData::Record & data);
 
     // Write the test data format record
-    bool WriteRecord(const PStringToString & data);
+    bool WriteRecord(const PVarData::Record & data);
 
-  protected:
+    /// Read the text data format object
+    bool ReadObject(PVarData::Object & obj);
+
+    // Write the test data format object
+    bool WriteObject(const PVarData::Object & obj);
+
+protected:
     virtual bool InternalOpen(OpenMode mode, OpenOptions opts, PFileInfo::Permissions permissions);
 
     PTextDataFormatPtr m_format;
     bool m_formatting;
+    bool m_needToWriteHeadings;
 
   private:
     virtual PBoolean Read(void * buf, PINDEX len);
