@@ -461,7 +461,7 @@ void PVarType::PrintOn(ostream & strm) const
       strm << m_.floatExtended;
       break;
     case VarTime :
-      strm << PTime(m_.time.seconds);
+      strm << PTime(0, m_.time.microseconds).AsString(m_.time.format);
       break;
     case VarGUID :
       strm << PGloballyUniqueID(m_.guid, sizeof(m_.guid));
