@@ -1199,31 +1199,31 @@ void PODBC::Field::OnGetValue()
   switch (m_odbcType) {
     case SQL_DATETIME :
       if (m_extra->bindLenOrInd == SQL_NULL_DATA)
-        m_.time.seconds = -1;
+        m_.time.microseconds = -1;
       else
-        m_.time.seconds = PTime(m_extra->datetime).GetTimeInSeconds();
+        m_.time.microseconds = PTime(m_extra->datetime).GetTimestamp();
       break;
 
     case SQL_C_TYPE_DATE:
       if (m_extra->bindLenOrInd == SQL_NULL_DATA)
-        m_.time.seconds = -1;
+        m_.time.microseconds = -1;
       else
-        m_.time.seconds = PTime(0, 0, 0, m_extra->date.day, m_extra->date.month, m_extra->date.year).GetTimeInSeconds();
+        m_.time.microseconds = PTime(0, 0, 0, m_extra->date.day, m_extra->date.month, m_extra->date.year).GetTimestamp();
       break;
 
     case SQL_C_TYPE_TIME:
       if (m_extra->bindLenOrInd == SQL_NULL_DATA)
-        m_.time.seconds = -1;
+        m_.time.microseconds = -1;
       else
-        m_.time.seconds = PTime(m_extra->time.second, m_extra->time.minute, m_extra->time.hour, 0, 0, 0).GetTimeInSeconds();
+        m_.time.microseconds = PTime(m_extra->time.second, m_extra->time.minute, m_extra->time.hour, 0, 0, 0).GetTimestamp();
       break;
 
     case SQL_C_TYPE_TIMESTAMP:
       if (m_extra->bindLenOrInd == SQL_NULL_DATA)
-        m_.time.seconds = -1;
+        m_.time.microseconds = -1;
       else
-        m_.time.seconds = PTime(m_extra->timestamp.second, m_extra->timestamp.minute, m_extra->timestamp.hour,
-                                m_extra->timestamp.day, m_extra->timestamp.month, m_extra->timestamp.year).GetTimeInSeconds();
+        m_.time.microseconds = PTime(m_extra->timestamp.second, m_extra->timestamp.minute, m_extra->timestamp.hour,
+                                m_extra->timestamp.day, m_extra->timestamp.month, m_extra->timestamp.year).GetTimestamp();
       break;
 
     default :
@@ -1277,10 +1277,11 @@ void PODBC::Field::OnValueChanged()
       break;
 
     case VarTime:
-      if (m_.time.seconds <= 0)
+    {
+      PTime time(0, m_.time.microseconds);
+      if (!time.IsValid())
         SetNULL();
       else {
-        PTime time(m_.time.seconds);
         switch (m_odbcType) {
           case SQL_DATETIME :
             strcpy(m_extra->datetime, time.AsString("YYYY-MM-dd hh:mm:ss"));
@@ -1314,6 +1315,7 @@ void PODBC::Field::OnValueChanged()
         }
       }
       break;
+    }
 
     default :
       m_extra->bindLenOrInd = GetSize();
@@ -1657,4 +1659,3 @@ PODBC::Field & PODBC::RecordSet::operator()(RowIndex row, PINDEX col)
 
 
 #endif // P_ODBC
-

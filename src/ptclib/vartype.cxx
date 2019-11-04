@@ -112,7 +112,7 @@ bool PVarType::SetType(BasicType type, int option)
   m_type = type;
   switch (m_type) {
     case VarTime :
-      m_.time.seconds = 0;
+      m_.time.microseconds = 0;
       m_.time.format = option < 0 ? PTime::LongISO8601 : (PTime::TimeFormat)option;
       break;
 
@@ -274,7 +274,7 @@ PVarType & PVarType::operator=(const PGloballyUniqueID & value)
 PVarType & PVarType::operator=(const PTime & value)
 {
   if (SetType(VarTime)) {
-    m_.time.seconds = value.GetTimeInSeconds();
+    m_.time.microseconds = value.GetTimestamp();
     OnValueChanged();
   }
   return *this;
@@ -530,7 +530,7 @@ void PVarType::ReadFrom(istream & strm)
       strm >> m_.floatExtended;
       break;
     case VarTime :
-      { PTime t; strm >> t; m_.time.seconds = t.GetTimeInSeconds(); }
+      { PTime t; strm >> t; m_.time.microseconds = t.GetTimestamp(); }
       break;
     case VarGUID :
       { PGloballyUniqueID guid; strm >> guid; memcpy(m_.guid, guid, sizeof(m_.guid)); }
@@ -594,7 +594,7 @@ bool PVarType::AsBoolean() const
     case VarFloatExtended :
       return m_.floatExtended != 0;
     case VarTime :
-      return PTime(m_.time.seconds).IsValid();
+      return PTime(0, m_.time.microseconds).IsValid();
     case VarGUID :
       return !PGloballyUniqueID(m_.guid, sizeof(m_.guid)).IsNULL();
     case VarStaticString :
@@ -666,9 +666,9 @@ int PVarType::AsInteger() const
         return std::numeric_limits<int>::max();
       return (int)m_.floatExtended;
     case VarTime :
-      if (m_.time.seconds > std::numeric_limits<int>::max())
+      if (m_.time.microseconds > std::numeric_limits<int64_t>::max())
         return std::numeric_limits<int>::max();
-      return (int)m_.time.seconds;
+      return (int)m_.time.microseconds;
     case VarGUID :
       return !PGloballyUniqueID(m_.guid, sizeof(m_.guid)).HashFunction();
     case VarStaticString :
@@ -742,9 +742,9 @@ unsigned PVarType::AsUnsigned() const
         return std::numeric_limits<unsigned>::max();
       return (unsigned)m_.floatExtended;
     case VarTime :
-      if ((unsigned)m_.time.seconds > std::numeric_limits<unsigned>::max())
+      if ((unsigned)m_.time.microseconds > std::numeric_limits<unsigned>::max())
         return std::numeric_limits<unsigned>::max();
-      return (unsigned)m_.time.seconds;
+      return (unsigned)m_.time.microseconds;
     case VarGUID :
       return !PGloballyUniqueID(m_.guid, sizeof(m_.guid)).HashFunction();
     case VarStaticString :
@@ -832,7 +832,7 @@ double PVarType::AsFloat() const
     case VarFloatExtended :
       return (double)m_.floatExtended;
     case VarTime :
-      return (double)m_.time.seconds;
+      return (double)m_.time.microseconds;
     case VarGUID :
       return !PGloballyUniqueID(m_.guid, sizeof(m_.guid)).HashFunction();
     case VarStaticString :
@@ -874,7 +874,7 @@ PTime PVarType::AsTime() const
 
     case VarTime :
       const_cast<PVarType *>(this)->OnGetValue();
-      return PTime(m_.time.seconds);
+      return PTime(0, m_.time.microseconds);
 
     default :
       return PTime(AsInteger());
@@ -918,7 +918,7 @@ PString PVarType::AsString() const
     case VarFloatExtended :
       strm << m_.floatExtended; break;
     case VarTime :
-      strm << PTime(m_.time.seconds).AsString(m_.time.format); break;
+      strm << PTime(0, m_.time.microseconds).AsString(m_.time.format); break;
     case VarGUID :
       strm << PGloballyUniqueID(m_.guid, sizeof(m_.guid)); break;
     case VarStaticString :

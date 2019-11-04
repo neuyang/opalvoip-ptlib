@@ -133,7 +133,7 @@ class PVarType : public PObject
 
     /**Create a time of day type object.
      */
-    PVarType(const PTime & value) : m_type(VarTime) { m_.time.seconds = value.GetTimeInSeconds(); m_.time.format = PTime::LongISO8601; }
+    PVarType(const PTime & value) : m_type(VarTime) { m_.time.microseconds = value.GetTimestamp(); m_.time.format = PTime::LongISO8601; }
 
     /**Create a string type object.
      */
@@ -330,7 +330,7 @@ class PVarType : public PObject
       uint8_t     guid[PGloballyUniqueID::Size];
 
       struct {
-        time_t            seconds;
+        int64_t           microseconds;
         PTime::TimeFormat format;
       } time;
 
@@ -419,8 +419,8 @@ class PRefVar <PTime> : public PVarType
     PRefVar & operator=(const PTime & value) { PVarType::operator=(value); return *this; }
 
   protected:
-    virtual void OnGetValue()     { this->m_.time.seconds = this->m_value.GetTimeInSeconds(); }
-    virtual void OnValueChanged() { this->m_value.SetTimestamp(this->m_.time.seconds);        }
+    virtual void OnGetValue()     { this->m_.time.microseconds = this->m_value.GetTimestamp(); }
+    virtual void OnValueChanged() { this->m_value.SetTimestamp(0, this->m_.time.microseconds); }
 
   protected:
     PTime & m_value;
@@ -517,4 +517,3 @@ class PVarData
 #endif // P_VARTYPE
 
 #endif  // PTLIB_VARTYPE_H
-
