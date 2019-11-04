@@ -122,7 +122,7 @@ class PTextDataFile : public PTextFile
     */
     PTextDataFile(
       const PFilePath & name,    ///< Name of file to open.
-      OpenMode mode = ReadOnly,  ///< Mode in which to open the file.
+      OpenMode mode,             ///< Mode in which to open the file.
       OpenOptions opts = ModeDefault,    ///< <code>OpenOptions</code> enum# for open operation.
       PTextDataFormatPtr format = PTextDataFormatPtr()  ///< Format for the text data
     );
