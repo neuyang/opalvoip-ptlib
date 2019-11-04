@@ -310,28 +310,28 @@ PVarType & PVarType::FromString(const PString & value, bool autoDetect)
   if (trimmed.IsEmpty())
     operator=(value);
   else if (trimmed.FindSpan(Digits) == P_MAX_INDEX) {
-    uint64_t i = trimmed.AsUnsigned64();
-    if (i <= std::numeric_limits<uint8_t>::max())
-      operator=((uint8_t)i);
-    else if (i < std::numeric_limits<uint16_t>::max())
-      operator=((uint16_t)i);
-    else if (i < std::numeric_limits<uint32_t>::max())
-      operator=((uint32_t)i);
+    uint64_t ival = trimmed.AsUnsigned64();
+    if (ival <= std::numeric_limits<uint8_t>::max())
+      operator=((uint8_t)ival);
+    else if (ival < std::numeric_limits<uint16_t>::max())
+      operator=((uint16_t)ival);
+    else if (ival < std::numeric_limits<uint32_t>::max())
+      operator=((uint32_t)ival);
     else
-      operator=((uint64_t)i);
+      operator=(ival);
   }
   else if (value.GetLength() == 1)
     operator=(value[0]);
   else if ((trimmed[0] == '+' || trimmed[0] == '-') && trimmed.FindSpan(Digits, 1) == P_MAX_INDEX) {
-    uint64_t i = trimmed.AsUnsigned64();
-    if (i >= std::numeric_limits<int8_t>::min() && i <= std::numeric_limits<int8_t>::max())
-      operator=((int8_t)i);
-    else if (i >= std::numeric_limits<int16_t>::min() && i < std::numeric_limits<int16_t>::max())
-      operator=((int16_t)i);
-    else if (i >= std::numeric_limits<int32_t>::min() && i < std::numeric_limits<int32_t>::max())
-      operator=((int32_t)i);
+    int64_t ival = trimmed.AsUnsigned64();
+    if (ival >= std::numeric_limits<int8_t>::min() && ival <= std::numeric_limits<int8_t>::max())
+      operator=((int8_t)ival);
+    else if (ival >= std::numeric_limits<int16_t>::min() && ival < std::numeric_limits<int16_t>::max())
+      operator=((int16_t)ival);
+    else if (ival >= std::numeric_limits<int32_t>::min() && ival < std::numeric_limits<int32_t>::max())
+      operator=((int32_t)ival);
     else
-      operator=((int64_t)i);
+      operator=(ival);
   }
   else if (trimmed[pos = trimmed.FindSpan(Digits, trimmed[0] == '+' || trimmed[0] == '-' ? 1 : 0)] == 'E' &&
            trimmed.FindSpan(Digits, trimmed[pos+1] == '+' || trimmed[pos+1] == '-' ? (pos+3) : (pos+2)) == P_MAX_INDEX) {
