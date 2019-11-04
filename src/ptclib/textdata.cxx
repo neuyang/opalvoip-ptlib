@@ -182,16 +182,18 @@ int PCommaSeparatedVariableFormat::ReadField(PChannel & channel, PVarType & fiel
 bool PCommaSeparatedVariableFormat::WriteField(PChannel & channel, const PVarType & field, bool endOfLine)
 {
   switch (field.GetType()) {
-    case PVarType::VarStaticString:
-    case PVarType::VarDynamicString:
-      channel << field.AsString().ToLiteral();
-      break;
-    case PVarType::VarStaticBinary :
-    case PVarType::VarDynamicBinary :
-      channel << field.AsString();
-      break;
     default:
       channel << field;
+      break;
+    case PVarType::VarStaticString:
+    case PVarType::VarDynamicString:
+    case PVarType::VarStaticBinary :
+    case PVarType::VarDynamicBinary :
+      PString str = field.AsString();
+      if (!str.IsEmpty() && (str.FindOneOf(",\r\n") != P_MAX_INDEX || isspace(str[0]) || isspace(str[str.GetLength()-1])))
+        channel << str.ToLiteral();
+      else
+        channel << str;
   }
   if (endOfLine)
     channel << endl;
