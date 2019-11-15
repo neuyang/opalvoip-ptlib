@@ -36,6 +36,15 @@ void Test1()
     cout << pstring1 << endl;
     cout << pstring2 << endl;
   }
+#ifdef P_HAS_WCHAR
+  {
+    wchar_t widestr[] = L"Hello world";
+    PString pstring(widestr, sizeof(widestr)/2-1);
+    cout << pstring << endl;
+    PWCharArray ucs2 = pstring.AsUCS2();
+    cout << boolalpha << (memcmp(ucs2, widestr, sizeof(widestr)) == 0) << endl;
+  }
+#endif
 }
 
 

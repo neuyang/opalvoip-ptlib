@@ -50,6 +50,42 @@ extern "C" int vsprintf(char *, const char *, va_list);
 #endif
 
 
+#ifdef P_HAS_ICONV
+
+  #include <iconv.h>
+
+  class PCharsetConverter
+  {
+    iconv_t m_cd;
+  public:
+    PCharsetConverter(const char * from, const char * to)
+    {
+      m_cd = iconv_open(from, to);
+      PAssert(m_cd != (iconv_t)-1, PInvalidParameter);
+    }
+
+    ~PCharsetConverter()
+    {
+      if (m_cd != (iconv_t)-1)
+        iconv_close(m_cd);
+    }
+
+    bool Convert(char * inPtr, size_t inLen, char * outPtr, size_t outSize, PINDEX & outLen)
+    {
+      if (m_cd == (iconv_t)-1)
+        return false;
+
+      outLen = iconv(m_cd, &inPtr, &inLen, &outPtr, &outSize);
+      if (outLen != (size_t)-1)
+        return true;
+
+      PTRACE(1, "PTLib", "Could not convert character set: errno=" << errno);
+      return false;
+    }
+  }
+#endif // P_HAS_ICONV
+
+
 PDEFINE_POOL_ALLOCATOR(PContainerReference);
 
 
@@ -2093,18 +2129,14 @@ PWCharArray PString::AsUCS2() const
   if (IsEmpty())
     return ucs2;
 
-#ifdef P_HAS_G_CONVERT
+#if P_HAS_ICONV
 
-  gsize g_len = 0;
-  gchar * g_ucs2 = g_convert(theArray, GetSize()-1, "UCS-2", "UTF-8", 0, &g_len, 0);
-  if (g_ucs2 != NULL) {
-    if (ucs2.SetSize(g_len+1))
-      memcpy(ucs2.GetPointer(), g_ucs2, g_len*2);
-    g_free(g_ucs2);
+  PCharsetConverter conv("UTF-8", "UCS-2");
+  PINDEX outLen;
+  if (conv.Convert(theArray, m_length, (char *)ucs2.GetPointer(m_length), m_length*2, outLen)) {
+    ucs2.SetSize(outLen+1);
     return ucs2;
   }
-
-  PTRACE(1, "PTLib\tg_convert failed with error " << errno);
 
 #elif defined(_WIN32)
 
@@ -2122,7 +2154,8 @@ PWCharArray PString::AsUCS2() const
     PTRACE(1, "PTLib\tMultiByteToWideChar failed with error " << ::GetLastError());
 #endif
 
-#endif
+#endif // P_HAS_ICONV || _WIN32
+
 
   if (ucs2.SetSize(GetSize())) { // Will be at least this big
     PINDEX count = 0;
@@ -2171,27 +2204,23 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     return;
   }
 
-#ifdef P_HAS_G_CONVERT
-
-  gsize g_len = 0;
-  gchar * g_utf8 = g_convert(ptr, len, "UTF-8", "UCS-2", 0, &g_len, 0);
-  if (g_utf8 == NULL) {
-    MakeEmpty();
+#if P_HAS_ICONV
+  PCharsetConverter conv("UCS-2", "UTF-8");
+  // Worst case is every UCS-2 word creates 3 UTF-8 bytes out
+  if (conv.Convert((char *)ptr, len*2, PCharArray::GetPointer(len*3+1), len*3, m_length)) {
+    SetSize(m_length+1);
     return;
   }
 
-  m_length = g_len;
-  if (SetSize(m_length+1))
-    memcpy(theArray, g_char, g_len);
-  g_free(g_utf8);
-
 #elif defined(_WIN32)
 
-  m_length = WideCharToMultiByte(CP_UTF8, 0, ptr, len, NULL, 0, NULL, NULL);
-  if (SetSize(m_length+1))
-    WideCharToMultiByte(CP_UTF8, 0, ptr, len, theArray, GetSize(), NULL, NULL);
+  int result = WideCharToMultiByte(CP_UTF8, 0, ptr, len, NULL, 0, NULL, NULL);
+  if (result > 0 && SetSize(result+1)) {
+    m_length = WideCharToMultiByte(CP_UTF8, 0, ptr, len, theArray, GetSize(), NULL, NULL);
+    return;
+  }
 
-#else
+#endif // P_HAS_ICONV || _WIN32
 
   PINDEX i;
   PINDEX count = 0;
@@ -2222,8 +2251,6 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
       }
     }
   }
-
-#endif
 }
 
 #endif // P_HAS_WCHAR
