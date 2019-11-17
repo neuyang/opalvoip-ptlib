@@ -491,9 +491,9 @@ dnl ########################################################################
 dnl check for UCS-2 to UTF-8 converter
 
 MY_LINK_IFELSE(
-   [for iconv],
+   [for iconv in standard library],
    [],
-   [-liconv],
+   [],
    [#include <iconv.h>],
    [
       iconv_t cd;
@@ -501,10 +501,23 @@ MY_LINK_IFELSE(
       size_t l;
       iconv(cd, &s, &l, &s, &l);
    ],
-   [
-      AC_DEFINE(P_HAS_ICONV, 1)
-      LIBS="-liconv $LIBS"
-   ]
+   [AC_DEFINE(P_HAS_ICONV, 1)],
+   MY_LINK_IFELSE(
+      [for iconv with separate library],
+      [],
+      [-liconv],
+      [#include <iconv.h>],
+      [
+         iconv_t cd;
+         char * s;
+         size_t l;
+         iconv(cd, &s, &l, &s, &l);
+      ],
+      [
+         AC_DEFINE(P_HAS_ICONV, 1)
+         LIBS="-liconv $LIBS"
+      ]
+   )
 )
 
 
