@@ -49,20 +49,6 @@ PString PProcess::GetUserName() const
   return PString("route4");
   }
 
-void PProcess::PXShowSystemWarning(PINDEX num, const PString & str)
-{
-  PProcess::Current()._PXShowSystemWarning(num, str);
-}
-
-void PProcess::_PXShowSystemWarning(PINDEX code, const PString & str)
-{
-  PError << "PWLib/Unix error #"
-         << code
-         << "-"
-         << str
-         << endl;
-}
-
 PString PProcess::GetOSClass()
   {
   return PString("ATI");

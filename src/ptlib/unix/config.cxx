@@ -206,14 +206,12 @@ void PConfig::Cached::Flush()
   PDirectory dir = m_filePath.GetDirectory();
   if (!dir.Exists() && !dir.Create(PFileInfo::UserExecute|PFileInfo::UserWrite|PFileInfo::UserRead, true)) {
     PTRACE(1, "Could not create directory: " << dir);
-    PProcess::PXShowSystemWarning(2000, "Cannot create config directory");
     return;
   }
 
   PTextFile file;
   if (!(PFile::Exists(m_filePath) ? file.Open(m_filePath + ".new", PFile::WriteOnly) : file.Open(m_filePath , PFile::WriteOnly))) {
     PTRACE(1, "Could not create file: " << file.GetFilePath() << " - " << file.GetErrorText());
-    PProcess::PXShowSystemWarning(2001, "Cannot create config file: " + file.GetErrorText());
     return;
   }
 
@@ -242,7 +240,6 @@ void PConfig::Cached::Flush()
 
   if (file.GetFilePath() != m_filePath && !file.Rename(file.GetFilePath(), m_filePath.GetFileName(), true)) {
     PTRACE(1, "Could not rename file: " << file.GetFilePath() << " to " << m_filePath << " - " << file.GetErrorText());
-    PProcess::PXShowSystemWarning(2001, "Cannot rename config file: " + file.GetErrorText());
     return;
   }
 

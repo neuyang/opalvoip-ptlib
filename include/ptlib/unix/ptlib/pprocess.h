@@ -38,12 +38,7 @@ PDICTIONARY(PXFdDict, POrdinalKey, PThread);
 
     ~PProcess();
 
-    static void PXShowSystemWarning(PINDEX code);
-    static void PXShowSystemWarning(PINDEX code, const PString & str);
-
   protected:
-    virtual void _PXShowSystemWarning(PINDEX code, const PString & str);
-
 #if P_HAS_BACKTRACE && PTRACING
   public:
     enum { WalkStackSignal = SIGTRAP };

@@ -218,7 +218,7 @@ PBoolean PXConfig::Flush(const PFilePath & filename, PBoolean force)
 
   if ((force || (instanceCount == 0)) && saveOnExit && dirty) {
     if (instanceCount != 0) 
-      PProcess::PXShowSystemWarning(2000, "Flush of config with non-zero instance");
+      PTRACE(2, "Flush of config with non-zero instance");
     WriteToFile(filename);
     dirty = false;
   }
@@ -231,8 +231,7 @@ PBoolean PXConfig::Flush(const PFilePath & filename, PBoolean force)
 PBoolean PXConfig::WriteToFile(const PFilePath & filename)
 {
 #ifdef WOT_NO_FILESYSTEM
-  PProcess::PXShowSystemWarning
-                       (2000, "No filing system for PXConfig::WriteToFile");
+  PTRACE(1, "No filing system for PXConfig::WriteToFile");
   return true;
 #else
   // make sure the directory that the file is to be written into exists
@@ -241,13 +240,13 @@ PBoolean PXConfig::WriteToFile(const PFilePath & filename)
                                    PFileInfo::UserExecute |
                                    PFileInfo::UserWrite |
                                    PFileInfo::UserRead)) {
-    PProcess::PXShowSystemWarning(2000, "Cannot create PWLIB config dir");
+    PTRACE(1, "Cannot create PWLIB config dir " << dir);
     return false;
   }
 
   PTextFile file;
   if (!file.Open(filename, PFile::WriteOnly)) {
-    PProcess::PXShowSystemWarning(2001, "Cannot create PWLIB config file");
+    PTRACE(1, "Cannot create PWLIB config file " << file.GetFilePath() << " - " << file.GetErrorText());
     return false;
   }
 
@@ -272,8 +271,6 @@ PBoolean PXConfig::WriteToFile(const PFilePath & filename)
 PBoolean PXConfig::ReadFromFile (const PFilePath & filename)
 {
 #ifdef WOT_NO_FILESYSTEM
-  PProcess::PXShowSystemWarning
-                       (2000, "No filing system for PXConfig::ReadFromFile");
   return true;
 #else
   PINDEX len;
