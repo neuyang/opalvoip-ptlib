@@ -50,6 +50,9 @@ extern char **environ;
 #endif
 
 
+static PTimeInterval const ConfigFlushTimeout(0, 1);
+
+
 //
 // a list of sections
 //
@@ -72,7 +75,7 @@ class PConfig::Cached : public PDictionary<PCaselessString, PStringOptions>
     PFilePath      m_filePath;
     atomic<uint32_t> m_instanceCount;
     PDECLARE_MUTEX(m_mutex);
-    bool           m_dirty;
+    atomic<bool>   m_dirty;
     bool           m_canSave;
     PTimer         m_flushTimer;
 
@@ -130,6 +133,8 @@ PConfig::Cached::Cached(const PFilePath & path)
 {
   PTRACE(4, "Created " << this << " for " << m_filePath);
 
+  m_flushTimer.SetNotifier(PCREATE_NOTIFIER(FlushTimeout));
+
   // attempt to open file
   PTextFile file;
   if (!file.Open(m_filePath, PFile::ReadOnly))
@@ -180,27 +185,27 @@ PConfig::Cached::~Cached()
 
 void PConfig::Cached::SetDirty()
 {
-  PTRACE_IF(4, !m_dirty, "Setting config cache dirty.");
-  m_dirty = true;
-  m_flushTimer.SetInterval(0, 10);
+  if (!m_dirty.exchange(true)) {
+    PTRACE(4, "Setting config cache dirty.");
+  }
+  m_flushTimer = ConfigFlushTimeout;
 }
 
 
 void PConfig::Cached::FlushTimeout(PTimer&, INT)
 {
-  m_mutex.Wait();
   Flush();
-  m_mutex.Signal();
 }
 
 
 void PConfig::Cached::Flush()
 {
-  if (!m_dirty)
+  if (!m_dirty.exchange(false)) {
+    PTRACE(4, "No flush required for config file: " << m_filePath);
     return;
+  }
 
-  m_dirty = false;
-  m_flushTimer.Stop();
+  PWaitAndSignal lock(m_mutex);
 
   // make sure the directory that the file is to be written into exists
   PDirectory dir = m_filePath.GetDirectory();
@@ -243,7 +248,7 @@ void PConfig::Cached::Flush()
     return;
   }
 
-  PTRACE(4, "Flushed config file: " << m_filePath);
+  PTRACE(3, "Flushed config file: " << m_filePath);
 }
 
 
