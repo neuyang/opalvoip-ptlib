@@ -1094,6 +1094,9 @@ bool PConsoleChannel::SetLocalEcho(bool localEcho)
   if (!ConvertOSError(tcgetattr(os_handle, &ios)))
     return false;
 
+  if (((ios.c_lflag&ECHO) != 0) == localEcho)
+    return true;
+
   if (localEcho)
     ios.c_lflag |= ECHO;
   else
@@ -1120,6 +1123,9 @@ bool PConsoleChannel::SetLineBuffered(bool lineBuffered)
   struct termios ios;
   if (!ConvertOSError(tcgetattr(os_handle, &ios)))
     return false;
+
+  if (((ios.c_lflag&ICANON) != 0) == lineBuffered)
+    return true;
 
   if (lineBuffered)
     ios.c_lflag |= ICANON;

@@ -31,9 +31,6 @@ PDICTIONARY(PXFdDict,    POrdinalKey, PThread);
     virtual void PXOnSignal(int);
     void         PXCheckSignals();
 
-    static void PXShowSystemWarning(PINDEX code, const PString & str);
-    virtual void _PXShowSystemWarning(PINDEX code, const PString & str);
-
   protected:
     int pxSignals;
     void DoArgs(void);

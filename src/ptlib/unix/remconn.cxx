@@ -144,7 +144,7 @@ PBoolean PRemoteConnection::Open(const PString & name,
   // cannot open remote connection with an empty name
   if (name.IsEmpty()) {
     status = NoNameOrNumber;
-    PProcess::PXShowSystemWarning(1000, ErrorTable[0].str);
+    PTRACE(1, ErrorTable[0].str);
     return false;
   }
 
@@ -153,7 +153,7 @@ PBoolean PRemoteConnection::Open(const PString & name,
   PString phoneNumber;
   if ((phoneNumber = config.GetString(name, NumberStr, "")).IsEmpty()) {
     status = NoNameOrNumber;
-    PProcess::PXShowSystemWarning(1001, ErrorTable[1].str);
+    PTRACE(1, ErrorTable[1].str);
     return false;
   }
 

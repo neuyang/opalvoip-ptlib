@@ -34,7 +34,6 @@
     virtual void HandleRunTimeSignal(int signal);
   protected:
     int  InitialiseService();
-    void _PXShowSystemWarning(PINDEX num, const PString & str);
     PString pidFileToRemove;
     PBoolean isTerminating;
 

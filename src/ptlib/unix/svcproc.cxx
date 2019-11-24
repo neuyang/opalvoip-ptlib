@@ -153,12 +153,6 @@ static int KillProcess(int pid, unsigned timeout, int sig)
 #endif // !P_VXWORKS
 
 
-void PServiceProcess::_PXShowSystemWarning(PINDEX code, const PString & str)
-{
-  PSYSTEMLOG(Warning, "PTLib\t" << GetOSClass() << " error #" << code << '-' << str);
-}
-
-
 static unsigned CountOptionSet(const PArgList & args, const char * options)
 {
   unsigned count = 0;

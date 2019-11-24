@@ -428,22 +428,6 @@ bool PProcess::HostSystemURLHandlerInfo::Register()
 
 
 
-void PProcess::PXShowSystemWarning(PINDEX num)
-{
-  PXShowSystemWarning(num, "");
-}
-
-void PProcess::PXShowSystemWarning(PINDEX num, const PString & str)
-{
-  PProcess::Current()._PXShowSystemWarning(num, str);
-}
-
-void PProcess::_PXShowSystemWarning(PINDEX code, const PString & str)
-{
-  PError << "PWLib " << GetOSClass() << " error #" << code << '-' << str << endl;
-}
-
-
 static void StaticSignalHandler(int signal, siginfo_t * info, void *)
 {
   PProcess::Current().AsynchronousRunTimeSignal(signal, info ? info->si_pid : 0);
