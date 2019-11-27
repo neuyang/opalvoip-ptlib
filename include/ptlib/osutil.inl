@@ -199,11 +199,11 @@ PINLINE PBoolean PTime::IsValid() const
 PINLINE PInt64 PTime::GetTimestamp() const
   { return m_microSecondsSinceEpoch.load(); }
 
-PINLINE void PTime::SetTimestamp(time_t seconds, int64_t usecs)
-  { m_microSecondsSinceEpoch.store(seconds*Micro + usecs); }
+PINLINE PTime & PTime::SetTimestamp(time_t seconds, int64_t usecs)
+  { m_microSecondsSinceEpoch.store(seconds*Micro + usecs); return *this; }
 
-PINLINE void PTime::AddTimestamp(int64_t usecs)
- { m_microSecondsSinceEpoch += usecs; }
+PINLINE PTime & PTime::AddTimestamp(int64_t usecs)
+ { m_microSecondsSinceEpoch += usecs; return *this; }
 
 PINLINE time_t PTime::GetTimeInSeconds() const
   { return m_microSecondsSinceEpoch.load()/Micro; }
