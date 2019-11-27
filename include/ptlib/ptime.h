@@ -193,7 +193,7 @@ class PTime : public PObject
        The upper 32 bits are seconds since 1st January 1900 and the lower 32
        bits are 2^32'th of a second, or 0.23ns.
      */
-    void SetNTP(
+    PTime & SetNTP(
       PUInt64 ntp
     );
 
@@ -207,14 +207,14 @@ class PTime : public PObject
 
     /**Set the time in seconds and microseconds.
       */
-    void SetTimestamp(
+    PTime & SetTimestamp(
       time_t seconds,
       int64_t usecs = 0
     );
 
     /**Add the time in microseconds.
       */
-    void AddTimestamp(
+    PTime & AddTimestamp(
       int64_t usecs
     );
 
