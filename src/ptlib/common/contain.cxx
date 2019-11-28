@@ -2202,7 +2202,7 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     m_length = WideCharToMultiByte(CP_UTF8, 0, ptr, len, theArray, GetSize(), NULL, NULL);
     return;
   }
-  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << GetError());
+  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << ::GetLastError());
 
 #endif // P_HAS_ICONV || _WIN32
 
