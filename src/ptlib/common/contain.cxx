@@ -51,38 +51,7 @@ extern "C" int vsprintf(char *, const char *, va_list);
 
 
 #ifdef P_HAS_ICONV
-
   #include <iconv.h>
-
-  class PCharsetConverter
-  {
-    iconv_t m_cd;
-  public:
-    PCharsetConverter(const char * from, const char * to)
-    {
-      m_cd = iconv_open(from, to);
-      PAssert(m_cd != (iconv_t)-1, PInvalidParameter);
-    }
-
-    ~PCharsetConverter()
-    {
-      if (m_cd != (iconv_t)-1)
-        iconv_close(m_cd);
-    }
-
-    bool Convert(char * inPtr, size_t inLen, char * outPtr, size_t outSize, PINDEX & outLen)
-    {
-      if (m_cd == (iconv_t)-1)
-        return false;
-
-      outLen = iconv(m_cd, &inPtr, &inLen, &outPtr, &outSize);
-      if (outLen != (size_t)-1)
-        return true;
-
-      PTRACE(1, "PTLib", "Could not convert character set: errno=" << errno);
-      return false;
-    }
-  }
 #endif // P_HAS_ICONV
 
 
@@ -2131,12 +2100,16 @@ PWCharArray PString::AsUCS2() const
 
 #if P_HAS_ICONV
 
-  PCharsetConverter conv("UTF-8", "UCS-2");
-  PINDEX outLen;
-  if (conv.Convert(theArray, m_length, (char *)ucs2.GetPointer(m_length), m_length*2, outLen)) {
+  mbstate_t mb;
+  mbsinit(&mb);
+  const char * src = theArray;
+  size_t outLen = mbsrtowcs(ucs2.GetPointer(m_length), &src, m_length, &mb);
+  if (outLen != (size_t)-1) {
     ucs2.SetSize(outLen+1);
     return ucs2;
   }
+
+  PTRACE(1, "PTLib", "Could not convert from UTF-8 to UCS2: errno=" << errno << ' ' << strerror(errno));
 
 #elif defined(_WIN32)
 
@@ -2190,7 +2163,7 @@ PWCharArray PString::AsUCS2() const
       }
     }
 
-    ucs2.SetSize(count);  // Final size
+    ucs2.SetSize(count+1);  // Final size
   }
 
   return ucs2;
@@ -2205,11 +2178,21 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
   }
 
 #if P_HAS_ICONV
-  PCharsetConverter conv("UCS-2", "UTF-8");
-  // Worst case is every UCS-2 word creates 3 UTF-8 bytes out
-  if (conv.Convert((char *)ptr, len*2, PCharArray::GetPointer(len*3+1), len*3, m_length)) {
-    SetSize(m_length+1);
-    return;
+  iconv_t cd = iconv_open("UCS-2", "UTF-8");
+  if (PAssert(cd != (iconv_t)-1, PInvalidParameter)) {
+    // Worst case is every UCS-2 word creates 4 UTF-8 bytes out
+    char * inPtr = (char *)ptr;
+    size_t inLen = len*2;
+    char * outPtr = PCharArray::GetPointer(len*4+1);
+    size_t outSize = GetSize()-1;
+    size_t result = iconv(cd, &inPtr, &inLen, &outPtr, &outSize);
+    iconv_close(cd);
+    if (result != (size_t)-1) {
+      SetSize(GetSize() - outSize);
+      return;
+    }
+    
+    PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << errno << ' ' << strerror(errno));
   }
 
 #elif defined(_WIN32)
@@ -2219,6 +2202,7 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     m_length = WideCharToMultiByte(CP_UTF8, 0, ptr, len, theArray, GetSize(), NULL, NULL);
     return;
   }
+  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << GetError());
 
 #endif // P_HAS_ICONV || _WIN32
 
