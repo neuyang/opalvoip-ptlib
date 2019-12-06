@@ -283,10 +283,6 @@
 #undef P_SHM_VIDEO
 #undef P_HAS_RDTSC
 
-#if P_HAS_WCHAR
-  #undef P_HAS_ICONV
-#endif
-
 
 /////////////////////////////////////////////////
 //
