@@ -50,11 +50,6 @@ extern "C" int vsprintf(char *, const char *, va_list);
 #endif
 
 
-#ifdef P_HAS_ICONV
-  #include <iconv.h>
-#endif // P_HAS_ICONV
-
-
 PDEFINE_POOL_ALLOCATOR(PContainerReference);
 
 
@@ -2098,10 +2093,10 @@ PWCharArray PString::AsUCS2() const
   if (IsEmpty())
     return ucs2;
 
-#if P_HAS_ICONV
+#ifdef P_LINUX
 
   mbstate_t mb;
-  mbsinit(&mb);
+  memset(&mb, 0, sizeof(mb));
   const char * src = theArray;
   size_t outLen = mbsrtowcs(ucs2.GetPointer(m_length), &src, m_length, &mb);
   if (outLen != (size_t)-1) {
@@ -2127,7 +2122,7 @@ PWCharArray PString::AsUCS2() const
     PTRACE(1, "PTLib\tMultiByteToWideChar failed with error " << ::GetLastError());
 #endif
 
-#endif // P_HAS_ICONV || _WIN32
+#endif // P_LINUX || _WIN32
 
 
   if (ucs2.SetSize(GetSize())) { // Will be at least this big
@@ -2177,23 +2172,19 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     return;
   }
 
-#if P_HAS_ICONV
-  iconv_t cd = iconv_open("UCS-2", "UTF-8");
-  if (PAssert(cd != (iconv_t)-1, PInvalidParameter)) {
-    // Worst case is every UCS-2 word creates 4 UTF-8 bytes out
-    char * inPtr = (char *)ptr;
-    size_t inLen = len*2;
-    char * outPtr = PCharArray::GetPointer(len*4+1);
-    size_t outSize = GetSize()-1;
-    size_t result = iconv(cd, &inPtr, &inLen, &outPtr, &outSize);
-    iconv_close(cd);
-    if (result != (size_t)-1) {
-      SetSize(GetSize() - outSize);
-      return;
-    }
-    
-    PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << errno << ' ' << strerror(errno));
+#ifdef P_LINUX
+
+  mbstate_t mb;
+  memset(&mb, 0, sizeof(mb));
+  const wchar_t * src = ptr;
+  size_t outLen = wcsnrtombs(NULL, &src, len, 0, &mb);
+  if (outLen != (size_t)-1 && outLen > 0) {
+    memset(&mb, 0, sizeof(mb));
+    wcsnrtombs(GetPointerAndSetLength(outLen), &ptr, len, outLen, &mb);
+    return;
   }
+
+  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << errno << ' ' << strerror(errno));
 
 #elif defined(_WIN32)
 
