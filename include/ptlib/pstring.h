@@ -101,10 +101,11 @@ typedef PBaseArray<wchar_t> PWCharArray;
    Also note that the PString is inherently an 8 bit string. The character set
    is not defined for most operations and it may be any 8 bit character set.
    However when conversions are being made to or from 2 byte formats then the
-   PString is assumed to be the UTF-8 format. The 2 byte format is nominally
-   UCS-2 (aka BMP string) and while it is not exactly the same as UNICODE
-   they are compatible enough for them to be treated the same for most real
-   world usage.
+   PString is assumed to be the UTF-8 format.
+   
+   COnverstion functions to wchar_t based strings are vailable The format of
+   wchar_t string is platform dependent. For Windows this is UTF-16. For GNU
+   base builds (typically Linux) this is UCS-4, 32 bit characters.
  */
 
 class PString : public PCharArray
@@ -152,30 +153,24 @@ class PString : public PCharArray
        a literal string, eg "hello". A new memory block is allocated of a size
        sufficient to take the length of the string and its terminating
        '\\0' character.
-
-       If UCS-2 is used then each char from the char pointer is mapped to a
-       single UCS-2 character.
      */
     PString(
       const char * cstr ///< Standard '\\0' terminated C string.
     );
 
-    /**Create a string from the UCS-2 string array.
+    /**Create a string from the wchar_t string array.
        A new memory block is allocated of a size sufficient to take the length
        of the string and its terminating '\\0' character.
      */
 #ifdef P_HAS_WCHAR
     PString(
-      const wchar_t * ustr ///< UCS-2 null terminated string.
+      const wchar_t * ustr ///< wchar_t null terminated string.
     );
 #endif
 
     /**Create a string from the array. A new memory block is allocated of
        a size equal to <code>len</code> plus one which is sufficient to take
        the string and a terminating '\\0' character.
-
-       If UCS-2 is used then each char from the char pointer is mapped to a
-       single UCS-2 character.
 
        Note that this function will allow a string with embedded '\\0'
        characters to be created, but most of the functions here will be unable
@@ -188,23 +183,8 @@ class PString : public PCharArray
       PINDEX len          ///< Length of the string in bytes.
     );
 
-    /**Create a string from the UCS-2 array. A new memory block is allocated
-       of a size equal to <code>len</code> plus one which is sufficient to take
-       the string and a terminating '\\0' character.
-
-       Note that this function will allow a string with embedded '\\0'
-       characters to be created, but most of the functions here will be unable
-       to access characters beyond the first '\\0'. Furthermore, if the
-       <code>MakeMinimumSize()</code> function is called, all data beyond that first
-       '\\0' character will be lost.
-     */
 #ifdef P_HAS_WCHAR
-    PString(
-      const wchar_t * ustr,  ///< Pointer to a string of UCS-2 characters.
-      PINDEX len          ///< Length of the string in bytes.
-    );
-
-    /**Create a string from the UCS-2 array. A new memory block is allocated
+    /**Create a string from the wchar_t array. A new memory block is allocated
        of a size equal to <code>len</code> plus one which is sufficient to take
        the string and a terminating '\\0' character.
 
@@ -215,17 +195,29 @@ class PString : public PCharArray
        '\\0' character will be lost.
      */
     PString(
-      const PWCharArray & ustr ///< UCS-2 null terminated string.
+      const wchar_t * ustr,  ///< Pointer to a string of wchar_t characters.
+      PINDEX len             ///< Length of the string in bytes.
     );
-#endif
+
+    /**Create a string from the wchar_t array. A new memory block is allocated
+       of a size equal to <code>len</code> plus one which is sufficient to take
+       the string and a terminating '\\0' character.
+
+       Note that this function will allow a string with embedded '\\0'
+       characters to be created, but most of the functions here will be unable
+       to access characters beyond the first '\\0'. Furthermore, if the
+       <code>MakeMinimumSize()</code> function is called, all data beyond that first
+       '\\0' character will be lost.
+     */
+    PString(
+      const PWCharArray & ustr ///< wchar_t null terminated string.
+    );
+#endif // P_HAS_WCHAR
 
     /**Create a string from the single character. This is most commonly used
        as a type conversion constructor when a literal character, eg 'A' is
        used in a string expression. A new memory block is allocated of two
        characters to take the char and its terminating '\\0' character.
-
-       If UCS-2 is used then the char is mapped to a single UCS-2
-       character.
      */
     PString(
       char ch    ///< Single character to initialise string.
@@ -1800,10 +1792,13 @@ class PString : public PCharArray
     double AsReal() const;
      
 #ifdef P_HAS_WCHAR
-    /**Convert UTF-8 string to UCS-2.
+    /**Convert UTF-8 string to native wide character string.
        Note the resultant PWCharArray will have the trailing null included.
+       For Windows this is UTF-16, for GNU C (Linux) it is UCS-4.
       */
-    PWCharArray AsUCS2() const;
+    PWCharArray AsWide() const;
+
+    P_DEPRECATED PWCharArray AsUCS2() const { return AsWide(); }
 #endif
 
     /**Convert a standard null terminated string to a "pascal" style string.
@@ -1889,7 +1884,7 @@ class PString : public PCharArray
 
   protected:
 #ifdef P_HAS_WCHAR
-    void InternalFromUCS2(
+    void InternalFromWChar(
       const wchar_t * ptr,
       PINDEX len
     );
@@ -1952,10 +1947,10 @@ inline wostream & operator<<(wostream & stream, const PString & string)
 
       PWideString() { }
       PWideString(const PWCharArray & arr) : PWCharArray(arr) { }
-      PWideString(const PString     & str) : PWCharArray(str.AsUCS2()) { }
+      PWideString(const PString     & str) : PWCharArray(str.AsWide()) { }
       PWideString(const char        * str);
       PWideString & operator=(const PWideString & str) { PWCharArray::operator=(str); return *this; }
-      PWideString & operator=(const PString     & str) { PWCharArray::operator=(str.AsUCS2()); return *this; }
+      PWideString & operator=(const PString     & str) { PWCharArray::operator=(str.AsWide()); return *this; }
       PWideString & operator=(const std::string & str);
       PWideString & operator=(const char        * str);
       friend inline ostream & operator<<(ostream & stream, const PWideString & string) { return stream << PString(string); }
@@ -2153,9 +2148,9 @@ typedef PConstantString<PCaselessString> PConstCaselessString;
 
 #ifdef _WIN32
 // Now have PConstString can have these definitions
-__inline PWideString::PWideString(const char * str) : PWCharArray(PConstString(str).AsUCS2()) { }
-__inline PWideString & PWideString::operator=(const std::string & str) { PWCharArray::operator=(PConstString(str.c_str()).AsUCS2()); return *this; }
-__inline PWideString & PWideString::operator=(const char        * str) { PWCharArray::operator=(PConstString(str).AsUCS2()); return *this; }
+__inline PWideString::PWideString(const char * str) : PWCharArray(PConstString(str).AsWide()) { }
+__inline PWideString & PWideString::operator=(const std::string & str) { PWCharArray::operator=(PConstString(str.c_str()).AsWide()); return *this; }
+__inline PWideString & PWideString::operator=(const char        * str) { PWCharArray::operator=(PConstString(str).AsWide()); return *this; }
 #endif
 
 

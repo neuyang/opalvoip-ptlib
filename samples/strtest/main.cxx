@@ -41,8 +41,8 @@ void Test1()
     wchar_t widestr[] = L"Hellò world";
     PString pstring(widestr, sizeof(widestr)/2-1);
     cout << pstring << endl;
-    PWCharArray ucs2 = pstring.AsUCS2();
-    cout << boolalpha << (memcmp(ucs2, widestr, sizeof(widestr)) == 0) << endl;
+    PWCharArray wide = pstring.AsWide();
+    cout << boolalpha << (memcmp(wide, widestr, sizeof(widestr)) == 0) << endl;
   }
 #endif
 }

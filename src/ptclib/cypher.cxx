@@ -45,7 +45,7 @@
 
 void PSASLString::AppendValidated(const char * str)
 {
-  PWCharArray wide(PConstString(str).AsUCS2());
+  PWCharArray wide(PConstString(str).AsWide());
   for (PINDEX i = 0; i < wide.GetSize(); ++i)
     AppendValidated(wide[i]);
 }
