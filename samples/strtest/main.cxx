@@ -38,7 +38,7 @@ void Test1()
   }
 #ifdef P_HAS_WCHAR
   {
-    wchar_t widestr[] = L"Hello world";
+    wchar_t widestr[] = L"Hellò world";
     PString pstring(widestr, sizeof(widestr)/2-1);
     cout << pstring << endl;
     PWCharArray ucs2 = pstring.AsUCS2();

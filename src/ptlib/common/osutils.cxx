@@ -2383,6 +2383,10 @@ PProcess * PProcessInstance = NULL;
 
 int PProcess::InternalMain(void *)
 {
+#ifdef P_HAS_WCHAR
+  setlocale(LC_CTYPE, "UTF-8"); // A PString is documented as UTF-8, so all conversions go there
+#endif
+
 #if P_SDL && defined(P_MACOSX)
   PVideoOutputDevice * device = PVideoOutputDevice::CreateDeviceByName(P_SDL_VIDEO_PREFIX);
   if (device != NULL && device->ApplicationMain())

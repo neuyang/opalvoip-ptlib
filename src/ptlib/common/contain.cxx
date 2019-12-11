@@ -740,30 +740,26 @@ PString::PString(const char * cstr)
 
 #ifdef P_HAS_WCHAR
 
-PString::PString(const wchar_t * ustr)
+PString::PString(const wchar_t * wstr)
 {
-  if (ustr == NULL)
+  if (wstr == NULL)
     MakeEmpty();
-  else {
-    PINDEX len = 0;
-    while (ustr[len] != 0)
-      len++;
-    InternalFromUCS2(ustr, len);
-  }
+  else
+    InternalFromUCS2(wstr, wcslen(wstr));
 }
 
-PString::PString(const wchar_t * ustr, PINDEX len)
+PString::PString(const wchar_t * wstr, PINDEX len)
 {
-  InternalFromUCS2(ustr, len);
+  InternalFromUCS2(wstr, len);
 }
 
 
-PString::PString(const PWCharArray & ustr)
+PString::PString(const PWCharArray & wstr)
 {
-  PINDEX size = ustr.GetSize();
-  if (size > 0 && ustr[size-1] == 0) // Stip off trailing NULL if present
+  PINDEX size = wstr.GetSize();
+  if (size > 0 && wstr[size-1] == 0) // Stip off trailing NULL if present
     size--;
-  InternalFromUCS2(ustr, size);
+  InternalFromUCS2(wstr, size);
 }
 
 #endif // P_HAS_WCHAR
@@ -2093,20 +2089,7 @@ PWCharArray PString::AsUCS2() const
   if (IsEmpty())
     return ucs2;
 
-#ifdef P_LINUX
-
-  mbstate_t mb;
-  memset(&mb, 0, sizeof(mb));
-  const char * src = theArray;
-  size_t outLen = mbsrtowcs(ucs2.GetPointer(m_length), &src, m_length, &mb);
-  if (outLen != (size_t)-1) {
-    ucs2.SetSize(outLen+1);
-    return ucs2;
-  }
-
-  PTRACE(1, "PTLib", "Could not convert from UTF-8 to UCS2: errno=" << errno << ' ' << strerror(errno));
-
-#elif defined(_WIN32)
+#if defined(_WIN32)
 
   // Note that MB_ERR_INVALID_CHARS is the only dwFlags value supported by Code page 65001 (UTF-8). Windows XP and later.
   PINDEX len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, theArray, GetLength(), NULL, 0);
@@ -2117,12 +2100,27 @@ PWCharArray PString::AsUCS2() const
 
 #if PTRACING
   if (GetLastError() == ERROR_NO_UNICODE_TRANSLATION)
-    PTRACE(1, "PTLib\tMultiByteToWideChar failed on non legal UTF-8 \"" << theArray << '"');
+    PTRACE(1, "PTLib", "MultiByteToWideChar failed on non legal UTF-8 \"" << Left(50) << '"');
   else
-    PTRACE(1, "PTLib\tMultiByteToWideChar failed with error " << ::GetLastError());
+    PTRACE(1, "PTLib", "MultiByteToWideChar failed with error " << ::GetLastError());
 #endif
 
-#endif // P_LINUX || _WIN32
+#else
+
+  mbstate_t mb;
+  memset(&mb, 0, sizeof(mb));
+  const char * src = theArray;
+  size_t outLen = mbsrtowcs(ucs2.GetPointer(m_length), &src, m_length, &mb);
+  if (outLen != (size_t)-1) {
+    ucs2.SetSize(outLen+1);
+    return ucs2;
+  }
+
+  PTRACE(1, "PTLib", "Could not convert from UTF-8 to UCS-2:"
+                     " value=0x" << hex << (unsigned)(*src&0xff) << dec << ","
+                     " errno=" << errno << ' ' << strerror(errno));
+
+#endif // _WIN32
 
 
   if (ucs2.SetSize(GetSize())) { // Will be at least this big
@@ -2172,7 +2170,16 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     return;
   }
 
-#ifdef P_LINUX
+#if defined(_WIN32)
+
+  int outLen = WideCharToMultiByte(CP_UTF8, 0, ptr, len, NULL, 0, NULL, NULL);
+  if (outLen > 0 && SetSize(outLen+1)) {
+    WideCharToMultiByte(CP_UTF8, 0, ptr, len, GetPointerAndSetLength(outLen), GetSize(), NULL, NULL);
+    return;
+  }
+  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << ::GetLastError());
+
+#else
 
   mbstate_t mb;
   memset(&mb, 0, sizeof(mb));
@@ -2184,25 +2191,19 @@ void PString::InternalFromUCS2(const wchar_t * ptr, PINDEX len)
     return;
   }
 
-  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << errno << ' ' << strerror(errno));
+  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8:"
+                     " value=0x" << hex << (*src&0xffff) << dec << ","
+                     " errno=" << errno << ' ' << strerror(errno));
 
-#elif defined(_WIN32)
-
-  int result = WideCharToMultiByte(CP_UTF8, 0, ptr, len, NULL, 0, NULL, NULL);
-  if (result > 0 && SetSize(result+1)) {
-    m_length = WideCharToMultiByte(CP_UTF8, 0, ptr, len, theArray, GetSize(), NULL, NULL);
-    return;
-  }
-  PTRACE(1, "PTLib", "Could not convert UCS-2 to UTF-8: errno=" << ::GetLastError());
-
-#endif // P_HAS_ICONV || _WIN32
+#endif // _WIN32
 
   PINDEX i;
   PINDEX count = 0;
   for (i = 0; i < len; i++) {
-    if (ptr[i] < 0x80)
+    unsigned v = *ptr++;
+    if (v < 0x80)
       count++;
-    else if (ptr[i] < 0x800)
+    else if (v < 0x800)
       count += 2;
     else
       count += 3;
