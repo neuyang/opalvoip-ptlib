@@ -191,7 +191,7 @@ PBoolean PTextToSpeech_SAPI::Speak(const PString & text, TextType hint)
 
     //Enumerate voice tokens with attribute "Name=<specified voice>"
     CComPtr<IEnumSpObjectTokens> cpEnum;
-    if (PCOM_SUCCEEDED(SpEnumTokens,(SPCAT_VOICES, m_CurrentVoice.AsUCS2(), NULL, &cpEnum))) {
+    if (PCOM_SUCCEEDED(SpEnumTokens,(SPCAT_VOICES, m_CurrentVoice.AsWide(), NULL, &cpEnum))) {
       //Get the closest token
       CComPtr<ISpObjectToken> cpVoiceToken;
       if (PCOM_SUCCEEDED(cpEnum->Next,(1, &cpVoiceToken, NULL))) {

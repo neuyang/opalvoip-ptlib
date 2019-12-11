@@ -822,12 +822,8 @@ void PMIMEInfo::AddMultiPartList(PMultiPartList & parts, const PCaselessString &
       break;
   }
 
-  for (PMultiPartList::iterator it = parts.begin(); it != parts.end(); ++it) {
-    if (it->m_mime.Get(PMIMEInfo::ContentTypeTag).IsEmpty())
-      it->m_mime.Set(PMIMEInfo::ContentTypeTag, it->m_contentType);
-    if (!it->m_disposition.IsEmpty() && it->m_mime.Get(PMIMEInfo::ContentDispositionTag).IsEmpty())
-      it->m_mime.Set(PMIMEInfo::ContentDispositionTag, it->m_disposition);
-  }
+  for (PMultiPartList::iterator it = parts.begin(); it != parts.end(); ++it)
+    it->SetMIME();
 }
 
 
@@ -1014,7 +1010,7 @@ bool PMultiPartList::Decode(const PString & entityBody, const PStringToString & 
     else
 #endif
 #ifdef P_HAS_WCHAR
-    if (typeInfo("charset") *= "UCS-2")
+    if ((typeInfo("charset") *= "UCS-2") || (typeInfo("charset") *= "UTF-16"))
       info->m_textBody = PString((const wchar_t *)partPtr, partLen/2);
     else
 #endif
@@ -1079,10 +1075,28 @@ PMultiPartInfo::PMultiPartInfo(const PString & data, const PString & contentType
 
 PMultiPartInfo::PMultiPartInfo(const PBYTEArray & data, const PString & contentType, const PString & disposition)
   : m_contentType(contentType)
-  , m_encoding("binary")
+  , m_charset("UTF-8")
+  , m_encoding("8bit")
   , m_disposition(disposition)
   , m_binaryBody(data)
 {
+}
+
+
+void PMultiPartInfo::SetMIME()
+{
+  if (!m_mime.Has(PMIMEInfo::ContentTypeTag)) {
+    if (m_charset.IsEmpty())
+      m_mime.Set(PMIMEInfo::ContentTypeTag, m_contentType);
+    else
+      m_mime.Set(PMIMEInfo::ContentTypeTag, PSTRSTRM(m_contentType << "; charset=" << m_charset));
+  }
+
+  if (!m_mime.Has(PMIMEInfo::ContentTransferEncodingTag))
+    m_mime.Set(PMIMEInfo::ContentTransferEncodingTag, m_encoding);
+
+  if (!m_disposition.IsEmpty() && m_mime.Has(PMIMEInfo::ContentDispositionTag))
+    m_mime.Set(PMIMEInfo::ContentDispositionTag, m_disposition);
 }
 
 
@@ -1093,17 +1107,24 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
     strm << PBase64::Encode(m_binaryBody);
   else
 #endif
-#ifdef P_HAS_WCHAR
-  if (m_encoding == "UCS-2") {
-    PWCharArray ucs2 = m_textBody.AsUCS2();
-    strm.write((const char *)ucs2.GetPointer(), ucs2.GetSize());
-  }
-  else
-#endif
-  if (m_encoding == "7bit" || m_encoding == "8bit")
+  if (m_encoding == "8bit")
     strm << m_textBody;
-  else
-    strm.write((const char *)(const BYTE *)m_binaryBody, m_binaryBody.GetSize());
+  else if (m_encoding == "7bit") {
+    for (PINDEX i = 0; i < m_textBody.GetLength(); ++i) {
+      if (m_textBody[i] < 128)
+        strm << m_textBody[i];
+    }
+  }
+  else {
+#ifdef P_HAS_WCHAR
+    if (m_charset == "UTF-16" || m_charset == "UCS-2") {
+      PWCharArray wide = m_textBody.AsWide();
+      strm.write((const char *)wide.GetPointer(), wide.GetSize()-1);
+    }
+    else
+#endif
+      strm.write((const char *)(const BYTE *)m_binaryBody, m_binaryBody.GetSize());
+  }
 }
 
 

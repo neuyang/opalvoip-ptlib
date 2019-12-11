@@ -591,15 +591,15 @@ class PASN_BMPString : public PASN_ConstrainedObject
     PASN_BMPString(const PASN_BMPString & other);
     PASN_BMPString & operator=(const PASN_BMPString & other);
 
-    PASN_BMPString & operator=(const char * v) { return operator=(PString(v).AsUCS2()); }
-    PASN_BMPString & operator=(const PString & v) { return operator=(v.AsUCS2()); }
+    PASN_BMPString & operator=(const char * v) { return operator=(PString(v).AsWide()); }
+    PASN_BMPString & operator=(const PString & v) { return operator=(v.AsWide()); }
     PASN_BMPString & operator=(const PWCharArray & v);
     operator PString() const { return GetValue(); }
     operator PWCharArray() const { return value; }
     PString GetValue() const { return value; }
     void GetValue(PWCharArray & v) const { v = value; }
-    void SetValue(const char * v) { operator=(PString(v).AsUCS2()); }
-    void SetValue(const PString & v) { operator=(v.AsUCS2()); }
+    void SetValue(const char * v) { operator=(PString(v).AsWide()); }
+    void SetValue(const PString & v) { operator=(v.AsWide()); }
     void SetValue(const PWCharArray & v) { operator=(v); }
     void SetValue(const PASN_BMPString & v) { operator=(v.value); }
     void SetValueRaw(const PWCharArray & v) { SetValueRaw(v, v.GetSize()); }
