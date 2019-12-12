@@ -99,13 +99,10 @@ typedef PBaseArray<wchar_t> PWCharArray;
    memory allocated, and the length of the string may be different values.
 
    Also note that the PString is inherently an 8 bit string. The character set
-   is not defined for most operations and it may be any 8 bit character set.
-   However when conversions are being made to or from 2 byte formats then the
-   PString is assumed to be the UTF-8 format.
-   
-   COnverstion functions to wchar_t based strings are vailable The format of
-   wchar_t string is platform dependent. For Windows this is UTF-16. For GNU
-   base builds (typically Linux) this is UCS-4, 32 bit characters.
+   is generally defined as UTF-8, though this is only relevant when converting
+   to or from wchar_t or PWideString. The format of a wchar_t based string is
+   platform dependent. For Windows this is UTF-16. For GNU base builds
+   (typically Linux) this is UCS-4, 32 bit characters.
  */
 
 class PString : public PCharArray
@@ -184,9 +181,9 @@ class PString : public PCharArray
     );
 
 #ifdef P_HAS_WCHAR
-    /**Create a string from the wchar_t array. A new memory block is allocated
-       of a size equal to <code>len</code> plus one which is sufficient to take
-       the string and a terminating '\\0' character.
+    /**Create a UTF-8 string from the wchar_t array. A new memory block is
+       allocated of a size sufficient to take the converted string and a
+       terminating '\\0' character.
 
        Note that this function will allow a string with embedded '\\0'
        characters to be created, but most of the functions here will be unable
@@ -196,12 +193,12 @@ class PString : public PCharArray
      */
     PString(
       const wchar_t * ustr,  ///< Pointer to a string of wchar_t characters.
-      PINDEX len             ///< Length of the string in bytes.
+      PINDEX len             ///< Length of the string in characters.
     );
 
-    /**Create a string from the wchar_t array. A new memory block is allocated
-       of a size equal to <code>len</code> plus one which is sufficient to take
-       the string and a terminating '\\0' character.
+    /**Create a UTF-8 string from the wchar_t array. A new memory block is
+       allocated of a size sufficient to take the converted string and a
+       terminating '\\0' character.
 
        Note that this function will allow a string with embedded '\\0'
        characters to be created, but most of the functions here will be unable

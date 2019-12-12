@@ -1111,7 +1111,7 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
     strm << m_textBody;
   else if (m_encoding == "7bit") {
     for (PINDEX i = 0; i < m_textBody.GetLength(); ++i) {
-      if (m_textBody[i] < 128)
+      if ((m_textBody[i]&0x80) != 0)
         strm << m_textBody[i];
     }
   }

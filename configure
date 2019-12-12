@@ -8684,6 +8684,99 @@ fi
 
 
 
+   MY_LINK_IFELSE_CPPFLAGS="$CPPFLAGS"
+   MY_LINK_IFELSE_LIBS="$LIBS"
+   CPPFLAGS="$CPPFLAGS "
+   LIBS=" $LIBS"
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for iconv in standard library" >&5
+$as_echo_n "checking for iconv in standard library... " >&6; }
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <iconv.h>
+int
+main ()
+{
+
+      iconv_t cd;
+      char * s;
+      size_t l;
+      iconv(cd, &s, &l, &s, &l);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  usable=yes
+else
+  usable=no
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $usable" >&5
+$as_echo "$usable" >&6; }
+   CPPFLAGS="$MY_LINK_IFELSE_CPPFLAGS"
+   LIBS="$MY_LINK_IFELSE_LIBS"
+
+   if test "x$usable" = "xyes"; then :
+  $as_echo "#define P_HAS_ICONV 1" >>confdefs.h
+
+else
+
+   MY_LINK_IFELSE_CPPFLAGS="$CPPFLAGS"
+   MY_LINK_IFELSE_LIBS="$LIBS"
+   CPPFLAGS="$CPPFLAGS "
+   LIBS="-liconv $LIBS"
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for iconv with separate library" >&5
+$as_echo_n "checking for iconv with separate library... " >&6; }
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <iconv.h>
+int
+main ()
+{
+
+         iconv_t cd;
+         char * s;
+         size_t l;
+         iconv(cd, &s, &l, &s, &l);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  usable=yes
+else
+  usable=no
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $usable" >&5
+$as_echo "$usable" >&6; }
+   CPPFLAGS="$MY_LINK_IFELSE_CPPFLAGS"
+   LIBS="$MY_LINK_IFELSE_LIBS"
+
+   if test "x$usable" = "xyes"; then :
+
+         $as_echo "#define P_HAS_ICONV 1" >>confdefs.h
+
+         LIBS="-liconv $LIBS"
+
+
+fi
+
+
+
+fi
+
+
+
+
+
+
    oldCPPFLAGS="$CPPFLAGS"
    CPPFLAGS="$CPPFLAGS "
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for poll" >&5

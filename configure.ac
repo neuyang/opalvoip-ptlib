@@ -488,6 +488,40 @@ AC_HEADER_DIRENT()
 
 
 dnl ########################################################################
+dnl check for UCS-2 to UTF-8 converter
+
+MY_LINK_IFELSE(
+   [for iconv in standard library],
+   [],
+   [],
+   [#include <iconv.h>],
+   [
+      iconv_t cd;
+      char * s;
+      size_t l;
+      iconv(cd, &s, &l, &s, &l);
+   ],
+   [AC_DEFINE(P_HAS_ICONV, 1)],
+   MY_LINK_IFELSE(
+      [for iconv with separate library],
+      [],
+      [-liconv],
+      [#include <iconv.h>],
+      [
+         iconv_t cd;
+         char * s;
+         size_t l;
+         iconv(cd, &s, &l, &s, &l);
+      ],
+      [
+         AC_DEFINE(P_HAS_ICONV, 1)
+         LIBS="-liconv $LIBS"
+      ]
+   )
+)
+
+
+dnl ########################################################################
 dnl check for poll function
 
 MY_COMPILE_IFELSE(
