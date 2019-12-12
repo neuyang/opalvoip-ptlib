@@ -2179,8 +2179,8 @@ PWCharArray PString::AsWide() const
 #elif defined(_WIN32)
 
   PINDEX len = MultiByteToWideChar(CP_UTF8, 0, theArray, GetLength(), NULL, 0);
-  if (PAssert(len > 0, PSTRSTRM("MultiByteToWideChar failed with error " << ::GetLastError()) &&
-      PAssert(wide.SetSize(len+1), POutOfMemory)))
+  if (PAssert(len > 0, PSTRSTRM("MultiByteToWideChar failed with error " << ::GetLastError())) &&
+      PAssert(wide.SetSize(len+1), POutOfMemory))
     MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, theArray, GetLength(), wide.GetPointer(), wide.GetSize());
 
 #else // _WIN32 || _POSIX_VERSION
