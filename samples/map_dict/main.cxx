@@ -142,7 +142,7 @@ class Tester
 
     virtual const char * GetName() const = 0;
     virtual void TestInsert() const = 0;
-    virtual void TestLookup() const = 0;
+    virtual bool TestLookup() const = 0;
     virtual void TestIterate() const = 0;
     virtual void TestRemove() const = 0;
 };
@@ -162,9 +162,9 @@ class StringMap : public Tester
         data.insert(Type::value_type(StringKeys[i], &DataElements[i]));
     }
 
-    virtual void TestLookup() const
+    virtual bool TestLookup() const
     {
-      data.find(StringKeys[StringKeys.size()/2]);
+      return data.find(StringKeys[StringKeys.size()/2]) != data.end();
     }
 
     virtual void TestIterate() const
@@ -197,9 +197,9 @@ class StringDict : public Tester
         data.Insert(StringKeys[i], &DataElements[i]);
     }
 
-    virtual void TestLookup() const
+    virtual bool TestLookup() const
     {
-      data.GetAt(StringKeys[StringKeys.size()/2]);
+      return data.GetAt(StringKeys[StringKeys.size()/2]) != NULL;
     }
 
     virtual void TestIterate() const
@@ -234,9 +234,9 @@ class IntMap : public Tester
         data.insert(Type::value_type(IntKeys[i], &DataElements[i]));
     }
 
-    virtual void TestLookup() const
+    virtual bool TestLookup() const
     {
-      data.find(IntKeys[IntKeys.size()/2]);
+      return data.find(IntKeys[IntKeys.size()/2]) != data.end();
     }
 
     virtual void TestIterate() const
@@ -268,9 +268,9 @@ class IntDict : public Tester
         data.Insert(POrdinalKey(IntKeys[i]), &DataElements[i]);
     }
 
-    virtual void TestLookup() const
+    virtual bool TestLookup() const
     {
-      data.GetAt(IntKeys[IntKeys.size()/2]);
+      return data.GetAt(IntKeys[IntKeys.size()/2]) != NULL;
     }
 
     virtual void TestIterate() const
