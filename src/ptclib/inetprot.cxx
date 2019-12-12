@@ -1095,7 +1095,7 @@ void PMultiPartInfo::SetMIME()
   if (!m_mime.Has(PMIMEInfo::ContentTransferEncodingTag))
     m_mime.Set(PMIMEInfo::ContentTransferEncodingTag, m_encoding);
 
-  if (!m_disposition.IsEmpty() && !m_mime.Has(PMIMEInfo::ContentDispositionTag))
+  if (!m_disposition.IsEmpty() && m_mime.Has(PMIMEInfo::ContentDispositionTag))
     m_mime.Set(PMIMEInfo::ContentDispositionTag, m_disposition);
 }
 
@@ -1111,7 +1111,7 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
     strm << m_textBody;
   else if (m_encoding == "7bit") {
     for (PINDEX i = 0; i < m_textBody.GetLength(); ++i) {
-      if (m_textBody[i] < 128)
+      if ((m_textBody[i]&0x80) != 0)
         strm << m_textBody[i];
     }
   }
@@ -1119,10 +1119,7 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
 #ifdef P_HAS_WCHAR
     if (m_charset == "UTF-16" || m_charset == "UCS-2") {
       PWCharArray wide = m_textBody.AsWide();
-      for (PINDEX i = 0; i < wide.GetSize()-1; ++i) {
-        PUInt16b c = wide[i];
-        strm.write((const char *)&c, 2);
-      }
+      strm.write((const char *)wide.GetPointer(), wide.GetSize()-1);
     }
     else
 #endif
