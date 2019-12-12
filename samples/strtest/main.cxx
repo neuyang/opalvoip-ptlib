@@ -42,7 +42,7 @@ void Test1()
     PString pstring(widestr, sizeof(widestr)/2-1);
     cout << pstring << endl;
     PWCharArray wide = pstring.AsWide();
-    cout << boolalpha << (memcmp(wide, widestr, sizeof(widestr)) == 0) << endl;
+    cout << boolalpha << (wide.GetSize() == PARRAYSIZE(widestr) && memcmp(wide, widestr, sizeof(widestr)) == 0) << endl;
   }
 #endif
 }

@@ -1095,7 +1095,7 @@ void PMultiPartInfo::SetMIME()
   if (!m_mime.Has(PMIMEInfo::ContentTransferEncodingTag))
     m_mime.Set(PMIMEInfo::ContentTransferEncodingTag, m_encoding);
 
-  if (!m_disposition.IsEmpty() && m_mime.Has(PMIMEInfo::ContentDispositionTag))
+  if (!m_disposition.IsEmpty() && !m_mime.Has(PMIMEInfo::ContentDispositionTag))
     m_mime.Set(PMIMEInfo::ContentDispositionTag, m_disposition);
 }
 
@@ -1119,7 +1119,10 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
 #ifdef P_HAS_WCHAR
     if (m_charset == "UTF-16" || m_charset == "UCS-2") {
       PWCharArray wide = m_textBody.AsWide();
-      strm.write((const char *)wide.GetPointer(), wide.GetSize()-1);
+      for (PINDEX i = 0; i < wide.GetSize()-1; ++i) {
+        PUInt16b c = wide[i];
+        strm.write((const char *)&c, 2);
+      }
     }
     else
 #endif

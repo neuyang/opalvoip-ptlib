@@ -2091,37 +2091,26 @@ PWCharArray PString::AsWide() const
 
 #if defined(_WIN32)
 
-  // Note that MB_ERR_INVALID_CHARS is the only dwFlags value supported by Code page 65001 (UTF-8). Windows XP and later.
-  PINDEX len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, theArray, GetLength(), NULL, 0);
-  if (len > 0 && wide.SetSize(len+1)) { // Allow for trailing NULL
+  PINDEX len = MultiByteToWideChar(CP_UTF8, 0, theArray, GetLength(), NULL, 0);
+  if (len > 0 && wide.SetSize(len+1)) // Allow for trailing NULL
     MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, theArray, GetLength(), wide.GetPointer(), wide.GetSize());
-    return wide;
-  }
-
-#if PTRACING
-  if (GetLastError() == ERROR_NO_UNICODE_TRANSLATION)
-    PTRACE(1, "PTLib", "MultiByteToWideChar failed on non legal UTF-8 \"" << Left(50) << '"');
   else
     PTRACE(1, "PTLib", "MultiByteToWideChar failed with error " << ::GetLastError());
-#endif
 
-#else
+#elif defined(_POSIX_VERSION)
 
   mbstate_t mb;
   memset(&mb, 0, sizeof(mb));
   const char * src = theArray;
   size_t outLen = mbsrtowcs(wide.GetPointer(m_length), &src, m_length, &mb);
-  if (outLen != (size_t)-1) {
+  if (outLen != (size_t)-1)
     wide.SetSize(outLen+1);
-    return wide;
-  }
+  else
+    PTRACE(1, "PTLib", "Could not convert from UTF-8 to wchar_t string:"
+                       " value=0x" << hex << (unsigned)(*src&0xff) << dec << ","
+                       " errno=" << errno << ' ' << strerror(errno));
 
-  PTRACE(1, "PTLib", "Could not convert from UTF-8 to wchar_t string:"
-                     " value=0x" << hex << (unsigned)(*src&0xff) << dec << ","
-                     " errno=" << errno << ' ' << strerror(errno));
-
-#endif // _WIN32
-
+#else // _WIN32 || _POSIX_VERSION
 
   if (wide.SetSize(GetSize())) { // Will be at least this big
     PINDEX count = 0;
@@ -2152,12 +2141,13 @@ PWCharArray PString::AsWide() const
         else
           i += 6;
         if (i <= length)
-          wide[count++] = 0xffff;
+          wide[count++] = 0xfffd;
       }
     }
 
     wide.SetSize(count+1);  // Final size
   }
+#endif // _WIN32 || _POSIX_VERSION
 
   return wide;
 }
@@ -2170,18 +2160,15 @@ void PString::InternalFromWChar(const wchar_t * wstr, PINDEX len)
     return;
   }
 
-  const wchar_t * ptr;
-
 #if defined(_WIN32)
 
   int outLen = WideCharToMultiByte(CP_UTF8, 0, wstr, len, NULL, 0, NULL, NULL);
-  if (outLen > 0 && SetSize((PINDEX)outLen + 1)) {
+  if (outLen > 0 && SetSize((PINDEX)outLen + 1))
     WideCharToMultiByte(CP_UTF8, 0, wstr, len, GetPointerAndSetLength(outLen), GetSize(), NULL, NULL);
-    return;
-  }
-  PTRACE(1, "PTLib", "Could not convert wchar_t to UTF-8: errno=" << ::GetLastError());
+  else
+    PTRACE(1, "PTLib", "Could not convert wchar_t to UTF-8: errno=" << ::GetLastError());
 
-#else
+#elif defined(_POSIX_VERSION)
 
   mbstate_t mb;
   memset(&mb, 0, sizeof(mb));
@@ -2191,17 +2178,17 @@ void PString::InternalFromWChar(const wchar_t * wstr, PINDEX len)
     memset(&mb, 0, sizeof(mb));
     ptr = wstr;
     wcsnrtombs(GetPointerAndSetLength(outLen), &ptr, len, outLen, &mb);
-    return;
   }
+  else
+    PTRACE(1, "PTLib", "Could not convert wchar_t to UTF-8:"
+                       " value=0x" << hex << *ptr << dec << ","
+                       " errno=" << errno << ' ' << strerror(errno));
 
-  PTRACE(1, "PTLib", "Could not convert wchar_t to UTF-8:"
-                     " value=0x" << hex << *ptr << dec << ","
-                     " errno=" << errno << ' ' << strerror(errno));
-
-#endif // _WIN32
+#else // _WIN32 || _POSIX_VERSION
 
   PINDEX i;
   m_length = 0;
+  const wchar_t * ptr;
   for (ptr = wstr, i = 0; i < len; i++) {
     unsigned v = *ptr++;
     if (v < 0x80)
@@ -2262,6 +2249,7 @@ void PString::InternalFromWChar(const wchar_t * wstr, PINDEX len)
   }
 
   *out = '\0';
+#endif // _WIN32 || _POSIX_VERSION
 }
 
 #endif // P_HAS_WCHAR
