@@ -1010,8 +1010,12 @@ bool PMultiPartList::Decode(const PString & entityBody, const PStringToString & 
     else
 #endif
 #ifdef P_HAS_WCHAR
-    if ((typeInfo("charset") *= "UCS-2") || (typeInfo("charset") *= "UTF-16"))
-      info->m_textBody = PString((const wchar_t *)partPtr, partLen/2);
+    if ((typeInfo("charset") *= "UCS-2") || (typeInfo("charset") *= "UTF-16")) {
+      PWCharArray wide(partLen/2);
+      for (PINDEX i = 0; i < wide.GetSize(); ++i)
+        wide[i] = ((const wchar_t *)partPtr)[i];
+      info->m_textBody = wide;
+    }
     else
 #endif
     if (encoding == "7bit" || encoding == "8bit" || (typeInfo("charset") *= "UTF-8") || memchr(partPtr, 0, partLen) == NULL)
@@ -1119,7 +1123,7 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
 #ifdef P_HAS_WCHAR
     if (m_charset == "UTF-16" || m_charset == "UCS-2") {
       PWCharArray wide = m_textBody.AsWide();
-      strm.write((const char *)wide.GetPointer(), wide.GetSize()-1);
+      strm.write((const char *)wide.GetPointer(), (wide.GetSize()-1)*sizeof(wchar_t));
     }
     else
 #endif
