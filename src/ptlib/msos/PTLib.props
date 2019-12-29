@@ -3,6 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <PTLibGitRootDir>$(ProjectDir)..\..</PTLibGitRootDir>
+    <FFMPEGDIR>$(ProjectDir)..\..\..\external\ffmpeg-win64-dev</FFMPEGDIR>
+    <LocalDebuggerEnvironment>PATH=$(PATH);$(ProjectDir)..\..\Lib;$(FFMPEGDIR)\bin</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />
@@ -10,6 +12,13 @@
     <BuildMacro Include="PTLibGitRootDir">
       <Value>$(PTLibGitRootDir)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="FFMPEGDIR">
+      <Value>$(FFMPEGDIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="LocalDebuggerEnvironment">
+      <Value>$(LocalDebuggerEnvironment)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>
