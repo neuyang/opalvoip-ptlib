@@ -226,25 +226,35 @@ void PSystemLogTarget::OutputToStream(ostream & stream, PSystemLog::Level level,
   if (level > m_thresholdLevel || !PProcess::IsInitialised())
     return;
 
-  PTime now;
-  stream << now.AsString(PTime::LoggingFormat, timeZone) << '\t';
-
-  if (m_outputLevelName) {
-    if (level < 0)
-      stream << "Message";
-    else {
-      static const char * const levelName[] = {
-        "Fatal error",
-        "Error",
-        "Warning",
-        "Info"
-      };
-      if ((PINDEX)level < PARRAYSIZE(levelName))
-        stream << levelName[level];
-      else
-        stream << "Debug" << (level - PSystemLog::Info);
+#if PTRACING
+  if ((PTrace::GetOptions()&PTrace::OutputJSON) != 0) {
+    if (*msg != '{') {
+      stream << "{\"@timestamp\":\"" << PTime().AsString(PTime::LongISO8601) << "\",\"Message\":" << PConstString(msg).ToLiteral() << '}' << endl;
+      return;
     }
-    stream << '\t';
+  }
+  else
+#endif
+  {
+    stream << PTime().AsString(PTime::LoggingFormat, timeZone) << '\t';
+
+    if (m_outputLevelName) {
+      if (level < 0)
+        stream << "Message";
+      else {
+        static const char * const levelName[] = {
+          "Fatal error",
+          "Error",
+          "Warning",
+          "Info"
+        };
+        if ((PINDEX)level < PARRAYSIZE(levelName))
+          stream << levelName[level];
+        else
+          stream << "Debug" << (level - PSystemLog::Info);
+      }
+      stream << '\t';
+    }
   }
 
   stream << msg;

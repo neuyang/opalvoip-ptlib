@@ -508,6 +508,7 @@ public:
     SystemLogStream   = 0x8000,   /**< SystemLog flag for tracing within a PServiceProcess
                                        application. Setting this flag will automatically
                                        execute <code>#SetStream(new PSystemLog)</code>. */
+    OutputJSON         = 0x10000,   ///< Output log in JSON format
     HasFilePermissions = 0x8000000, ///< Flag indicating file permissions are to be set
     FilePermissionMask = 0x7ff0000, /**< Mask for setting standard file permission mask as used in
                                          open() or creat() system function calls. */
