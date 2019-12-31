@@ -527,6 +527,7 @@ public:
     "  file     source file name and line number\r" \
     "  object   PObject pointer\r" \
     "  context  context identifier\r" \
+    "  json     JSON format output\r" \
     "  single   single line output\r" \
     "  daily    rotate output file daily\r" \
     "  hour     rotate output file hourly\r" \

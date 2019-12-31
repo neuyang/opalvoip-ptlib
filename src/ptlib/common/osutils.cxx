@@ -884,7 +884,7 @@ ostream & PTraceInfo::InternalEnd(ostream & paramStream)
   if (outputJSON)
     output << '{';
 
-  if (HasOption(DateAndTime)) {
+  if (outputJSON || HasOption(DateAndTime)) {
     // Use "@timestamp" for compatibility with ELK systems
     if (outputJSON)
       output << "\"@timestamp\":\"" << context->m_dateTime.AsString(PTime::LongISO8601) << "\",";
@@ -894,8 +894,9 @@ ostream & PTraceInfo::InternalEnd(ostream & paramStream)
 
   if (HasOption(Timestamp)) {
     if (outputJSON)
-      output << "\"TimeSinceStart\":" << scientific;
-    output << setprecision(3) << setw(10) << (context->m_tick-m_startTick) << (outputJSON ? ',' : '\t');
+      output << "\"TimeSinceStart\":" << scientific << (context->m_tick-m_startTick) << ',';
+    else
+      output << setprecision(3) << setw(10) << (context->m_tick-m_startTick) << '\t';
   }
 
   if (HasOption(TraceLevel)) {
@@ -987,7 +988,7 @@ ostream & PTraceInfo::InternalEnd(ostream & paramStream)
     message.Splice("...", m_maxLength - 4, P_MAX_INDEX);
 
   if (outputJSON)
-    output << "\"Message\":" << message.ToLiteral() << ',';
+    output << "\"Message\":" << message.ToLiteral() << '}';
   else
     output << message;
 
