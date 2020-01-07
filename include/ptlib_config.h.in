@@ -712,6 +712,11 @@
 
     #if defined(P_V8)
       #pragma include_alias(<v8.h>, <@V8_DIR@/include/v8.h>)
+      #pragma include_alias("v8config.h", "@V8_DIR@/include/v8config.h")
+      #pragma include_alias("v8-platform.h", "@V8_DIR@/include/v8-platform.h")
+      #pragma include_alias("libplatform/libplatform.h", "@V8_DIR@/include/libplatform/libplatform.h")
+      #pragma include_alias("libplatform/libplatform-export.h", "@V8_DIR@/include/libplatform/libplatform-export.h")
+      #pragma include_alias("libplatform/v8-tracing.h", "@V8_DIR@/include/libplatform/v8-tracing.h")
       #define V8_DIR "@V8_DIR@"
     #endif
   #endif // _MSC_VER

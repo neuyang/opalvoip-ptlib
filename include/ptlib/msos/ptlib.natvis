@@ -13,11 +13,11 @@
   </Type>
 
   <Type Name="PTimeInterval">
-    <DisplayString>{m_nanoseconds._My_val/1000000000.0}s</DisplayString>
+    <DisplayString>{m_nanoseconds._Storage._Value/1000000000.0}s</DisplayString>
   </Type>
 
   <Type Name="PTime">
-    <DisplayString>{m_microSecondsSinceEpoch._My_val/1000000.0}s</DisplayString>
+    <DisplayString>{m_microSecondsSinceEpoch._Storage._Value/1000000.0}s</DisplayString>
   </Type>
 
   <Type Name="PKey&lt;*&gt;">
@@ -31,15 +31,15 @@
   </Type>
 
   <Type Name="PContainer">
-    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._My_val}}}</DisplayString>
+    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._Storage._Value}}}</DisplayString>
   </Type>
 
   <Type Name="PAbstractArray">
-    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._My_val} ptr={(void *)theArray}}}</DisplayString>
+    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._Storage._Value} ptr={(void *)theArray}}}</DisplayString>
   </Type>
 
   <Type Name="PBaseArray&lt;*&gt;">
-    <DisplayString>{{size={((PAbstractArray *)this)-&gt;reference-&gt;size} ref={((PAbstractArray *)this)-&gt;reference-&gt;count._My_val} ptr={(void *)((PAbstractArray *)this)-&gt;theArray}}}</DisplayString>
+    <DisplayString>{{size={((PAbstractArray *)this)-&gt;reference-&gt;size} ref={((PAbstractArray *)this)-&gt;reference-&gt;count._Storage._Value} ptr={(void *)((PAbstractArray *)this)-&gt;theArray}}}</DisplayString>
     <Expand>
       <ArrayItems>
         <Size>((PAbstractArray *)this)-&gt;reference-&gt;size</Size>
@@ -59,7 +59,7 @@
   </Type>
 
   <Type Name="PList&lt;*&gt;">
-    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._My_val} head={(void *)(m_info-&gt;head)}}}</DisplayString>
+    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._Storage._Value} head={(void *)(m_info-&gt;head)}}}</DisplayString>
     <Expand>
       <LinkedListItems>
         <Size>reference-&gt;size</Size>
@@ -71,7 +71,7 @@
   </Type>
 
   <Type Name="PSortedList&lt;*&gt;">
-    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._My_val} root={(void *)(m_info-&gt;m_root)}}}</DisplayString>
+    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._Storage._Value} root={(void *)(m_info-&gt;m_root)}}}</DisplayString>
     <Expand>
       <TreeItems>
         <Size>reference-&gt;size</Size>
@@ -101,7 +101,7 @@
   </Type>
 
   <Type Name="PHashTable">
-    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._My_val} hash={(void *)hashTable-&gt;theArray}}}</DisplayString>
+    <DisplayString>{{size={reference-&gt;size} ref={reference-&gt;count._Storage._Value} hash={(void *)hashTable-&gt;theArray}}}</DisplayString>
     <Expand>
       <IndexListItems>
         <Size>hashTable-&gt;reference-&gt;size</Size>
