@@ -96,7 +96,7 @@ They are usually in the output directory of the build, e.g. out.gn\x64.release
   #error "Unsupported V8 version!"
 #endif
 
-#include <libplatform/libplatform.h>
+#include "libplatform/libplatform.h"
 
 
 #ifdef _MSC_VER
