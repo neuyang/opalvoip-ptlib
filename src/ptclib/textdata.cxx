@@ -287,6 +287,8 @@ bool PTextDataFile::WriteRecord(const PVarData::Record & data)
   if (CheckNotOpen())
     return false;
 
+  PWaitAndSignal lock(m_writeMutex);
+
   m_formatting = true;
   if (m_needToWriteHeadings) {
     if (m_format->GetHeadings().IsEmpty())
@@ -317,6 +319,8 @@ bool PTextDataFile::WriteObject(const PVarData::Object & obj)
 {
   if (CheckNotOpen())
     return false;
+
+  PWaitAndSignal lock(m_writeMutex);
 
   m_formatting = true;
   if (m_needToWriteHeadings) {

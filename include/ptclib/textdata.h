@@ -157,6 +157,8 @@ protected:
     bool m_formatting;
     bool m_needToWriteHeadings;
 
+    PMutex m_writeMutex;
+
   private:
     virtual PBoolean Read(void * buf, PINDEX len);
     virtual int ReadChar();
