@@ -302,7 +302,11 @@ void P_WXWINDOWS_DEVICE_CLASS::InternalFrameComplete()
   PWaitAndSignal lock(m_mutex);
 
   if (IsOpen()) {
-    SetSize(m_bitmap.GetWidth(), m_bitmap.GetHeight());
+    wxSize sz = GetClientSize();
+    if (sz.GetWidth() != m_bitmap.GetWidth() || sz.GetHeight() != m_bitmap.GetHeight()) {
+      PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Resized window to " << m_bitmap.GetWidth() << 'x' << m_bitmap.GetHeight() << " on " << *this);
+      SetClientSize(m_bitmap.GetWidth(), m_bitmap.GetHeight());
+    }
     Show(true);
     Refresh(false);
   }
