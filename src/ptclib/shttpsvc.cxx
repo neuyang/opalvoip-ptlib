@@ -185,42 +185,40 @@ PBoolean PSecureHTTPServiceProcess::OnDetectedNonSSLConnection(PChannel * chan, 
   // get the MIME info
   PMIMEInfo mime(*chan);
 
-  PString url;
+  PURL url;
+  url.SetScheme("https");
 
   // get the host field
   PString host = mime("host");
-  if (!host.IsEmpty()) {
-
-    // parse the command
-    PINDEX pos = line.Find(' ');
-    if (pos != P_MAX_INDEX) {
-      PString str = line.Mid(pos).Trim();
-      pos = str.FindLast(' ');
-      if (pos != P_MAX_INDEX)
-        url = host + str.Left(pos);
-    }
+  if (host.IsEmpty()) {
+    PIPSocket::Address addr;
+    PIPSocket::GetHostAddress(addr);
+    url.SetScheme("https");
+    url.SetHostName(addr.AsString());
+  }
+  else {
+    PINDEX colon = host.Find(':');
+    url.SetHostName(host.Left(colon));
+    if (colon != P_MAX_INDEX)
+      url.SetPort((uint16_t)host.Mid(colon+1).AsUnsigned());
   }
 
-  // no URL was available, return something!
-  if (url.IsEmpty()) {
-    if (!host.IsEmpty())
-      url = host;
-    else {
-      PIPSocket::Address addr;
-      PIPSocket::GetHostAddress(addr);
-      url = addr.AsString() + ":" + PString(PString::Unsigned, m_httpListeningSockets.front().GetPort());
-    }
+  PStringArray fields = line.Tokenise(" ", false);
+  switch (fields.GetSize()) {
+    default:
+      url.SetPathStr(fields[1]);
+      break;
+    case 1 :
+      url.SetPathStr(fields[0]);
+      break;
+    case 0 :
+      break;
   }
 
-  url.Splice("https://", 0);
-  PSYSTEMLOG(Info, "Detected non-SSL connection, host=\"" << host << "\", redirecting to " << url);
+  PTRACE(3, "Detected non-SSL connection, cmd=" << line.ToLiteral() << ", host=" << host.ToLiteral() << ", redirecting to " << url);
 
-  PString str = CreateNonSSLMessage(url);
-  
-  chan->WriteString(str);
-  chan->Close();
-
-  return false; 
+  chan->WriteString(CreateNonSSLMessage(url));
+  return true; // Closes "chan"
 }
 
 PString PSecureHTTPServiceProcess::CreateNonSSLMessage(const PString & url)
@@ -266,7 +264,7 @@ int HTTP_PSSLChannel::BioRead(char * buf, int len)
 
       if (c == '\n' && m_preReadData.Find("HTTP/1") != P_MAX_INDEX) {
         if (m_serviceProcess->OnDetectedNonSSLConnection(chan, m_preReadData))
-          chan->Close();
+          chan->CloseBaseReadChannel();
         return -1;
       }
 
