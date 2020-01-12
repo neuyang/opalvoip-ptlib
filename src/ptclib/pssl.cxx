@@ -2613,16 +2613,22 @@ int PSSLChannel::BioClose()
 
 PBoolean PSSLChannel::ConvertOSError(P_INT_PTR libcReturnValue, ErrorGroup group)
 {
-  Errors lastError = NoError;
-  DWORD osError = 0;
-  if (m_ssl != NULL && SSL_get_error(m_ssl, (int)libcReturnValue) != SSL_ERROR_NONE && (osError = ERR_peek_error()) != 0) {
-    osError |= 0x80000000;
-    if (osError == 0x94090086) {
-      int certVerifyError = GetErrorNumber(LastGeneralError);
-      if ((certVerifyError & 0xc0000000) == 0xc0000000)
-        osError = certVerifyError;
-    }
-    lastError = AccessDenied;
+  if (m_ssl == NULL)
+    return SetErrorValues(NotOpen, EBADF, group);
+
+  if (libcReturnValue >= 0)
+    return SetErrorValues(NoError, 0, group);
+
+  Errors lastError = AccessDenied;
+  DWORD osError = SSL_get_error(m_ssl, (int)libcReturnValue);
+  if (osError == SSL_ERROR_NONE)
+    osError = ERR_peek_error();
+  osError |= 0x80000000;
+
+  if (osError == 0x94090086) {
+    int certVerifyError = GetErrorNumber(LastGeneralError);
+    if ((certVerifyError & 0xc0000000) == 0xc0000000)
+      osError = certVerifyError;
   }
 
   return SetErrorValues(lastError, osError, group);
