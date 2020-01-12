@@ -850,7 +850,7 @@ void PHTTPListener::ShutdownListeners()
 
   m_httpServersMutex.Wait();
   for (PList<PHTTPServer>::iterator it = m_httpServers.begin(); it != m_httpServers.end(); ++it)
-    it->Close();
+    it->CloseBaseReadChannel();
   m_httpServersMutex.Signal();
 
   m_threadPool.Shutdown();
