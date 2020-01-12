@@ -1600,7 +1600,8 @@ public:
       if (m_reading)
         avformat_close_input(&m_formatContext);
       else {
-        CHECK_ERROR(av_write_trailer, (m_formatContext));
+        if (m_headerWritten)
+          CHECK_ERROR(av_write_trailer, (m_formatContext));
         if (!(m_formatContext->oformat->flags & AVFMT_NOFILE))
           avio_closep(&m_formatContext->pb);
       }
