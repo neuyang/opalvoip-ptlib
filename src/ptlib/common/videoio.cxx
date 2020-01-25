@@ -1967,9 +1967,11 @@ bool PVideoInputEmulatedDevice::InternalGetFrameData(BYTE * buffer, PINDEX & byt
 
       case Channel_PlayAndRepeat:
         m_frameNumber = 0;
-        if (!InternalReadFrameData(readBuffer)) {
+        // Reclaculate, in case derived class has altered these values
+        frameBytes = GetMaxFrameBytes();
+        readBuffer = m_converter != NULL ? m_frameStore.GetPointer(frameBytes) : buffer;
+        if (!InternalReadFrameData(readBuffer))
           return false;
-        }
         break;
 
       case Channel_PlayAndKeepLast:

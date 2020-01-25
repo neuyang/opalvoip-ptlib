@@ -483,6 +483,7 @@ public:
     : m_receiver(receiver)
   {
     m_colourFormat = GetInstance().GetColourFormat();
+    m_channelNumber = Channel_PlayAndRepeat;
   }
 
   virtual PStringArray GetDeviceNames() const
@@ -522,6 +523,10 @@ protected:
     if (!IsOpen())
       return false;
 
+    if (PVXMLSignLanguageAnalyser::GetInstance().Preview(m_receiver.GetAnalayserInstance(), m_frameWidth, m_frameHeight, buffer))
+      return true;
+
+    // Sign language system may not be resizing, but using input resolution, so,
     // If remote resolution changes, we need to change the preview as well
     unsigned oldWidth, oldHeight;
     GetFrameSize(oldWidth, oldHeight);
@@ -530,10 +535,16 @@ protected:
     if (newWidth != oldWidth || newHeight != oldHeight) {
       m_frameWidth = newWidth;
       m_frameHeight = newHeight;
-      SetFrameSizeConverter(oldWidth, oldHeight);
+      if (m_converter != NULL ? m_converter->SetSrcFrameSize(newWidth, newHeight) : SetFrameSizeConverter(oldWidth, oldHeight)) {
+        PTRACE(3, "Preview resolution change from " << oldWidth << 'x' << oldHeight << " to " << newWidth << 'x' << newHeight);
+        return false; // This will call us again due to m_channelNumber = Channel_PlayAndRepeat
+      }
     }
+    else
+      PTRACE(2, "Preview failed, without resolution change.");
 
-    return PVXMLSignLanguageAnalyser::GetInstance().Preview(m_receiver.GetAnalayserInstance(), m_frameWidth, m_frameHeight, buffer);
+    m_channelNumber = Channel_PlayAndClose; // Abort!
+    return false;
   }
 };
 #endif // P_VXML_VIDEO
