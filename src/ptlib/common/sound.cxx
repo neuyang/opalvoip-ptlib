@@ -230,7 +230,10 @@ PSoundChannel * PSoundChannel::CreateOpenedChannel(const Params & params)
 
 PStringArray PSoundChannel::GetDeviceNames(PSoundChannel::Directions dir, PPluginManager * pluginMgr)
 {
-  return PPluginManager::GetPluginDeviceNames(pluginMgr, "*", PPlugin_PSoundChannel::ServiceType(), dir);
+  return PPluginManager::GetPluginDeviceNames(pluginMgr,
+                                              PSTRSTRM('*'<< PPluginServiceDescriptor::SeparatorChar<<'*'),
+                                              PPlugin_PSoundChannel::ServiceType(),
+                                              dir);
 }
 
 
