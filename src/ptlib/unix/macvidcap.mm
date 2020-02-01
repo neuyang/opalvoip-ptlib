@@ -156,7 +156,6 @@ public:
 
 - (void)stop
 {
-  PTRACE(4, "Breaking grab block");
   m_grabbed.Signal();
 }
 
@@ -265,7 +264,9 @@ PVideoInputDevice_Mac::~PVideoInputDevice_Mac()
 PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImmediate)
 {
   Close();
-  
+
+  PTRACE(4, "Opening \"" << devName << '"');
+
   PLocalMemoryPool localPool;
   NSError *error = nil;
   
@@ -291,6 +292,8 @@ PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImme
     return false;
   }
 
+  PTRACE(5, "Found device for \"" << devName << '"');
+
   PString oldColourFormat = m_colourFormat;
   
   m_availableFormats.clear();
@@ -303,9 +306,11 @@ PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImme
   }
   
   if (m_availableFormats.empty()) {
-    PTRACE(2, "Camera does not provide a sub type (colour format) we understand");
+    PTRACE(2, "Capture device does not provide a sub type (colour format) we understand");
     return false;
   }
+
+  PTRACE(5, "Found capture device colour formats for \"" << devName << '"');
 
   if (!SetColourFormat(oldColourFormat) && !SetColourFormat(PString::Empty()))
     return false;
@@ -315,14 +320,25 @@ PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImme
   OSType pixelFormat = CMFormatDescriptionGetMediaSubType(selectedFormat.formatDescription);
   
   if ([m_device lockForConfiguration:NULL] != YES) {
-    PTRACE(2, "Camera could not be locked");
+    PTRACE(2, "Capture device configuration could not be locked");
     return false;
   }
   
+  PTRACE(5, "Capture device configuration locked for \"" << devName << '"');
+
   m_device.activeFormat = selectedFormat;
-  m_device.activeVideoMinFrameDuration = CMTimeMake(1, m_frameRate);
-  m_device.activeVideoMaxFrameDuration = CMTimeMake(1, m_frameRate);
+  try {
+    m_device.activeVideoMinFrameDuration = CMTimeMake(1, m_frameRate);
+    m_device.activeVideoMaxFrameDuration = CMTimeMake(1, m_frameRate);
+  }
+  catch (...) {
+    [m_device unlockForConfiguration];
+    PTRACE(2, "Capture device \"" << devName << "\" could not be set to " << m_frameRate << "fps");
+    return false;
+  }
   [m_device unlockForConfiguration];
+
+  PTRACE(5, "Capture device configuration unlocked for \"" << devName << '"');
 
   m_captureInput = [AVCaptureDeviceInput deviceInputWithDevice:m_device error:&error];
   if (error != nil) {
@@ -335,6 +351,8 @@ PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImme
     PTRACE(2, "Could not add input device \"" << devName << '"');
     return false;
   }
+
+  PTRACE(5, "Added capture input to session for \"" << devName << '"');
 
   [m_session addInput:m_captureInput];
   
@@ -354,19 +372,22 @@ PBoolean PVideoInputDevice_Mac::Open(const PString & devName, PBoolean startImme
   
   [m_session addOutput:m_captureOutput];
   
+  PTRACE(5, "Added capture output to session for \"" << devName << '"');
+
   [m_session commitConfiguration];
   
   m_captureFrame = [[PVideoInputDevice_MacFrame alloc] init];
   dispatch_queue_t captureQueue = dispatch_queue_create( "captureQueue", DISPATCH_QUEUE_SERIAL );
   [m_captureOutput setSampleBufferDelegate:m_captureFrame queue:captureQueue];
   
+  PTRACE(5, "Capture delegate set for \"" << devName << '"');
+
   m_frameSizeBytes = CalculateFrameBytes(m_frameWidth, m_frameHeight, m_colourFormat);
   [m_captureFrame setFrameSize:m_frameSizeBytes withWidth:m_frameWidth andHeight:m_frameHeight andFormat:pixelFormat];
   
   m_deviceName = devName;
 
-  PTRACE(3, "Opened \"" << devName << "\""
-            " res=" << m_frameWidth << 'x' << m_frameHeight << '@' << m_frameRate);
+  PTRACE(3, "Opened \"" << devName << "\" " << m_frameWidth << 'x' << m_frameHeight << '@' << m_frameRate);
   
   if (startImmediate)
     return Start();
@@ -459,8 +480,11 @@ PBoolean PVideoInputDevice_Mac::Stop()
   
   PTRACE(3, "Stopping \"" << m_deviceName << '"');
   [m_session stopRunning];
+
+  PTRACE(4, "Breaking grab block of \"" << m_deviceName << '"');
   [m_captureFrame stop];
   
+  PTRACE(4, "Awaiting stop of \"" << m_deviceName << '"');
   for (int retry = 0; retry < 50; ++retry) {
     if (![m_session isRunning]) {
       PTRACE(5, "Stopped \"" << m_deviceName << '"');
@@ -603,4 +627,3 @@ bool PVideoInputDevice_Mac::InternalGetFrameData(BYTE * buffer, PINDEX & bytesRe
 #endif // P_VIDEO
 
 // End Of File ///////////////////////////////////////////////////////////////
-
