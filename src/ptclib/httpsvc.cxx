@@ -467,6 +467,8 @@ PString PHTTPServiceProcess::GetPageGraphic()
        << PHTML::HotLink(m_manufacturersHomePage) << GetManufacturer() << PHTML::HotLink()
        << ", "
        << PHTML::HotLink("mailto:" + m_manufacturersEmail) << m_manufacturersEmail << PHTML::HotLink()
+       << PHTML::BreakLine()
+       << "PTLib:" << PHTML::NonBreakSpace() << GetLibVersion()
        << PHTML::TableEnd()
        << PHTML::HRule();
 
