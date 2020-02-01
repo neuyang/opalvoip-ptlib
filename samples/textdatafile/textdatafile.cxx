@@ -108,6 +108,6 @@ void TextDataTest::WriteTestFixed(const PString & arg)
 }
 
 
-void TextDataTest::WriteTestVariable(const PArgList & arg1)
+void TextDataTest::WriteTestVariable(const PArgList &)
 {
 }
