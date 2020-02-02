@@ -25,7 +25,7 @@ ZIP=zip
 
 SNAPSHOTS=./snapshots
 WEB_HOST=files.opalvoip.org
-WEB_HTML_DIR="/mnt/www/files.opalvoip.org/html"
+WEB_HTML_DIR="/www/files.opalvoip.org/html"
 WEB_DOCS_DIR=${WEB_HTML_DIR}/docs
 WEB_CHANGELOG_DIR=${WEB_HTML_DIR}/docs/ChangeLogs
 
@@ -89,7 +89,7 @@ case "$base" in
     exit
 esac
 
-extract_versions_cmd="$GIT ls-remote ${repository} | awk '/refs\/tags\/v[0-9]+_[0-9]*["
+extract_versions_cmd="$GIT ls-remote ${repository} | awk '/[[:space:]]refs\/tags\/v[0-9]+_[0-9]*["
 if [ "$1" = "stable" ]; then
   extract_versions_cmd+=02468
   shift
@@ -97,7 +97,7 @@ else
   extract_versions_cmd+=13579
 fi
 
-extract_versions_cmd+=']_[0-9]+/{gsub(/.*v/,"");gsub("\^.*$","");gsub("_"," ");print}'
+extract_versions_cmd+=']_[0-9]+$/{gsub(/.*\/v/,"");gsub("_"," ");print}'
 extract_versions_cmd+="' | sort -k1n -k2n -k3n"
 
 release_tag=$1
@@ -189,7 +189,7 @@ function clean_copy () {
     $GIT clean -x --force --quiet
     if [ -n "$exists" ]; then
       echo "Switching to $release_tag of $base"
-      $GIT checkout ${release_tag}
+      $GIT checkout --detach ${release_tag}
     else
       echo "Switching to HEAD of $release_branch of $base"
       $GIT checkout ${release_branch}
@@ -203,6 +203,10 @@ function clean_copy () {
       echo "Cloning HEAD of $release_branch of $base"
       $GIT clone --branch ${release_branch} ${repository} "$base"
     fi
+    pushd $base > /dev/null
+    $GIT config user.email "$SOURCEFORGE_USERNAME@sf.net"
+    $GIT config user.name "PTLib/OPAL Maintainer"
+    popd > /dev/null
   fi
 }
 
@@ -216,7 +220,7 @@ function switch_to_version () {
     exists=`$GIT ls-remote --tags ${repository} | grep "$release_tag" 2>/dev/null`
     if [ -n "$exists" ]; then
       echo "Switching to $release_tag of $base"
-      ( cd $base ; $GIT checkout ${release_tag} )
+      ( cd $base ; $GIT checkout --detach ${release_tag} )
     else
       echo "Switching to HEAD of $release_branch of $base"
       ( cd $base ; $GIT checkout $release_branch >/dev/null )
@@ -242,8 +246,7 @@ function create_tag () {
     echo "Switching to $release_branch of $base"
     ( cd $base ; $GIT checkout $release_branch >/dev/null )
   else
-    echo "Checking out $release_branch of $base"
-    $GIT clone --branch ${release_branch} ${repository} "$base" >/dev/null
+    clean_copy
   fi
 
   if [ "$release_branch" = "trunk" -a ${release_version[2]} = 0 ]; then
@@ -253,10 +256,11 @@ function create_tag () {
       echo "Would switch to $release_branch of $base"
     else
       echo "Creating branch $release_tag in $base"
-      $GIT tag $release_branch
+      ( cd $base ; $GIT tag $release_branch )
     fi
   fi
 
+  need_push=false
   if [ -n "$release_version" -a -e "$VERSION_FILE" ]; then
     version_file_changed=0
     file_version=`awk '/MAJOR_VERSION/{printf "%s ",$3};/MINOR_VERSION/{printf "%s ",$3};/PATCH_VERSION/{printf "%s",$3}' "$VERSION_FILE"`
@@ -285,13 +289,16 @@ function create_tag () {
         sed -i '' "s/revision.h/revision.h /" "$REVISION_FILE"
       fi
       msg="Update release version number to $release_verstr"
+      pushd ${base} > /dev/null
       if [ -n "$debug_tagging" ]; then
         echo $msg
-        $GIT diff "$VERSION_FILE" "$REVISION_FILE"
-        $GIT checkout "$VERSION_FILE" "$REVISION_FILE"
+        $GIT diff "`basename $VERSION_FILE`" "`basename $REVISION_FILE`"
+        $GIT checkout "`basename $VERSION_FILE`" "`basename $REVISION_FILE`"
       else
-        $GIT commit --message "$msg" "$VERSION_FILE" "$REVISION_FILE"
+        $GIT commit --message "$msg" "`basename $VERSION_FILE`" "`basename $REVISION_FILE`"
+        need_push=true
       fi
+      popd > /dev/null
     fi
   fi
 
@@ -299,7 +306,7 @@ function create_tag () {
     echo "Would tag ${repository}/$release_branch ${repository}/tags/$release_tag"
   else
     echo "Creating tag $release_tag in $base"
-    $GIT tag $release_tag
+    ( cd $base ; $GIT tag $release_tag )
   fi
 
   if [ -e "$VERSION_FILE" ]; then
@@ -309,13 +316,20 @@ function create_tag () {
     awk "/PATCH_VERSION/{print \$1,\$2,\"${new_version[2]}\";next};/BUILD_TYPE/{print \$1,\$2,\"BetaCode\";next};{print}" "$VERSION_FILE" > "$VERSION_FILE.tmp"
     mv -f "$VERSION_FILE.tmp" "$VERSION_FILE"
     msg="Update version number for beta v${new_version[0]}.${new_version[1]}.${new_version[2]}"
+    pushd ${base} > /dev/null
     if [ -n "$debug_tagging" ]; then
       echo $msg
-      $GIT diff "$VERSION_FILE"
-      $GIT checkout "$VERSION_FILE"
+      $GIT diff "`basename $VERSION_FILE`"
+      $GIT checkout "`basename $VERSION_FILE`"
     else
-      $GIT commit --message "$msg" "$VERSION_FILE"
+      $GIT commit --message "$msg" "`basename $VERSION_FILE`"
+      need_push=true
     fi
+    popd > /dev/null
+  fi
+
+  if $need_push; then
+    ( cd $base ; $GIT push --all --tags )
   fi
 }
 
@@ -341,8 +355,8 @@ function create_changelog () {
     return
   fi
 
-  echo "Creating $CHANGELOG_FILE between tags $release_tag (rev $release_rev) and $previous_tag"
-  $GIT log ${previous_tag}:${release_tag} > $CHANGELOG_FILE
+  echo "Creating $CHANGELOG_FILE between tags $release_tag and $previous_tag"
+  ( cd $base ; $GIT log ${previous_tag}..${release_tag} ) > $CHANGELOG_FILE
 }
 
 #
@@ -460,27 +474,46 @@ function upload_to_sourceforge () {
 
 function update_website () {
   if [ -e "$CHANGELOG_FILE" ]; then
-    echo "Copying $CHANGELOG_FILE to ${WEB_HOST}:$WEB_CHANGELOG_DIR"
-    scp "$CHANGELOG_FILE" "${WEB_HOST}:$WEB_CHANGELOG_DIR"
+    if [ -d "$WEB_CHANGELOG_DIR" ]; then
+      echo "Copying $CHANGELOG_FILE to $WEB_CHANGELOG_DIR"
+      cp "$CHANGELOG_FILE" "$WEB_CHANGELOG_DIR"
+      already_set=`grep v$release_verstr "$WEB_CHANGELOG_DIR/.htaccess"`
+      if [ -z "$already_set" ]; then
+        echo "Adding description for v$previous_verstr to v$release_verstr"
+        echo "AddDescription \"Changes from v$previous_verstr to v$release_verstr of ${base}\" $CHANGELOG_BASE" >> $WEB_CHANGELOG_DIR/.htaccess
+      else
+        echo "Description already added for v$release_verstr"
+      fi
+    else
+      echo "Copying $CHANGELOG_FILE to ${WEB_HOST}:$WEB_CHANGELOG_DIR"
+      scp "$CHANGELOG_FILE" "${WEB_HOST}:$WEB_CHANGELOG_DIR"
+
+      already_set=`ssh $WEB_HOST "grep v$release_verstr $WEB_CHANGELOG_DIR/.htaccess"`
+      if [ -z "$already_set" ]; then
+        echo "Adding description for v$previous_verstr to v$release_verstr"
+        ssh $WEB_HOST "echo \"AddDescription \"Changes from v$previous_verstr to v$release_verstr of ${base}\" $CHANGELOG_BASE\" >> $WEB_CHANGELOG_DIR/.htaccess"
+      else
+        echo "Description already added for v$release_verstr"
+      fi
+    fi
   else
     echo "No $CHANGELOG_FILE, use 'log' command to generate."
-  fi
-
-  already_set=`ssh $WEB_HOST "grep v$release_verstr $WEB_CHANGELOG_DIR/.htaccess"`
-  if [ -z "$already_set" ]; then
-    echo "Adding description for v$previous_verstr to v$release_verstr"
-    ssh $WEB_HOST "echo \"AddDescription \"Changes from v$previous_verstr to v$release_verstr of ${base}\" $CHANGELOG_BASE\" >> $WEB_CHANGELOG_DIR/.htaccess"
-  else
-    echo "Description already added for v$release_verstr"
   fi
 
   if [ -e $DOC_ARCHIVE_TBZ2 ]; then
     doc_dir="$WEB_DOCS_DIR/${base}-v${release_version[0]}_${release_version[1]}"
     doc_tar="$WEB_DOCS_DIR/$DOC_ARCHIVE_TBZ2_BASE"
-    echo "Copying $DOC_ARCHIVE_TBZ2 to ${WEB_HOST}:$WEB_DOCS_DIR"
-    scp "$DOC_ARCHIVE_TBZ2" "${WEB_HOST}:$WEB_DOCS_DIR"
-    echo "Creating online document directory ${WEB_HOST}:$doc_dir"
-    ssh $WEB_HOST "rm -rf $doc_dir ; mkdir $doc_dir ; $TAR -xjf $doc_tar -C $doc_dir --strip-components 1 ; rm $doc_tar"
+    if [ -d "$WEB_DOCS_DIR" ]; then
+      echo "Copying $DOC_ARCHIVE_TBZ2 to $WEB_DOCS_DIR"
+      rm -rf "$doc_dir"
+      mkdir "$doc_dir"
+      $TAR -xjf "$DOC_ARCHIVE_TBZ2" -C "$doc_dir" --strip-components 1
+    else
+      echo "Copying $DOC_ARCHIVE_TBZ2 to ${WEB_HOST}:$WEB_DOCS_DIR"
+      scp "$DOC_ARCHIVE_TBZ2" "${WEB_HOST}:$WEB_DOCS_DIR"
+      echo "Creating online document directory ${WEB_HOST}:$doc_dir"
+      ssh $WEB_HOST "rm -rf $doc_dir ; mkdir $doc_dir ; $TAR -xjf $doc_tar -C $doc_dir --strip-components 1 ; rm $doc_tar"
+    fi
   else
     echo "No $DOC_ARCHIVE_TBZ2, use 'docs' command to generate."
   fi
