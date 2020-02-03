@@ -1853,82 +1853,93 @@ PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
 
 PBoolean PIPSocket::Address::FromString(const PString & str)
 {
-  m_version = 0;
-  memset(&m_v, 0, sizeof(m_v));
-  if (str.IsEmpty())
-    return false;
+  PString iface;
+  if (str[0] == '%')
+    iface = str.Mid(1);
+  else {
+    m_version = 0;
+    memset(&m_v, 0, sizeof(m_v));
+    if (str.IsEmpty())
+      return false;
 
 #if P_HAS_IPV6
-  m_scope6 = 0;
+    m_scope6 = 0;
 
-  struct addrinfo *res = NULL;
-  struct addrinfo hints = { AI_NUMERICHOST, PF_UNSPEC }; // Could be IPv4: x.x.x.x or IPv6: x:x:x:x::x
+    struct addrinfo *res = NULL;
+    struct addrinfo hints = { AI_NUMERICHOST, PF_UNSPEC }; // Could be IPv4: x.x.x.x or IPv6: x:x:x:x::x
 
-  // Find out if string is in brackets [], as in ipv6 address
-  PINDEX lbracket = str.Find('[');
-  PINDEX rbracket = str.Find(']', lbracket);
-  if (lbracket == P_MAX_INDEX || rbracket == P_MAX_INDEX)
-    getaddrinfo((const char *)str, NULL , &hints, &res);
-  else {
-    PString ip6 = str(lbracket+1, rbracket-1);
-    if (getaddrinfo((const char *)ip6, NULL , &hints, &res) != 0) {
-      PINDEX percent = ip6.Find('%');
-      if (percent > 0 && percent != P_MAX_INDEX) {
-        // If have a scope qualifier, remove it as it might be for the remote system
-        ip6.Delete(percent, P_MAX_INDEX);
-        getaddrinfo((const char *)ip6, NULL , &hints, &res);
+    // Find out if string is in brackets [], as in ipv6 address
+    PINDEX lbracket = str.Find('[');
+    PINDEX rbracket = str.Find(']', lbracket);
+    if (lbracket == P_MAX_INDEX || rbracket == P_MAX_INDEX)
+      getaddrinfo((const char *)str, NULL, &hints, &res);
+    else {
+      PString ip6 = str(lbracket+1, rbracket-1);
+      if (getaddrinfo((const char *)ip6, NULL, &hints, &res) != 0) {
+        PINDEX percent = ip6.Find('%');
+        if (percent > 0 && percent != P_MAX_INDEX) {
+          // If have a scope qualifier, remove it as it might be for the remote system
+          ip6.Delete(percent, P_MAX_INDEX);
+          getaddrinfo((const char *)ip6, NULL, &hints, &res);
+        }
       }
     }
-  }
 
-  if (res != NULL) {
-    if (res->ai_family == PF_INET6) {
-      // IPv6 addr
-      struct sockaddr_in6 * addr_in6 = (struct sockaddr_in6 *)res->ai_addr;
-      m_version = 6;
-      m_v.m_six = addr_in6->sin6_addr;
-      m_scope6  = addr_in6->sin6_scope_id;
-    }
-    else {
-      // IPv4 addr
-      struct sockaddr_in * addr_in = (struct sockaddr_in *)res->ai_addr;
-      m_version  = 4;
-      m_v.m_four = addr_in->sin_addr;
-    }
+    if (res != NULL) {
+      if (res->ai_family == PF_INET6) {
+        // IPv6 addr
+        struct sockaddr_in6 * addr_in6 = (struct sockaddr_in6 *)res->ai_addr;
+        m_version = 6;
+        m_v.m_six = addr_in6->sin6_addr;
+        m_scope6 = addr_in6->sin6_scope_id;
+      }
+      else {
+        // IPv4 addr
+        struct sockaddr_in * addr_in = (struct sockaddr_in *)res->ai_addr;
+        m_version = 4;
+        m_v.m_four = addr_in->sin_addr;
+      }
 
-    freeaddrinfo(res);
-    return true;
-  }
-
-  // Failed to parse, so check for IPv4 with %interface
-#endif // P_HAS_IPV6
-
-  PINDEX percent = str.FindSpan("0123456789.");
-  if (percent != P_MAX_INDEX && str[percent] != '%')
-    return false;
-
-  if (percent > 0) {
-    PString ip4 = str.Left(percent);
-    DWORD iaddr;
-    if ((iaddr = ::inet_addr((const char *)ip4)) != (DWORD)INADDR_NONE) {
-      m_version = 4;
-      m_v.m_four.s_addr = iaddr;
+      freeaddrinfo(res);
       return true;
     }
-  }
 
-  PString iface = str.Mid(percent+1);
-  if (iface.IsEmpty())
-    return false;
+    // Failed to parse, so check for IPv4 with %interface
+#endif // P_HAS_IPV6
+
+    PINDEX percent = str.FindSpan("0123456789.");
+    if (percent != P_MAX_INDEX && str[percent] != '%')
+      return false;
+
+    if (percent > 0) {
+      PString ip4 = str.Left(percent);
+      DWORD iaddr;
+      if ((iaddr = ::inet_addr((const char *)ip4)) != (DWORD)INADDR_NONE) {
+        m_version = 4;
+        m_v.m_four.s_addr = iaddr;
+        return true;
+      }
+    }
+
+    iface = str.Mid(percent+1);
+    if (iface.IsEmpty())
+      return false;
+  }
 
   PIPSocket::InterfaceTable interfaceTable;
   if (!PIPSocket::GetInterfaceTable(interfaceTable))
     return false;
 
+  unsigned interfaceVersion = GetVersion();
+  if (interfaceVersion == 0)
+    interfaceVersion = 4;
   for (PINDEX i = 0; i < interfaceTable.GetSize(); i++) {
     if (interfaceTable[i].GetName().NumCompare(iface) == EqualTo) {
-      *this = interfaceTable[i].GetAddress();
-      return true;
+      Address possibleAddress = interfaceTable[i].GetAddress();
+      if (interfaceVersion == possibleAddress.GetVersion()) {
+        *this = possibleAddress;
+        return true;
+      }
     }
   }
 
