@@ -737,6 +737,9 @@ void PNatMethod_AWS::InternalUpdate(bool)
 {
   m_externalAddress = PIPSocket::GetInvalidAddress();
 
+  if (!m_active)
+    return;
+
   PString extAddr;
   static PURL const api(GetServer());
   static PURL::LoadParams const params(PMIMEInfo::TextPlain(), 500);
