@@ -313,10 +313,8 @@ class PThreadPool : public PThreadPoolBase
 
       // allocate by group if specified, else allocate to least busy
       if (internalWork.m_group.empty() || (iterGroup = m_groupInfoMap.find(group)) == m_groupInfoMap.end()) {
-        internalWork.m_worker = (WorkerThread *)AllocateWorker();
-
         // if cannot allocate worker, return
-        if (internalWork.m_worker == NULL) 
+        if ((internalWork.m_worker = (WorkerThread *)AllocateWorker()) == NULL) 
           return false;
 
         // add group ID to map
@@ -327,6 +325,11 @@ class PThreadPool : public PThreadPoolBase
         }
       }
       else {
+        if (iterGroup->second.m_worker->IsTerminated()) {
+          PTRACE(2, PThreadPoolTraceModule, "Group thread " << *iterGroup->second.m_worker << " unexpectedly terminated");
+          if ((iterGroup->second.m_worker = (WorkerThread *)AllocateWorker()) == NULL) 
+            return false;
+        }
         internalWork.m_worker = iterGroup->second.m_worker;
         ++iterGroup->second.m_count;
         PTRACE(6, PThreadPoolTraceModule, "Using existing worker thread \"" << *internalWork.m_worker << "\""

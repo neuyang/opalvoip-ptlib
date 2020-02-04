@@ -88,14 +88,22 @@ PThreadPoolBase::WorkerThreadBase * PThreadPoolBase::AllocateWorker()
   // shortcut the search if we find an empty one
   WorkerList_t::iterator minWorker = m_workers.end();
   size_t minSizeFound = INT_MAX;
-  for (WorkerList_t::iterator iter = m_workers.begin(); iter != m_workers.end(); ++iter) {
+  for (WorkerList_t::iterator iter = m_workers.begin(); iter != m_workers.end(); ) {
     WorkerThreadBase & worker = **iter;
-    PWaitAndSignal m2(worker.m_workerMutex);
-    if (!worker.m_shutdown && (worker.GetWorkSize() <= minSizeFound)) {
-      minSizeFound = worker.GetWorkSize();
-      if (minSizeFound == 0)
-        return &worker; // if there is an idle worker, use it
-      minWorker = iter;
+    if (worker.IsTerminated()) {
+      PTRACE(2, PThreadPoolTraceModule, "Worker thread expectedly terminated in thread pool \"" << m_threadName << '"');
+      delete *iter;
+      iter = m_workers.erase(iter);
+    }
+    else {
+      PWaitAndSignal m2(worker.m_workerMutex);
+      if (!worker.m_shutdown && (worker.GetWorkSize() <= minSizeFound)) {
+        minSizeFound = worker.GetWorkSize();
+        if (minSizeFound == 0)
+          return &worker; // if there is an idle worker, use it
+        minWorker = iter;
+      }
+      ++iter;
     }
   }
 
@@ -114,8 +122,12 @@ PThreadPoolBase::WorkerThreadBase * PThreadPoolBase::AllocateWorker()
 
   // create a new worker thread
   WorkerThreadBase * worker = CreateWorkerThread();
-  m_workers.push_back(PAssertNULL(worker));
-  worker->Resume();
+  if (worker == NULL)
+    PTRACE(2, PThreadPoolTraceModule, "Could not create worker in thread pool \"" << m_threadName << '"');
+  else {
+    m_workers.push_back(worker);
+    worker->Resume();
+  }
   return worker;
 }
 
