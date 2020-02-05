@@ -43,7 +43,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 #define PTraceModule() "MacVideo"
-#define PTRACE_DETAILED(...) PTRACE(4, __VA_ARGS__)
+#define PTRACE_DETAILED(...) PTRACE(5, __VA_ARGS__)
 
 
 class PLocalMemoryPool
