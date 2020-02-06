@@ -1314,7 +1314,7 @@ bool PDirectory::GetEntries(Entries & entries, Sorting sortBy)
     Entry entry;
     if (GetInfo(entry)) {
       entry.m_name = GetEntryName();
-      entries.push_back(entry);
+        entries.push_back(entry);
     }
   } while (Next());
 
@@ -2342,6 +2342,14 @@ PString PConfigArgs::CharToString(char letter) const
 
 PProcess * PProcessInstance = NULL;
 
+
+static void AbortProcess(int exitCode)
+{
+  abort(); // Dump core
+  _exit(exitCode); // Fail safe if abort() didn't dump core and exit
+}
+
+
 int PProcess::InternalMain(void *)
 {
 #ifdef P_HAS_WCHAR
@@ -2360,11 +2368,11 @@ int PProcess::InternalMain(void *)
   }
   catch (const std::exception & e) {
     PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in process main, terminating"));
-    std::terminate();
+    AbortProcess(136);
   }
   catch (...) {
     PAssertAlways(PSTRSTRM("Exception caught in process main, terminating"));
-    std::terminate();
+    AbortProcess(137);
   }
 #else
   Main();
@@ -2700,7 +2708,7 @@ PProcess & PProcess::Current()
 {
   if (PProcessInstance == NULL) {
     PAssertAlways("Catastrophic failure, PProcess::Current() = NULL!!");
-    abort();
+    AbortProcess(132);
   }
   return *PProcessInstance;
 }
@@ -2812,6 +2820,15 @@ static int SignalsToHandle[] = {
   0
 };
 
+#if __cplusplus >=201100L
+void HandleTerminate()
+{
+  PTRACE(2, "PTLib", "Received std::terminate()");
+  AbortProcess(133);
+  abort(); // Dump core
+}
+#endif
+
 void PProcess::AddRunTimeSignalHandlers(const int * signals)
 {
   if (signals != SignalsToHandle)
@@ -2826,6 +2843,10 @@ void PProcess::AddRunTimeSignalHandlers(const int * signals)
     if (previous == NULL)
       previous = PlatformSetRunTimeSignalHandler(signal);
   }
+
+#if __cplusplus >= 201100L
+  std::set_terminate(HandleTerminate);
+#endif
 }
 
 
@@ -3142,11 +3163,11 @@ void PThread::InternalThreadMain()
   }
   catch (const std::exception & e) {
     PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in thread " << *this << ", terminating"));
-    std::terminate();
+    AbortProcess(134);
   }
   catch (...) {
     PAssertAlways(PSTRSTRM("Exception caught in thread " << *this << ", terminating"));
-    std::terminate();
+    AbortProcess(135);
   }
 #else
   process.OnThreadStart(*this);
