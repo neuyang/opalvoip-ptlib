@@ -2378,6 +2378,14 @@ PString PConfigArgs::CharToString(char letter) const
 
 PProcess * PProcessInstance = NULL;
 
+
+static void AbortProcess(int exitCode)
+{
+  abort(); // Dump core
+  _exit(exitCode); // Fail safe if abort() didn't dump core and exit
+}
+
+
 int PProcess::InternalMain(void *)
 {
 #ifdef P_HAS_WCHAR
@@ -2395,12 +2403,12 @@ int PProcess::InternalMain(void *)
     Main();
   }
   catch (const std::exception & e) {
-    PAssertException("process main", &e);
-    std::terminate();
+    PAssertAlways(PSTRSTRM("Exception (" << typeid(e).name() << " \"" << e.what() << "\") caught in process main, terminating"));
+    AbortProcess(136);
   }
   catch (...) {
-    PAssertException("process main", NULL);
-    std::terminate();
+    PAssertAlways(PSTRSTRM("Exception caught in process main, terminating"));
+    AbortProcess(137);
   }
 #else
   Main();
@@ -2736,7 +2744,7 @@ PProcess & PProcess::Current()
 {
   if (PProcessInstance == NULL) {
     PAssertAlways("Catastrophic failure, PProcess::Current() = NULL!!");
-    abort();
+    AbortProcess(132);
   }
   return *PProcessInstance;
 }
@@ -2848,6 +2856,15 @@ static int SignalsToHandle[] = {
   0
 };
 
+#if __cplusplus >=201100L
+void HandleTerminate()
+{
+  PTRACE(2, "PTLib", "Received std::terminate()");
+  AbortProcess(133);
+  abort(); // Dump core
+}
+#endif
+
 void PProcess::AddRunTimeSignalHandlers(const int * signals)
 {
   if (signals != SignalsToHandle)
@@ -2862,6 +2879,10 @@ void PProcess::AddRunTimeSignalHandlers(const int * signals)
     if (previous == NULL)
       previous = PlatformSetRunTimeSignalHandler(signal);
   }
+
+#if __cplusplus >= 201100L
+  std::set_terminate(HandleTerminate);
+#endif
 }
 
 

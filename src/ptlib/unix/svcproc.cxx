@@ -663,7 +663,7 @@ void PServiceProcess::AsynchronousRunTimeSignal(int signal, PProcessIdentifier s
   }
 
   abort(); // Dump core
-  _exit(signal+100); // Fail safe if raise() didn't dump core and exit
+  _exit(signal+100); // Fail safe if abort() didn't dump core and exit
 }
 
 
