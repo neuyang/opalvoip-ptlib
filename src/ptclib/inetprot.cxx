@@ -1070,7 +1070,8 @@ void PMultiPartList::PrintOn(ostream & strm) const
 
 PMultiPartInfo::PMultiPartInfo(const PString & data, const PString & contentType, const PString & disposition)
   : m_contentType(contentType)
-  , m_encoding("7bit")
+  , m_charset("UTF-8")
+  , m_encoding("8bit")
   , m_disposition(disposition)
   , m_textBody(data)
 {
@@ -1079,8 +1080,7 @@ PMultiPartInfo::PMultiPartInfo(const PString & data, const PString & contentType
 
 PMultiPartInfo::PMultiPartInfo(const PBYTEArray & data, const PString & contentType, const PString & disposition)
   : m_contentType(contentType)
-  , m_charset("UTF-8")
-  , m_encoding("8bit")
+  , m_encoding("binary")
   , m_disposition(disposition)
   , m_binaryBody(data)
 {
@@ -1115,7 +1115,7 @@ void PMultiPartInfo::PrintOn(ostream & strm) const
     strm << m_textBody;
   else if (m_encoding == "7bit") {
     for (PINDEX i = 0; i < m_textBody.GetLength(); ++i) {
-      if ((m_textBody[i]&0x80) != 0)
+      if ((m_textBody[i]&0x80) == 0)
         strm << m_textBody[i];
     }
   }
