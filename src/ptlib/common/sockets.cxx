@@ -1645,6 +1645,7 @@ PIPSocket::Address::Address()
 
 
 PIPSocket::Address::Address(const PString & dotNotation)
+  : m_version(0)
 {
   operator=(dotNotation);
 }
