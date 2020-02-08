@@ -1160,7 +1160,7 @@ class PVideoOutputDevice_Window : public PVideoOutputDeviceRGB
 
   protected:
     PDECLARE_NOTIFIER(PThread, PVideoOutputDevice_Window, HandleDisplay);
-    static VOID CALLBACK TimerProc(_In_ HWND, _In_ UINT, _In_ UINT_PTR, _In_ DWORD);
+    static VOID CALLBACK CreateProc(_In_ HWND, _In_ UINT, _In_ UINT_PTR, _In_ DWORD);
     void CreateDisplayWindow();
     void Draw(HDC hDC);
 
@@ -1181,9 +1181,14 @@ class PVideoOutputDevice_Window : public PVideoOutputDeviceRGB
     SIZE       m_fixedSize;
     SizeMode   m_sizeMode;
     bool       m_showInfo;
-    unsigned   m_frameCount;
-    unsigned   m_observedFrameRate;
-    PSimpleTimer m_rateTimer;
+    COLORREF   m_infoColour;
+    UINT       m_infoOptions;
+    PString    m_freezeText;
+    COLORREF   m_freezeColour;
+    UINT       m_freezeOptions;
+    PTime      m_openTime;
+    atomic<unsigned> m_frameCount;
+    atomic<unsigned> m_observedFrameRate;
 };
 
 
@@ -1223,6 +1228,11 @@ PVideoOutputDevice_Window::PVideoOutputDevice_Window()
   , m_flipped(false)
   , m_sizeMode(NormalSize)
   , m_showInfo(false)
+  , m_infoColour(RGB(192,192,192))
+  , m_infoOptions(DT_TOP|DT_RIGHT|DT_SINGLELINE|DT_END_ELLIPSIS)
+  , m_freezeText("Poor Network Connection")
+  , m_freezeColour(RGB(128,128,128))
+  , m_freezeOptions(DT_VCENTER|DT_CENTER|DT_SINGLELINE|DT_END_ELLIPSIS)
   , m_frameCount(0)
   , m_observedFrameRate(0)
 {
@@ -1257,10 +1267,7 @@ PStringArray PVideoOutputDevice_Window::GetOutputDeviceNames()
 }
 
 
-VOID CALLBACK PVideoOutputDevice_Window::TimerProc(_In_  HWND,
-                                                   _In_  UINT,
-                                                   _In_  UINT_PTR idEvent,
-                                                   _In_  DWORD)
+VOID CALLBACK PVideoOutputDevice_Window::CreateProc(_In_  HWND, _In_  UINT, _In_  UINT_PTR idEvent, _In_  DWORD)
 {
   ((PVideoOutputDevice_Window*)idEvent)->CreateDisplayWindow();
 }
@@ -1329,13 +1336,19 @@ PBoolean PVideoOutputDevice_Window::Open(const PString & name, PBoolean startImm
   }
   
   m_showInfo = m_deviceName.Find("SHOWINFO") != P_MAX_INDEX;
+  m_infoColour = (COLORREF)ParseDeviceNameTokenUnsigned("INFOCOLOUR", m_infoColour);
+  m_infoOptions = (UINT)ParseDeviceNameTokenUnsigned("INFOMODE", m_infoOptions);
+  m_freezeText = ParseDeviceNameTokenString("FREEZETEXT", m_freezeText);
+  m_freezeColour = (COLORREF)ParseDeviceNameTokenUnsigned("FREEZECOLOUR", m_freezeColour);
+  m_freezeOptions = (UINT)ParseDeviceNameTokenUnsigned("FREEZEMODE", m_freezeOptions);
+  m_openTime.SetCurrentTime();
 
   if (m_hParent != NULL) {
     if (GetWindowThreadProcessId(m_hParent, NULL) == GetCurrentThreadId())
       CreateDisplayWindow();
     else {
       // This is a sneaky way to get a callback in the context of the parent windows thread
-      SetTimer(m_hParent, (UINT_PTR)this, USER_TIMER_MINIMUM, TimerProc);
+      SetTimer(m_hParent, (UINT_PTR)this, USER_TIMER_MINIMUM, CreateProc);
       m_started.Wait();
       KillTimer(m_hParent, (UINT_PTR)this);
     }
@@ -1550,6 +1563,8 @@ PBoolean PVideoOutputDevice_Window::FrameComplete()
   if (m_hWnd == NULL)
     return false;
 
+  ++m_frameCount;
+
   HDC hDC = GetDC(m_hWnd);
   Draw(hDC);
   ReleaseDC(m_hWnd, hDC);
@@ -1743,28 +1758,23 @@ void PVideoOutputDevice_Window::Draw(HDC hDC)
 
   if (m_showInfo) {
     PStringStream strm;
-    strm << " Video: " << m_frameWidth << 'x' << m_frameHeight;
-
-    ++m_frameCount;
-    if (m_rateTimer.HasExpired()) {
-      m_rateTimer.SetInterval(0, 1);
-      m_observedFrameRate = m_frameCount;
-      m_frameCount = 0;
-    }
-
-    if (m_observedFrameRate > 0)
-      strm << " @ " << m_observedFrameRate << "fps";
-    else
-      strm << " (stalled)";
-
+    strm << " Video: " << m_frameWidth << 'x' << m_frameHeight << " @ " << m_observedFrameRate << "fps";
     if (m_frameWidth != (unsigned)rect.right && m_frameHeight != (unsigned)rect.bottom)
       strm << " Window: " << rect.right << 'x' << rect.bottom;
-
-    SetTextColor(hDC, RGB(192,192,192));
+    SetTextColor(hDC, m_infoColour);
     SetBkMode(hDC, TRANSPARENT);
     rect.left += 8;
     rect.right -= 8;
-    DrawText(hDC, strm, strm.GetLength(), &rect, DT_TOP|DT_RIGHT|DT_SINGLELINE|DT_END_ELLIPSIS);
+    DrawText(hDC, strm, strm.GetLength(), &rect, m_infoOptions);
+  }
+
+  static const PTimeInterval IgnoreOnStartDelay(0, 5);
+  if (m_observedFrameRate == 0 && !m_freezeText.IsEmpty() && m_openTime.GetElapsed() > IgnoreOnStartDelay) {
+    SetTextColor(hDC, m_freezeColour);
+    SetBkMode(hDC, TRANSPARENT);
+    rect.left += 8;
+    rect.right -= 8;
+    DrawText(hDC, m_freezeText, m_freezeText.GetLength(), &rect, m_freezeOptions);
   }
 }
 
@@ -1811,6 +1821,8 @@ void PVideoOutputDevice_Window::CreateDisplayWindow()
     SetChannel(GetChannel());
   }
 
+  SetTimer(m_hWnd, 12345, 1000, NULL);
+
   m_started.Signal();
 }
 
@@ -1838,6 +1850,17 @@ LRESULT PVideoOutputDevice_Window::WndProc(UINT uMsg, WPARAM wParam, LPARAM lPar
         HDC hDC = BeginPaint(m_hWnd, &paint);
         Draw(hDC);
         EndPaint(m_hWnd, &paint);
+        break;
+      }
+
+    case WM_TIMER :
+      {
+        unsigned rate = m_frameCount.exchange(0);
+        m_observedFrameRate.exchange(rate);
+        if (rate == 0) {
+          PTRACE(3, "Zero frame rate detected");
+          InvalidateRect(m_hWnd, NULL, false);
+        }
         break;
       }
 
