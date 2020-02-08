@@ -1823,7 +1823,12 @@ PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
     PIPSocket::sockaddr_wrapper sa(*this, 0);
     int error = getnameinfo(sa, sa.GetSize(), &str[bracketIPv6], INET6_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST);
     if (error != 0) {
-      PTRACE(2, "Error in getnameinfo: " << error << ' ' << gai_strerror(error));
+#if WIN32
+      error = PWIN32ErrorFlag|GetLastError();
+#else
+      error |= PGAIErrorFlag;
+#endif
+      PTRACE(2, "Error in getnameinfo: " << error << ' ' << GetErrorText(ProtocolFailure, error));
       return InvalidIP;
     }
     if (bracketIPv6) {
@@ -1847,7 +1852,7 @@ PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
   char str[INET_ADDRSTRLEN+1];
   if (inet_ntop(AF_INET, (const void *)&m_v.m_four, str, INET_ADDRSTRLEN) != NULL)
     return str;
-  PTRACE(2, "Error in inet_ntop: " << errno << ' ' << strerror(errno));
+  PTRACE(2, "Error in inet_ntop: " << errno << ' ' << GetErrorText(ProtocolFailure, errno));
   return InvalidIP;
 # else
   static PCriticalSection x;
