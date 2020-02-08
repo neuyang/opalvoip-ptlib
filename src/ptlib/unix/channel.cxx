@@ -357,16 +357,18 @@ PString PChannel::GetErrorText(Errors normalisedError, int osError /* =0 */)
       return PString();
 
     static int const errors[NumNormalisedErrors] = {
-      0, ENOENT, EEXIST, ENOSPC, EACCES, EBUSY, EINVAL, ENOMEM, EBADF, EAGAIN, EINTR,
-      EMSGSIZE, EIO, 0x1000000
+      0, ENOENT, EEXIST, ENOSPC, EACCES, EBUSY, EINVAL, ENOMEM, EBADF, EAGAIN, EINTR, EMSGSIZE, EIO
     };
     osError = errors[normalisedError];
+    if (osError == 0)
+      return psprintf("High level error %u", normalisedError);
   }
 
-  if (osError == 0x1000000)
-    return "High level protocol failure";
-
-  const char * err = strerror(osError);
+  const char * err;
+  if ((osError&PGAIErrorFlag) != 0)
+    err = gai_strerror(osError & ~PGAIErrorFlag);
+  else
+    err = strerror(osError);
   if (err != NULL)
     return err;
 

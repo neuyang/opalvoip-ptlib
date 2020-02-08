@@ -552,4 +552,6 @@ typedef intptr_t      INT;
   #include <x86intrin.h>
 #endif
 
+enum { PGAIErrorFlag = 0x40000000 };
+
 // End of file

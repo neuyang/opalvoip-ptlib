@@ -608,52 +608,29 @@ PString PChannel::GetErrorText(Errors lastError, int osError)
       return PString();
 
     static int const errors[NumNormalisedErrors] = {
-      0, ENOENT, EEXIST, ENOSPC, EACCES, EBUSY, EINVAL, ENOMEM, EBADF, EAGAIN, ECANCELED,
-      WSAEMSGSIZE|PWIN32ErrorFlag, EIO, 0x1000000|PWIN32ErrorFlag
+      0, ENOENT, EEXIST, ENOSPC, EACCES, EBUSY, EINVAL, ENOMEM, EBADF, EAGAIN, ECANCELED, WSAEMSGSIZE|PWIN32ErrorFlag, EIO
     };
     osError = errors[lastError];
+    if (osError == 0)
+      return psprintf("High level error %u", lastError);
   }
+
   if (osError > 0 && osError < _sys_nerr && _sys_errlist[osError][0] != '\0')
     return _sys_errlist[osError];
 
-  static const struct {
-    int id1;
-    int id2;
-    const char * msg;
-  } win32_errlist[] = {
-    { PWIN32ErrorFlag|ERROR_FILE_NOT_FOUND,     ENOENT,                "File not found" },
-    { PWIN32ErrorFlag|ERROR_PATH_NOT_FOUND,     ENOTDIR,               "Path not found" },
-    { PWIN32ErrorFlag|ERROR_ACCESS_DENIED,      EACCES,                "Access denied" },
-    { PWIN32ErrorFlag|ERROR_NOT_ENOUGH_MEMORY,  ENOMEM,                "Not enough memory" },
-    { PWIN32ErrorFlag|ERROR_INVALID_FUNCTION,   EINVAL,                "Invalid function" },
-    { PWIN32ErrorFlag|WSAEADDRINUSE,            EADDRINUSE,            "Address in use" },
-    { PWIN32ErrorFlag|WSAEADDRNOTAVAIL,         EADDRNOTAVAIL,         "Address type not available" },
-    { PWIN32ErrorFlag|WSAENETDOWN,              ENETDOWN,              "Network subsystem failed" },
-    { PWIN32ErrorFlag|WSAEISCONN,               EISCONN,               "Socket is already connected" },
-    { PWIN32ErrorFlag|WSAENETUNREACH,           ENETUNREACH,           "Network unreachable" },
-    { PWIN32ErrorFlag|WSAEHOSTUNREACH,          EHOSTUNREACH,          "Host unreachable" },
-    { PWIN32ErrorFlag|WSAECONNREFUSED,          ECONNREFUSED,          "Connection refused" },
-    { PWIN32ErrorFlag|WSAEINVAL,                EINVAL,                "Invalid operation" },
-    { PWIN32ErrorFlag|WSAENOTCONN,              ENOTCONN,              "Socket not connected" },
-    { PWIN32ErrorFlag|WSAECONNABORTED,          ECONNABORTED,          "Connection aborted" },
-    { PWIN32ErrorFlag|WSAECONNRESET,            ECONNRESET,            "Connection reset" },
-    { PWIN32ErrorFlag|WSAESHUTDOWN,             -1,                    "Connection shutdown" },
-    { PWIN32ErrorFlag|WSAENOTSOCK,              ENOTSOCK,              "Socket closed or invalid" },
-    { PWIN32ErrorFlag|WSAETIMEDOUT,             ETIMEDOUT,             "Timed out" },
-    { PWIN32ErrorFlag|WSAEMSGSIZE,              EMSGSIZE,              "Message larger than buffer" },
-    { PWIN32ErrorFlag|WSAEWOULDBLOCK,           EWOULDBLOCK,           "Would block" },
-    { 0x1000000,                                -1,                    "High level protocol failure" }
-  };
-
-  for (PINDEX i = 0; i < PARRAYSIZE(win32_errlist); i++) {
-    if (win32_errlist[i].id1 == osError || win32_errlist[i].id2 == osError)
-      return win32_errlist[i].msg;
-  }
-
-  if ((osError & PWIN32ErrorFlag) == 0)
+  if ((osError&PWIN32ErrorFlag) == 0)
     return psprintf("C runtime error %u", osError);
-  else
-    return psprintf("WIN32 error %u", osError & ~PWIN32ErrorFlag);
+
+  osError &= ~PWIN32ErrorFlag;
+
+  LPVOID lpMsgBuf;
+  DWORD count = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                              NULL, osError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+
+  PString str((LPCSTR)lpMsgBuf, count);
+  LocalFree(lpMsgBuf);
+
+  return str.IsEmpty() ? psprintf("WIN32 error %u", osError & ~PWIN32ErrorFlag) : str;
 }
 
 
