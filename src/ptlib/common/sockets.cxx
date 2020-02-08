@@ -1806,8 +1806,9 @@ PIPSocket::Address & PIPSocket::Address::operator=(const PString & dotNotation)
 PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
                                      bool IPV6_PARAM(excludeScope)) const
 {
+  static const PConstString InvalidIP("<invalid-IP>");
   if (!IsValid())
-    return "<invalid-IP>";
+    return InvalidIP;
 
 #if defined(P_VXWORKS)
   char ipStorage[INET_ADDR_LEN];
@@ -1820,7 +1821,11 @@ PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
       return bracketIPv6 ? "[::]" : "::";
     char str[INET6_ADDRSTRLEN+3];
     PIPSocket::sockaddr_wrapper sa(*this, 0);
-    PAssertOS(getnameinfo(sa, sa.GetSize(), &str[bracketIPv6], INET6_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST) == 0);
+    int error = getnameinfo(sa, sa.GetSize(), &str[bracketIPv6], INET6_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST);
+    if (error != 0) {
+      PTRACE(2, "Error in getnameinfo: " << error << ' ' << gai_strerror(error));
+      return InvalidIP;
+    }
     if (bracketIPv6) {
       str[0] = '[';
       int len = strlen(str);
@@ -1840,9 +1845,10 @@ PString PIPSocket::Address::AsString(bool IPV6_PARAM(bracketIPv6),
 #endif // P_HAS_IPV6
 # if defined(P_HAS_INET_NTOP)
   char str[INET_ADDRSTRLEN+1];
-  if (inet_ntop(AF_INET, (const void *)&m_v.m_four, str, INET_ADDRSTRLEN) == NULL)
-    return PString::Empty();
-  return str;
+  if (inet_ntop(AF_INET, (const void *)&m_v.m_four, str, INET_ADDRSTRLEN) != NULL)
+    return str;
+  PTRACE(2, "Error in inet_ntop: " << errno << ' ' << strerror(errno));
+  return InvalidIP;
 # else
   static PCriticalSection x;
   PWaitAndSignal m(x);
