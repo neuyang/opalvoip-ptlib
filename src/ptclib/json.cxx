@@ -459,6 +459,18 @@ bool PJSON::Object::GetBoolean(const PString & name) const
 }
 
 
+PTime PJSON::Object::GetTime(const PString & name) const
+{
+  return PTime(GetString(name));
+}
+
+
+PTimeInterval PJSON::Object::GetInterval(const PString & name) const
+{
+  return PTimeInterval::Seconds((double)GetNumber(name));
+}
+
+
 bool PJSON::Object::Set(const PString & name, Types type)
 {
   if (find(name) != end())
@@ -527,6 +539,18 @@ bool PJSON::Object::SetBoolean(const PString & name, bool value)
     return false;
   *Get<Boolean>(name) = value;
   return true;
+}
+
+
+bool PJSON::Object::SetTime(const PString & name, const PTime & value)
+{
+  return SetString(name, value.AsString(PTime::LongISO8601));
+}
+
+
+bool PJSON::Object::SetInterval(const PString & name, const PTimeInterval & value)
+{
+  return SetNumber(name, value.GetSecondsAsDouble());
 }
 
 
@@ -682,6 +706,18 @@ bool PJSON::Array::GetBoolean(size_t index) const
 }
 
 
+PTime PJSON::Array::GetTime(size_t index) const
+{
+  return PTime(GetString(index));
+}
+
+
+PTimeInterval PJSON::Array::GetInterval(size_t index) const
+{
+  return PTimeInterval::Seconds((double)GetNumber(index));
+}
+
+
 void PJSON::Array::Append(Types type)
 {
   Base * ptr = CreateByType(type);
@@ -734,6 +770,18 @@ void PJSON::Array::AppendBoolean(bool value)
 {
   Append(e_Boolean);
   dynamic_cast<Boolean &>(*back()) = value;
+}
+
+
+void PJSON::Array::AppendTime(const PTime & value)
+{
+  AppendString(value.AsString(PTime::LongISO8601));
+}
+
+
+void PJSON::Array::AppendInterval(const PTimeInterval & value)
+{
+  AppendNumber(value.GetSecondsAsDouble());
 }
 
 
