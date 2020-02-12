@@ -7,6 +7,7 @@
     <FFMPEG64DIR Condition="'$(FFMPEG64DIR)' == ''">$(ProjectDir)..\..\..\external\ffmpeg-win64-dev</FFMPEG64DIR>
     <LUA32DIR Condition="'$(LUA32DIR)' == ''">$(ProjectDir)..\..\..\external\Lua-win32</LUA32DIR>
     <LUA64DIR Condition="'$(LUA64DIR)' == ''">$(ProjectDir)..\..\..\external\Lua-win64</LUA64DIR>
+    <V8_DIR Condition="'$(V8_DIR)' == ''">$(ProjectDir)..\..\..\external\v8</V8_DIR>
     <OPENSSL32DIR Condition="'$(OPENSSL32DIR)' == ''">$(ProgramFiles)\OpenSSL-Win32</OPENSSL32DIR>
     <OPENSSL64DIR Condition="'$(OPENSSL64DIR)' == ''">$(ProgramFiles)\OpenSSL-Win64\</OPENSSL64DIR>
     <LocalDebuggerEnvironment>PATH=$(PATH);$(ProjectDir)..\..\Lib;$(FFMPEG64DIR)\bin;$(LUA64DIR);$(OPENSSL64DIR)\bin</LocalDebuggerEnvironment>
@@ -32,6 +33,10 @@
     </BuildMacro>
     <BuildMacro Include="LUA64DIR">
       <Value>$(LUA64DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="V8_DIR">
+      <Value>$(V8_DIR)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
     <BuildMacro Include="OPENSSL32DIR">

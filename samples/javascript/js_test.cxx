@@ -123,7 +123,7 @@ void MyProcess::TestFunction(PScriptLanguage&, PScriptLanguage::Signature & sig)
   for (size_t i = 0; i < sig.m_arguments.size(); ++i) {
     if (i != 0)
       cout << ", ";
-    cout << i << '=' << sig.m_arguments[i];
+    cout << '[' << i << "]={" << sig.m_arguments[i] << '}';
   }
 
   cout << endl; 
