@@ -1968,11 +1968,9 @@ PTLIB_MODULE_OPTION(
    [-lv8 $V8_EXTRA_LIBS],
    [
       #include <v8.h>
-      #include <libplatform/libplatform.h>
    ],
    [
-      int ver = V8_MAJOR_VERSION;
-      v8::platform::CreateDefaultPlatform();
+      v8::V8::Initialize();
    ]
 )
  
