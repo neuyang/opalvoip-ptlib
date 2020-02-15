@@ -62,7 +62,11 @@ class P_WXWINDOWS_DEVICE_CLASS : public PVideoOutputDeviceRGB, public wxFrame
     /**Synonymous with the destructor.
     */
     virtual PBoolean Close();
-  
+
+    /**Stop the video device I/O display.
+    */
+    virtual PBoolean Stop();
+
     /**Indicate if this video rendering class is open.*/
     virtual PBoolean IsOpen();
   
@@ -98,17 +102,15 @@ class P_WXWINDOWS_DEVICE_CLASS : public PVideoOutputDeviceRGB, public wxFrame
     virtual PBoolean FrameComplete();
 
   protected:
-    void InternalOpen(PString deviceName);
+    void InternalOpen();
     void InternalClose();
     void InternalFrameComplete();
 
     void OnClose(wxCloseEvent &);
     void OnPaint(wxPaintEvent &);
 
-    bool       m_opened;
-    PSyncPoint m_openComplete;
-    PSyncPoint m_closeComplete;
-    wxBitmap   m_bitmap;
+    enum { e_Closing, e_Closed, e_Open, e_Opening } m_state; // Note order important
+    wxBitmap m_bitmap;
 
   wxDECLARE_DYNAMIC_CLASS(P_WXWINDOWS_DEVICE_CLASS);
   wxDECLARE_EVENT_TABLE();
@@ -134,7 +136,7 @@ PCREATE_VIDOUTPUT_PLUGIN_EX(wxWindows,
 
 
 P_WXWINDOWS_DEVICE_CLASS::P_WXWINDOWS_DEVICE_CLASS()
-  : m_opened(false)
+  : m_state(e_Closed)
 #ifdef _WIN32
   , m_bitmap(m_frameWidth, m_frameHeight, 24)
 #else
@@ -166,32 +168,31 @@ PStringArray P_WXWINDOWS_DEVICE_CLASS::GetOutputDeviceNames()
 
 PBoolean P_WXWINDOWS_DEVICE_CLASS::Open(const PString & deviceName, PBoolean /*startImmediate*/)
 {
+  m_state = e_Opening;
+  m_deviceName = deviceName;
   if (wxThread::IsMain())
-    InternalOpen(deviceName);
+    InternalOpen();
   else {
-    CallAfter(&P_WXWINDOWS_DEVICE_CLASS::InternalOpen, deviceName);
-    PAssert(m_openComplete.Wait(10000), PLogicError);
+    PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Opening asynchronously " << *this);
+    CallAfter(&P_WXWINDOWS_DEVICE_CLASS::InternalOpen);
   }
 
-  return m_opened;
+  return m_state >= e_Open;
 }
 
 
-void P_WXWINDOWS_DEVICE_CLASS::InternalOpen(PString deviceName)
+void P_WXWINDOWS_DEVICE_CLASS::InternalOpen()
 {
   PWaitAndSignal lock(m_mutex);
 
-  InternalClose();
-
-  m_deviceName = deviceName;
-
-  m_opened = Create(NULL, 0,
-                    PwxString(ParseDeviceNameTokenString("TITLE", "Video Output")),
-                    wxPoint(ParseDeviceNameTokenInt("X", -1),
-                            ParseDeviceNameTokenInt("Y", -1)),
-                    wxSize(GetFrameWidth(), GetFrameHeight()));
-  PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Open " << (m_opened ? "successful" : "failed") << " on " << *this);
-  m_openComplete.Signal();
+  if (PAssert(m_state == e_Opening, PLogicError)) {
+    m_state = Create(NULL, 0,
+                     PwxString(ParseDeviceNameTokenString("TITLE", "Video Output")),
+                     wxPoint(ParseDeviceNameTokenInt("X", -1),
+                             ParseDeviceNameTokenInt("Y", -1)),
+                     wxSize(GetFrameWidth(), GetFrameHeight())) ? e_Open : e_Closed;
+    PTRACE(m_state != e_Open ? 2 : 4, P_WXWINDOWS_DEVICE_NAME, "Open " << (m_state == e_Open ? "successful" : "failed") << " on " << *this);
+  }
 }
   
 
@@ -200,12 +201,12 @@ PBoolean P_WXWINDOWS_DEVICE_CLASS::Close()
   if (!IsOpen())
     return false;
 
+  m_state = e_Closing;
   if (wxThread::IsMain())
     InternalClose();
   else {
-    PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Closing " << *this);
+    PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Closing asynchronously " << *this);
     CallAfter(&P_WXWINDOWS_DEVICE_CLASS::InternalClose);
-    PAssert(m_closeComplete.Wait(10000), PLogicError);
   }
 
   return true;
@@ -214,12 +215,9 @@ PBoolean P_WXWINDOWS_DEVICE_CLASS::Close()
 
 void P_WXWINDOWS_DEVICE_CLASS::InternalClose()
 {
+  PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Closing " << *this);
   PWaitAndSignal lock(m_mutex);
-
-  if (IsOpen()) {
-    wxFrame::Close(true);
-    PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Closed " << *this);
-  }
+  wxFrame::Close(true);
 }
 
 
@@ -227,19 +225,28 @@ void P_WXWINDOWS_DEVICE_CLASS::OnClose(wxCloseEvent & evt)
 {
   PWaitAndSignal lock(m_mutex);
 
+  if (m_state == e_Closed)
+    return;
+
   if (evt.CanVeto())
     evt.Veto();
   else {
     Destroy();
-    m_opened = false;
-    m_closeComplete.Signal();
+    m_state = e_Closed;
+    PTRACE(4, P_WXWINDOWS_DEVICE_NAME, "Closed " << *this);
   }
+}
+
+
+PBoolean P_WXWINDOWS_DEVICE_CLASS::Stop()
+{
+  return Close();
 }
 
 
 PBoolean P_WXWINDOWS_DEVICE_CLASS::IsOpen()
 {
-  return m_opened;
+  return m_state >= e_Open;
 }
   
 
