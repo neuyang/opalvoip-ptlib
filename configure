@@ -14655,14 +14655,12 @@ $as_echo_n "checking for V8 Javascript script support usability... " >&6; }
 /* end confdefs.h.  */
 
       #include <v8.h>
-      #include <libplatform/libplatform.h>
 
 int
 main ()
 {
 
-      int ver = V8_MAJOR_VERSION;
-      v8::platform::CreateDefaultPlatform();
+      v8::V8::Initialize();
 
 
   ;
