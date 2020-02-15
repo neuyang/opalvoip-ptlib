@@ -869,6 +869,18 @@ public:
     Throttle() : ThrottleBase(lowLevel, interval, highLevel, maxShown) { }
   };
 
+  /** Output logging for an object.
+    */
+  template <class CLS> class InternalLogObject
+  {
+    const CLS & m_obj;
+  public:
+    inline InternalLogObject(const CLS & obj) : m_obj(obj) { }
+    friend inline ostream & operator<<(ostream & strm, const InternalLogObject & log) { log.m_obj.ToLogging(strm); return strm; }
+  };
+  template <class CLS> static inline InternalLogObject<CLS> LogObject(const CLS & obj) { return InternalLogObject<CLS>(obj); }
+
+
   static bool CanTrace(const ThrottleBase & throttle) { return const_cast<ThrottleBase &>(throttle).CanTrace(); }
 
   static void WalkStack(
