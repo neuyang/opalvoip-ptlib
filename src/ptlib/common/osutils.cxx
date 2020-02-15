@@ -2379,11 +2379,13 @@ PString PConfigArgs::CharToString(char letter) const
 PProcess * PProcessInstance = NULL;
 
 
+P_PUSH_MSVC_WARNINGS(4702)
 static void AbortProcess(int exitCode)
 {
   abort(); // Dump core
   _exit(exitCode); // Fail safe if abort() didn't dump core and exit
 }
+P_POP_MSVC_WARNINGS()
 
 
 int PProcess::InternalMain(void *)
