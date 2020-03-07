@@ -1186,7 +1186,8 @@ class PVideoOutputDevice_Window : public PVideoOutputDeviceRGB
     PString    m_freezeText;
     COLORREF   m_freezeColour;
     UINT       m_freezeOptions;
-    PTime      m_openTime;
+    UINT       m_freezeTimeMs;
+    bool       m_receivedFrame;
     atomic<unsigned> m_frameCount;
     atomic<unsigned> m_observedFrameRate;
 };
@@ -1233,6 +1234,8 @@ PVideoOutputDevice_Window::PVideoOutputDevice_Window()
   , m_freezeText("Poor Network Connection")
   , m_freezeColour(RGB(128,128,128))
   , m_freezeOptions(DT_VCENTER|DT_CENTER|DT_SINGLELINE|DT_END_ELLIPSIS)
+  , m_freezeTimeMs(1000)
+  , m_receivedFrame(false)
   , m_frameCount(0)
   , m_observedFrameRate(0)
 {
@@ -1341,7 +1344,7 @@ PBoolean PVideoOutputDevice_Window::Open(const PString & name, PBoolean startImm
   m_freezeText = ParseDeviceNameTokenString("FREEZETEXT", m_freezeText);
   m_freezeColour = (COLORREF)ParseDeviceNameTokenUnsigned("FREEZECOLOUR", m_freezeColour);
   m_freezeOptions = (UINT)ParseDeviceNameTokenUnsigned("FREEZEMODE", m_freezeOptions);
-  m_openTime.SetCurrentTime();
+  m_freezeTimeMs = (UINT)ParseDeviceNameTokenUnsigned("FREEZETIME", m_freezeTimeMs);
 
   if (m_hParent != NULL) {
     if (GetWindowThreadProcessId(m_hParent, NULL) == GetCurrentThreadId())
@@ -1563,6 +1566,7 @@ PBoolean PVideoOutputDevice_Window::FrameComplete()
   if (m_hWnd == NULL)
     return false;
 
+  m_receivedFrame = true;
   ++m_frameCount;
 
   HDC hDC = GetDC(m_hWnd);
@@ -1768,8 +1772,7 @@ void PVideoOutputDevice_Window::Draw(HDC hDC)
     DrawText(hDC, strm, strm.GetLength(), &rect, m_infoOptions);
   }
 
-  static const PTimeInterval IgnoreOnStartDelay(0, 5);
-  if (m_observedFrameRate == 0 && !m_freezeText.IsEmpty() && m_openTime.GetElapsed() > IgnoreOnStartDelay) {
+  if (m_receivedFrame && m_observedFrameRate == 0 && !m_freezeText.IsEmpty()) {
     SetTextColor(hDC, m_freezeColour);
     SetBkMode(hDC, TRANSPARENT);
     rect.left += 8;
@@ -1821,7 +1824,7 @@ void PVideoOutputDevice_Window::CreateDisplayWindow()
     SetChannel(GetChannel());
   }
 
-  SetTimer(m_hWnd, 12345, 1000, NULL);
+  SetTimer(m_hWnd, 12345, m_freezeTimeMs, NULL);
 
   m_started.Signal();
 }
